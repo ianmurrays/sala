@@ -1,4 +1,4 @@
-<img src="assets/icon.svg" width="64" height="64" alt="">
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/sala_full_dark.png"><img src="assets/sala_full_light.png" width="200" alt="Sala"></picture>
 
 # sala
 

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 400 400"><g transform="translate(20 20)"><g transform="translate(0 0)">
+ <path d="M59 163 Q59 151 71 142 L169 68 Q180 60 191 68 L290 142 Q301 151 301 163 L301 257 Q301 282 275 282 L173 282 L120 319 Q110 326 110 312 L114 282 L85 282 Q59 282 59 256 Z" fill="none" stroke="#FFF8E9" stroke-width="25" stroke-linejoin="round" stroke-linecap="round"/>
+ <defs><clipPath id="people-clip"><path d="M81 164 L180 90 L279 164 L279 256 Q279 261 271 261 L89 261 Q81 261 81 254 Z"/></clipPath></defs>
+ <g clip-path="url(#people-clip)">
+ <circle cx="111" cy="201" r="20" fill="#A4D8B4"/><path d="M69 269 Q69 226 111 226 Q153 226 153 269Z" fill="#A4D8B4"/>
+ <circle cx="249" cy="201" r="20" fill="#A4D8B4"/><path d="M208 269 Q208 226 249 226 Q291 226 291 269Z" fill="#A4D8B4"/>
+ <circle cx="180" cy="179" r="26" fill="#FFF8E9"/><path d="M130 274 Q130 215 180 215 Q230 215 230 274Z" fill="#FFF8E9"/>
+ </g></g></g></svg>
