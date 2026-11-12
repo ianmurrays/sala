@@ -26,6 +26,48 @@ SALA_TOKEN=... AULA_USERNAME=... uv run uvicorn sala.app:app --host 0.0.0.0 --po
 | `SALA_TRANSLATE_LANG` | Language to translate into, default `English`. |
 | `SALA_FAKE_TRANSLATE` | `1` with `SALA_FAKE=1` and no API key = a fake translator that prefixes `[EN] `, for trying the UI. |
 
+## Secrets and state
+
+No MitID password exists anywhere: login is approved in the MitID app, and only the username (`AULA_USERNAME`) is configured. Everything secret is either an env var or a file in `SALA_DATA_DIR`:
+
+- Env (`.env` under Docker, never committed): `SALA_TOKEN`, `AULA_USERNAME`, `ANTHROPIC_API_KEY`, `NTFY_TOKEN`, `NTFY_TOPIC`.
+- `aula_tokens.json` (mode 0600, written by the `aula` library): the Aula access and refresh tokens plus the MitID/Keycloak session cookies. Anyone with this file is logged in to Aula as you until the session expires. It is rewritten atomically (temp file + rename) on each refresh, so mount the whole directory, never the single file.
+- `sala.sqlite3`: attachment ids, the push seen-set and cached translations (clear text).
+
+## Deploy with Docker
+
+Needs Docker with Compose on the home server. Run everything from `server/`.
+
+1. `cp .env.example .env` and fill in `SALA_TOKEN` and `AULA_USERNAME` (plus the optional keys). Then `chmod 600 .env`.
+2. Decide who can reach the port. The app sends the bearer token over plain HTTP, so keep it on the LAN or Tailscale. Docker publishes `8000` on all interfaces and on Linux bypasses ufw, so on a host with a public address change the `ports:` entry in `compose.yaml` to a specific IP (e.g. `"100.x.y.z:8000:8000"` for the Tailscale address). `SALA_PORT` in `.env` changes the host port.
+3. `docker compose up -d --build`
+4. In the app, set the server URL (`http://<host>:8000`) and the token, then log in with MitID from the app. No terminal step is needed.
+
+State lives in the named volume `sala-data` (mounted at `/data`), so it survives rebuilds and `docker compose down`. `docker compose down -v` deletes it, and with it the Aula session.
+
+**Moving an existing session** from a `uv run` install, so no new MitID login is needed. Stop the old server first: two servers refreshing copies of the same tokens can invalidate each other.
+
+```sh
+docker compose create        # creates the volume without starting the server
+tar -C data -c aula_tokens.json sala.sqlite3 \
+  | docker compose run --rm -T --user root sala sh -c 'tar -C /data -x && chown -R sala /data'
+docker compose up -d
+```
+
+**Operations**
+
+| Task | Command |
+| --- | --- |
+| Logs | `docker compose logs -f` |
+| Update | `git pull && docker compose up -d --build` |
+| Change env | edit `.env`, then `docker compose up -d` |
+| Backup | `docker compose run --rm -T sala tar -C /data -c . > sala-backup.tar` (contains the Aula session: store it like a password) |
+| Restore | `docker compose stop && docker compose run --rm -T --user root sala sh -c 'tar -C /data -x && chown -R sala /data' < sala-backup.tar && docker compose start` |
+
+The container runs a single uvicorn worker on purpose: the session, the MitID login and the push poller are in-process state. Do not scale it.
+
+## Behaviour
+
 On start the server loads the stored session and lets the library refresh it. It never starts MitID by itself: when the session is gone, API calls answer `503 auth_required` until the app calls `POST /auth/login` (one attempt, no automatic retry; a failure shows as `state: error`). A keep-alive runs every 10 minutes.
 
 `POST /auth/login` first tries the stored tokens once (a token refresh, no MitID). Only if Aula refuses them does it start MitID, which times out after 5 minutes.
