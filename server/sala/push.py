@@ -101,7 +101,7 @@ def is_direct(raw: dict, mine: set[int]) -> bool:
 def message_event(raw: dict, mine: set[int], sender: dict | None = None) -> Event | None:
     """The event for one getThreads row's newest message, or None if unusable.
 
-    ``notify`` is set only for a direct thread whose newest message is not
+    ``notify`` is set only for an unmuted direct thread whose newest message is not
     from me (from the other person, or from an unknown sender: "New message").
     ``sender`` overrides ``latestMessage.sender`` (see collect).
     """
@@ -115,7 +115,7 @@ def message_event(raw: dict, mine: set[int], sender: dict | None = None) -> Even
     sender = sender or latest.get("sender")
     sender_id = _owner_id(sender)
     from_me = sender_id is not None and (sender_id in mine or sender_id == _owner_id(raw))
-    notify = direct and not from_me
+    notify = direct and not from_me and not raw.get("muted")  # muted: recorded as seen, never sent
     name = m._sender_name(sender) if sender_id is not None else None
     return Event(
         key=f"message:{tid}:{mid}",

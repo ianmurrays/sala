@@ -15,6 +15,7 @@ from aula.utils.dates import aula_today
 
 from conftest import AUTH
 from sala import mapping
+from sala import push as push_module
 from sala.fake import ANNE, GUARDIAN_IP, KASPER, ME, METTE
 from sala.mapping import UpstreamFailure, _short_date, date_range_label, download_attachment
 from sala.push import Pusher, is_direct, message_event
@@ -338,13 +339,16 @@ def test_holiday_deadline_reminder_once(push, fake, days, suffix):
     assert poll() == 0 and len(ntfy.posts) == 1
 
 
-def test_holiday_reminders_day_before_then_on_the_day(push, fake):
+def test_holiday_reminders_day_before_then_on_the_day(push, fake, morning, monkeypatch):
     ntfy, poll, _ = push
-    _due_in(fake, 56, 1)
+    label = _due_in(fake, 56, 1)
     assert poll() == 1
-    _due_in(fake, 56, 0)  # a day later
-    assert poll() == 1
-    assert [p["title"].rsplit("· ", 1)[1] for p in ntfy.posts] == ["answer by tomorrow", "answer today"]
+    tomorrow = aula_today() + timedelta(days=1)  # same deadline, a day later
+    monkeypatch.setattr(push_module, "aula_today", lambda: tomorrow)
+    monkeypatch.setattr(mapping, "now", lambda: datetime.combine(tomorrow, morning.at, mapping.TZ))
+    poll()  # request 55's own deadline day may also remind here
+    mine = [p["title"].rsplit("· ", 1)[1] for p in ntfy.posts if label in p["title"]]
+    assert mine == ["answer by tomorrow", "answer today"]
 
 
 @pytest.mark.parametrize("days", [-1, 2])
@@ -397,3 +401,12 @@ def test_new_request_due_soon_waits_for_the_morning(push, fake, morning):
     assert poll() == 1 and len(ntfy.posts) == 1
     assert ntfy.posts[0]["priority"] == 4
     assert poll() == 0  # it stood in for that day's reminder
+
+
+def test_muted_direct_message_sends_nothing(push, fake):
+    ntfy, poll, _ = push
+    fake.threads[9105]["muted"] = True
+    fake.add_direct_message()
+    assert poll() == 0 and ntfy.posts == []
+    fake.threads[9105]["muted"] = False  # unmuting later doesn't send the old message
+    assert poll() == 0 and ntfy.posts == []
