@@ -1,4 +1,4 @@
-"""SQLite store: the attachment id -> URL map and the push seen-set."""
+"""SQLite store: the attachment id -> URL map, the push seen-set and cached translations."""
 
 import sqlite3
 import threading
@@ -36,6 +36,11 @@ class Store:
                 CREATE TABLE IF NOT EXISTS push_state (
                     key TEXT PRIMARY KEY,
                     value TEXT NOT NULL
+                );
+                -- translate: sha256(model, lang, text) -> translation
+                CREATE TABLE IF NOT EXISTS translations (
+                    key TEXT PRIMARY KEY,
+                    text TEXT NOT NULL
                 );
                 """
             )
@@ -89,6 +94,18 @@ class Store:
     def clear_state(self, key: str) -> None:
         with self._lock, self._db:
             self._db.execute("DELETE FROM push_state WHERE key = ?", (key,))
+
+    def translations(self, keys: list[str]) -> dict[str, str]:
+        with self._lock:
+            return {
+                k: t
+                for k in keys
+                for (t,) in self._db.execute("SELECT text FROM translations WHERE key = ?", (k,)).fetchall()
+            }
+
+    def save_translations(self, items: dict[str, str]) -> None:
+        with self._lock, self._db:
+            self._db.executemany("INSERT OR REPLACE INTO translations (key, text) VALUES (?, ?)", items.items())
 
     def close(self) -> None:
         self._db.close()

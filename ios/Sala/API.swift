@@ -303,6 +303,21 @@ struct AbsenceRequest: Encodable, Sendable {
 
 struct OkResponse: Decodable, Sendable { var ok: Bool }
 
+/// `GET /features`.
+struct Features: Decodable, Sendable {
+    var translate: Bool
+
+    enum CodingKeys: String, CodingKey { case translate }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        translate = try c.decodeIfPresent(Bool.self, forKey: .translate) ?? false
+    }
+}
+
+/// `POST /translate` body and answer: one text per entry, same order.
+struct TranslateTexts: Codable, Sendable { var texts: [String] }
+
 private struct ErrorEnvelope: Decodable { var error: String?; var message: String? }
 
 extension KeyedDecodingContainer {
@@ -357,6 +372,14 @@ struct APIClient: Sendable {
         return URLSession(configuration: config)
     }()
 
+    /// For `/translate`: a long thread can take the Claude API a while.
+    private static let slowSession: URLSession = {
+        let config = URLSessionConfiguration.default
+        config.timeoutIntervalForRequest = 200
+        config.waitsForConnectivity = false
+        return URLSession(configuration: config)
+    }()
+
     func authStatus() async throws -> AuthStatus { try await send("GET", "/auth/status") }
     func login() async throws -> AuthStatus { try await send("POST", "/auth/login") }
     func today() async throws -> Today { try await send("GET", "/today") }
@@ -400,6 +423,13 @@ struct APIClient: Sendable {
     }
     func addAbsence(_ request: AbsenceRequest) async throws {
         let _: OkResponse = try await send("POST", "/absences", body: request)
+    }
+
+    func features() async throws -> Features { try await send("GET", "/features") }
+    /// At most 50 texts per call (API.md).
+    func translate(_ texts: [String]) async throws -> [String] {
+        let r: TranslateTexts = try await send("POST", "/translate", bodyData: try JSONEncoder().encode(TranslateTexts(texts: texts)), slow: true)
+        return r.texts
     }
 
     /// Downloads an attachment into a fresh temp directory, named after `name`.
@@ -448,13 +478,13 @@ struct APIClient: Sendable {
         try await send(method, path, bodyData: try JSONEncoder().encode(body))
     }
 
-    private func send<T: Decodable>(_ method: String, _ path: String, bodyData: Data?) async throws -> T {
+    private func send<T: Decodable>(_ method: String, _ path: String, bodyData: Data?, slow: Bool = false) async throws -> T {
         var request = try makeRequest(method, path)
         if let bodyData {
             request.httpBody = bodyData
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         }
-        let (data, response) = try await perform { try await Self.session.data(for: request) }
+        let (data, response) = try await perform { try await (slow ? Self.slowSession : Self.session).data(for: request) }
         try check(response, data: data)
         do {
             return try JSONDecoder().decode(T.self, from: data)

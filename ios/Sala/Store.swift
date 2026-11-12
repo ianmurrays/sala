@@ -57,6 +57,14 @@ final class Store {
     // More posts after the `/today` ones (`/posts?page=2`, …), appended to `today.posts`.
     private(set) var morePosts = Paging(next: 2)
 
+    // Translation: buttons only when the server has it on. Translations are kept per original text;
+    // `showing` holds the ids ("post-9", "thread-123") switched to translations.
+    private(set) var canTranslate = false
+    private var translations: [String: String] = [:]
+    private var showing: Set<String> = []
+    private(set) var translating: Set<String> = []
+    private(set) var translateErrors: [String: String] = [:]
+
     // Navigation (the Messages tab pushes and clears `pendingThreadID`)
     var selectedTab: AppTab = .today
     var pendingThreadID: String?
@@ -117,6 +125,7 @@ final class Store {
             today = t
             morePosts.reset(next: 2)
             phase = .ready
+            Task { if let f = try? await c.features() { canTranslate = f.translate } }
             // Keeps the Messages tab badge current without holding up Today.
             Task {
                 await loadThreads()
@@ -489,6 +498,50 @@ final class Store {
     func retryMorePosts() async {
         morePosts.error = nil
         await loadMorePosts()
+    }
+
+    // MARK: Translation
+
+    /// `text`, or its translation while `id` shows translations.
+    func display(_ text: String, in id: String) -> String {
+        showing.contains(id) ? translations[text] ?? text : text
+    }
+
+    /// True while `id` shows translations and every non-empty text of it has one (a new message may not).
+    func isTranslated(_ id: String, texts: [String]) -> Bool {
+        showing.contains(id) && untranslated(texts).isEmpty
+    }
+
+    private func untranslated(_ texts: [String]) -> [String] {
+        Array(Set(texts.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && translations[$0] == nil }))
+    }
+
+    /// Translate / Show original for one post or thread. Only texts not translated before are sent.
+    func toggleTranslation(_ id: String, texts: [String]) async {
+        if isTranslated(id, texts: texts) { showing.remove(id); return }
+        guard !translating.contains(id) else { return }
+        translateErrors[id] = nil
+        let missing = untranslated(texts)
+        if !missing.isEmpty {
+            translating.insert(id)
+            defer { translating.remove(id) }
+            let c = client
+            let result = await Task {
+                var out: [String] = []
+                for start in stride(from: 0, to: missing.count, by: 50) {  // the server takes 50 per request
+                    out += try await c.translate(Array(missing[start..<min(start + 50, missing.count)]))
+                }
+                return out
+            }.result
+            switch result {
+            case .success(let out):
+                for (text, english) in zip(missing, out) { translations[text] = english }
+            case .failure(let error):
+                if handle(error) != nil { translateErrors[id] = "Couldn't translate. Try again." }
+                return
+            }
+        }
+        showing.insert(id)
     }
 
     func openThread(_ id: String?) {

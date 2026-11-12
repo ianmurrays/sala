@@ -512,7 +512,9 @@ struct PostCard: View {
     let open: (Attachment) -> Void
     @State private var expanded = false
 
-    private var isLong: Bool { post.body.count > 220 || post.body.filter { $0 == "\n" }.count > 4 }
+    private var translationID: String { "post-\(post.id)" }
+    private var bodyText: String { store.display(post.body, in: translationID) }
+    private var isLong: Bool { bodyText.count > 220 || bodyText.filter { $0 == "\n" }.count > 4 }
 
     private var dateText: String {
         guard let d = Fmt.timestamp(post.date) else { return "" }
@@ -551,12 +553,12 @@ struct PostCard: View {
                     .background(Color.sickFill, in: .capsule)
             }
 
-            Text(post.title)
+            Text(store.display(post.title, in: translationID))
                 .font(.headline)
 
             if !post.body.isEmpty {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(post.body)
+                    Text(bodyText)
                         .font(.body)
                         .lineLimit(expanded || !isLong ? nil : 4)
                         .textSelection(.enabled)
@@ -570,11 +572,46 @@ struct PostCard: View {
                 }
             }
 
+            TranslateButton(id: translationID, texts: [post.title, post.body])
+
             ForEach(Array(post.attachments.enumerated()), id: \.offset) { _, attachment in
                 AttachmentRow(attachment: attachment, downloading: downloading) { open(attachment) }
             }
         }
         .card()
+    }
+}
+
+/// "Translate" / "Show original" for a post or thread, shown only when the server translates.
+/// Never translates on its own; loading and errors show inline.
+struct TranslateButton: View {
+    @Environment(Store.self) private var store
+    /// "post-9" or "thread-123".
+    let id: String
+    let texts: [String]
+
+    var body: some View {
+        if store.canTranslate {
+            HStack(spacing: 8) {
+                Button {
+                    Task { await store.toggleTranslation(id, texts: texts) }
+                } label: {
+                    Label(store.isTranslated(id, texts: texts) ? "Show original" : "Translate", systemImage: "translate")
+                }
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .buttonStyle(.borderless)
+                .disabled(store.translating.contains(id))
+                if store.translating.contains(id) {
+                    ProgressView().controlSize(.small)
+                } else if let error = store.translateErrors[id] {
+                    Text(error)
+                        .font(.footnote)
+                        .foregroundStyle(Color.sickText)
+                        .lineLimit(2)
+                }
+            }
+        }
     }
 }
 

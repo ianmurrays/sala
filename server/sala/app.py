@@ -23,6 +23,7 @@ from . import mapping as m
 from .aula_session import AuthRequired, SessionManager, Upstream
 from .push import Pusher
 from .store import Store
+from .translate import DEFAULT_MODEL, Translator
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -69,6 +70,15 @@ async def lifespan(app: FastAPI):
         fake=fake,
         fake_login_seconds=float(os.environ.get("SALA_FAKE_LOGIN_SECONDS", "3")),
     )
+    app.state.translator = None
+    api_key = os.environ.get("ANTHROPIC_API_KEY", "").strip() or None
+    if api_key or (fake and os.environ.get("SALA_FAKE_TRANSLATE") == "1"):
+        app.state.translator = Translator(
+            app.state.store,
+            api_key,
+            model=os.environ.get("SALA_TRANSLATE_MODEL") or DEFAULT_MODEL,
+            lang=os.environ.get("SALA_TRANSLATE_LANG") or "English",
+        )
     app.state.pusher = None
     topic = os.environ.get("NTFY_TOPIC")
     if topic:
@@ -120,7 +130,7 @@ async def read_only(request: Request, call_next):
     if (
         os.environ.get("SALA_READ_ONLY") == "1"
         and request.method in ("PUT", "POST", "PATCH", "DELETE")
-        and not request.url.path.startswith(("/auth/", "/debug/"))
+        and not request.url.path.startswith(("/auth/", "/debug/", "/translate"))
     ):
         return JSONResponse(
             {"error": "read_only", "message": "Read-only mode: nothing was sent to Aula."}, status_code=403
@@ -200,6 +210,34 @@ async def auth_status(s: SessionManager = Depends(session)):
 @app.post("/auth/login")
 async def auth_login(s: SessionManager = Depends(session)):
     return await s.login()
+
+
+# --- features & translation -------------------------------------------------
+
+
+@app.get("/features")
+async def features(request: Request):
+    return {"translate": request.app.state.translator is not None}
+
+
+def translator(request: Request) -> Translator:
+    """The translator, or 404 (checked before the body, so off is always 404)."""
+    if request.app.state.translator is None:
+        raise ApiError(404, "not_enabled")
+    return request.app.state.translator
+
+
+class TranslateIn(BaseModel):
+    texts: list[str]
+
+
+@app.post("/translate")
+async def translate(body: TranslateIn, t: Translator = Depends(translator)):
+    if len(body.texts) > 50:
+        raise ApiError(400, "bad_request", "at most 50 texts")
+    if any(len(x) > 20_000 for x in body.texts):
+        raise ApiError(400, "bad_request", "each text must be at most 20000 characters")
+    return {"texts": await t.translate(body.texts)}
 
 
 # --- today -------------------------------------------------------------------

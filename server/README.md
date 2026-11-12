@@ -13,7 +13,7 @@ SALA_TOKEN=... AULA_USERNAME=... uv run uvicorn sala.app:app --host 0.0.0.0 --po
 | --- | --- |
 | `SALA_TOKEN` | Required. Bearer token the app sends (`Authorization: Bearer ...`). |
 | `AULA_USERNAME` | MitID username used by `POST /auth/login`. |
-| `SALA_DATA_DIR` | Default `./data`. Holds `aula_tokens.json` (Aula session) and `sala.sqlite3` (attachment ids, push seen-set). |
+| `SALA_DATA_DIR` | Default `./data`. Holds `aula_tokens.json` (Aula session) and `sala.sqlite3` (attachment ids, push seen-set, cached translations). |
 | `SALA_FAKE` | `1` = fake Aula, no network (see below). |
 | `SALA_FAKE_LOGIN_SECONDS` | Fake MitID duration, default `3`. |
 | `SALA_EXTRA_FILE_HOSTS` | Optional, comma list. Extra hosts the attachment proxy may fetch from besides `*.aula.dk` (`.example.com` = domain and subdomains). |
@@ -21,6 +21,10 @@ SALA_TOKEN=... AULA_USERNAME=... uv run uvicorn sala.app:app --host 0.0.0.0 --po
 | `NTFY_URL` | ntfy server root only (no topic path; a path is dropped with an error in the log), default `https://ntfy.sh`. |
 | `NTFY_TOKEN` | Optional Bearer token for an access-controlled ntfy server. |
 | `POLL_SECONDS` | How often push polls Aula, default `300`. |
+| `ANTHROPIC_API_KEY` | Claude API key for translating messages and posts (`POST /translate`). Unset = translation off and the app hides its Translate buttons. |
+| `SALA_TRANSLATE_MODEL` | Claude model for translation, default `claude-haiku-5-5`. |
+| `SALA_TRANSLATE_LANG` | Language to translate into, default `English`. |
+| `SALA_FAKE_TRANSLATE` | `1` with `SALA_FAKE=1` and no API key = a fake translator that prefixes `[EN] `, for trying the UI. |
 
 On start the server loads the stored session and lets the library refresh it. It never starts MitID by itself: when the session is gone, API calls answer `503 auth_required` until the app calls `POST /auth/login` (one attempt, no automatic retry; a failure shows as `state: error`). A keep-alive runs every 10 minutes.
 
@@ -36,6 +40,12 @@ With `NTFY_TOPIC` set, a background poller checks Aula every `POLL_SECONDS` (onl
 - On the first poll every existing item is recorded silently, so enabling push never floods. An item counts as sent only once ntfy accepts it, so a failed publish is retried on the next poll. The seen-set is in `sala.sqlite3`.
 
 A message counts as direct when the thread's participants, read from the `messaging.getThreads` row the way the portal does (`recipients` without those who left and without my own mailbox, plus `extraRecipientsCount`, plus the creator and the latest sender), minus my own profiles, are exactly one person, and that person sent the newest message. Threads that include the other parent are therefore not direct.
+
+## Translation (Claude API)
+
+Apple's Translation framework has no Danish, so with `ANTHROPIC_API_KEY` set the server translates with the Claude API (one request per tap, the uncached texts in one batch). Translations are cached in `sala.sqlite3` by a hash of model, language and text, so a text is sent once.
+
+Privacy: when the user taps Translate, that post's title and text, or the text of every message in that thread, is sent to Anthropic. Nothing is sent automatically. The translation is stored in `sala.sqlite3` in clear text, keyed by a hash of the original. Message text and the API key are never logged.
 
 ## Debugging against live Aula
 

@@ -138,6 +138,16 @@ Nullable here: `opensAt`, `closesAt`, `current.time`, `current.by`.
 `POST /folders` body `{"name":"Skole"}` → the new folder `{"id":72,"name":"Skole"}`. `PATCH /folders/{id}` body `{"name":"..."}` → the renamed folder. The name is trimmed and must be 1–100 characters, else `400`. An unknown folder → `404`.
 `DELETE /folders/{id}` → `{"ok":true}`. Per Aula's own confirmation text ("Hvis denne mappe ikke er tom, vil alle beskeder i mappen blive slettet"; not tried live), the messages in the folder are deleted with it, not moved to the inbox. The client should say so before deleting.
 
+## Translation
+
+`GET /features` → `{"translate":true}`. The app shows its "Translate" buttons only when `translate` is true (an older server without this route: treat as false).
+
+`POST /translate` body `{"texts":["Hej","..."]}` → `{"texts":["Hi","..."]}`, one translation per text, same order. Translates into English (the server's `SALA_TRANSLATE_LANG`) with the Claude API; empty texts come back as they are and text already in English comes back unchanged. Only on a tap, never automatically.
+- At most 50 texts, each at most 20 000 characters, else `400`.
+- Translation off (no `ANTHROPIC_API_KEY` on the server) → `404 {"error":"not_enabled"}`.
+- The Claude API failing (error status, refusal, a cut-off or malformed answer) → `502 {"error":"upstream","message":"Translation failed..."}`. Nothing is cached then.
+- Translations are cached on the server by text, so asking again costs nothing. Works without an Aula session.
+
 ## Push
 
 There is no push endpoint. Push goes through [ntfy](https://ntfy.sh): the server polls Aula every `POLL_SECONDS` and publishes to the ntfy topic `NTFY_TOPIC`; the phone subscribes to that topic in the ntfy iOS app. Push is off when `NTFY_TOPIC` is unset.
