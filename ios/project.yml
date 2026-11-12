@@ -52,7 +52,6 @@ targets:
             CFBundleURLSchemes: [sala]
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
-          NSAllowsLocalNetworking: true
         NSLocalNetworkUsageDescription: Sala talks to your home server on the local network.
   SalaWidget:
     type: app-extension
@@ -85,4 +84,3 @@ targets:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
-          NSAllowsLocalNetworking: true
