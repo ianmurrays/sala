@@ -207,7 +207,9 @@ final class Store {
             let ids = Set(threads?.map(\.id) ?? [])
             let new = keepLocal(rows, since: startedAt).filter { !ids.contains($0.id) }
             threads?.append(contentsOf: new)
-            moreThreads.finish(page: page, added: new.count)
+            // A page of only rows already shown (after a move out shifted the offsets) isn't the end.
+            moreThreads.finish(page: page, added: new.count, done: rows.isEmpty)
+            if new.isEmpty && !rows.isEmpty { await loadMoreThreads() }
         case .failure(let error):
             moreThreads.fail(handle(error))
         }
@@ -608,10 +610,10 @@ struct Paging: Equatable {
         return (next, epoch)
     }
 
-    mutating func finish(page: Int, added: Int) {
+    mutating func finish(page: Int, added: Int, done: Bool? = nil) {
         isLoading = false
         next = page + 1
-        done = added == 0
+        self.done = done ?? (added == 0)
     }
 
     /// `message` is nil when the error was routed elsewhere (login screen, Settings): then just stop for now.
