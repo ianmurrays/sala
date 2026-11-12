@@ -1,0 +1,430 @@
+import Foundation
+
+// MARK: - Models (see API.md at the repo root)
+
+struct Today: Codable, Sendable, Equatable {
+    var date: String
+    var children: [Child]
+    var attention: [AttentionItem]
+    var upcoming: [UpcomingItem]
+    var posts: [Post]
+}
+
+struct Child: Codable, Sendable, Equatable, Identifiable {
+    var id: Int
+    var name: String
+    var institution: String
+    var group: String
+    /// `present|not_arrived|sick|gone_home|vacation|unknown`, kept as a string so a new value never breaks decoding.
+    var status: String
+    var statusLabel: String
+    var arrivedAt: String?
+    var leftAt: String?
+    var pickup: Pickup?
+    var closesAt: String?
+    var canReportSick: Bool
+}
+
+struct Pickup: Codable, Sendable, Equatable {
+    var time: String?
+    var by: String?
+}
+
+struct AttentionItem: Codable, Sendable, Equatable, Identifiable {
+    var id: String
+    /// `holiday_request|message`
+    var kind: String
+    var title: String
+    var subtitle: String?
+    var urgent: Bool
+    var threadId: String?
+
+    enum CodingKeys: String, CodingKey { case id, kind, title, subtitle, urgent, threadId }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decodeLenientString(.id) ?? ""
+        kind = try c.decode(String.self, forKey: .kind)
+        title = try c.decode(String.self, forKey: .title)
+        subtitle = try c.decodeIfPresent(String.self, forKey: .subtitle)
+        urgent = try c.decodeIfPresent(Bool.self, forKey: .urgent) ?? false
+        threadId = try c.decodeLenientString(.threadId)
+    }
+
+    init(id: String, kind: String, title: String, subtitle: String?, urgent: Bool, threadId: String?) {
+        self.id = id; self.kind = kind; self.title = title; self.subtitle = subtitle; self.urgent = urgent; self.threadId = threadId
+    }
+}
+
+struct UpcomingItem: Codable, Sendable, Equatable, Identifiable {
+    var date: String
+    var title: String
+    var subtitle: String?
+    var id: String { date + "|" + title }
+
+    enum CodingKeys: String, CodingKey { case date, title, subtitle }
+}
+
+struct Post: Codable, Sendable, Equatable, Identifiable {
+    var id: Int
+    var title: String
+    var author: String
+    /// ISO 8601 timestamp with offset.
+    var date: String
+    var body: String
+    var important: Bool
+    var saved: Bool
+    var attachments: [Attachment]
+}
+
+struct Attachment: Codable, Sendable, Equatable, Identifiable {
+    var id: String
+    var name: String
+    /// `file|image`
+    var kind: String
+
+    enum CodingKeys: String, CodingKey { case id, name, kind }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decodeLenientString(.id) ?? ""
+        name = try c.decode(String.self, forKey: .name)
+        kind = try c.decodeIfPresent(String.self, forKey: .kind) ?? "file"
+    }
+
+    init(id: String, name: String, kind: String) { self.id = id; self.name = name; self.kind = kind }
+}
+
+struct PickupOptions: Codable, Sendable, Equatable {
+    var date: String
+    var opensAt: String?
+    var closesAt: String?
+    var times: [String]
+    var people: [String]
+    var current: Pickup?
+    var note: String?
+}
+
+struct PickupUpdate: Codable, Sendable {
+    var time: String
+    var by: String
+    var note: String
+}
+
+struct AuthStatus: Codable, Sendable, Equatable {
+    /// `ok|needs_login|logging_in|error`
+    var state: String
+    var otpCode: String?
+    var message: String?
+    var since: String?
+}
+
+struct SavedResponse: Codable, Sendable { var saved: Bool }
+
+/// A row of `GET /threads`.
+struct ThreadSummary: Decodable, Sendable, Equatable, Identifiable {
+    var id: String
+    var subject: String
+    var from: String
+    var participants: Int
+    var preview: String
+    /// ISO 8601 timestamp with offset.
+    var date: String
+    var unread: Bool
+    var muted: Bool
+    var starred: Bool
+
+    enum CodingKeys: String, CodingKey { case id, subject, from, participants, preview, date, unread, muted, starred }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decodeLenientString(.id) ?? ""
+        subject = try c.decodeIfPresent(String.self, forKey: .subject) ?? ""
+        from = try c.decodeIfPresent(String.self, forKey: .from) ?? ""
+        participants = try c.decodeIfPresent(Int.self, forKey: .participants) ?? 0
+        preview = try c.decodeIfPresent(String.self, forKey: .preview) ?? ""
+        date = try c.decodeIfPresent(String.self, forKey: .date) ?? ""
+        unread = try c.decodeIfPresent(Bool.self, forKey: .unread) ?? false
+        muted = try c.decodeIfPresent(Bool.self, forKey: .muted) ?? false
+        starred = try c.decodeIfPresent(Bool.self, forKey: .starred) ?? false
+    }
+}
+
+/// `GET /threads/{id}`. Messages come oldest first.
+struct MessageThread: Decodable, Sendable, Equatable {
+    var id: String
+    var subject: String
+    var canReply: Bool
+    var messages: [Message]
+
+    enum CodingKeys: String, CodingKey { case id, subject, canReply, messages }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decodeLenientString(.id) ?? ""
+        subject = try c.decodeIfPresent(String.self, forKey: .subject) ?? ""
+        canReply = try c.decodeIfPresent(Bool.self, forKey: .canReply) ?? false
+        messages = try c.decodeIfPresent([Message].self, forKey: .messages) ?? []
+    }
+}
+
+struct Message: Decodable, Sendable, Equatable, Identifiable {
+    var id: String
+    var sender: String
+    var fromMe: Bool
+    /// ISO 8601 timestamp with offset.
+    var date: String
+    var text: String
+    var attachments: [Attachment]
+
+    enum CodingKeys: String, CodingKey { case id, sender, fromMe, date, text, attachments }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decodeLenientString(.id) ?? ""
+        sender = try c.decodeIfPresent(String.self, forKey: .sender) ?? ""
+        fromMe = try c.decodeIfPresent(Bool.self, forKey: .fromMe) ?? false
+        date = try c.decodeIfPresent(String.self, forKey: .date) ?? ""
+        text = try c.decodeIfPresent(String.self, forKey: .text) ?? ""
+        attachments = try c.decodeIfPresent([Attachment].self, forKey: .attachments) ?? []
+    }
+
+    init(id: String, sender: String, fromMe: Bool, date: String, text: String, attachments: [Attachment] = []) {
+        self.id = id; self.sender = sender; self.fromMe = fromMe; self.date = date; self.text = text; self.attachments = attachments
+    }
+}
+
+enum ReplyAudience: String, Codable, Sendable { case everyone, sender }
+
+struct ReplyRequest: Encodable, Sendable {
+    var text: String
+    var audience: ReplyAudience
+    /// Required for `sender`: the message whose sender gets the new thread.
+    var messageId: String?
+}
+
+struct ReplyResponse: Decodable, Sendable {
+    /// The new thread for `sender`; may be null.
+    var threadId: String?
+
+    enum CodingKeys: String, CodingKey { case threadId }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        threadId = try c.decodeLenientString(.threadId)
+    }
+}
+
+private struct ErrorEnvelope: Decodable { var error: String?; var message: String? }
+
+extension KeyedDecodingContainer {
+    /// Accepts a JSON string or number (ids whose type the contract doesn't pin down), or null.
+    func decodeLenientString(_ key: Key) throws -> String? {
+        if (try? decodeNil(forKey: key)) ?? true { return nil }
+        if let s = try? decode(String.self, forKey: key) { return s }
+        if let i = try? decode(Int.self, forKey: key) { return String(i) }
+        throw DecodingError.typeMismatch(String.self, .init(codingPath: codingPath + [key], debugDescription: "Expected string or number"))
+    }
+}
+
+// MARK: - Errors
+
+enum APIError: LocalizedError, Sendable {
+    case unauthorized
+    case authRequired
+    case upstream(String?)
+    case http(Int, String?)
+    case notFound
+    case badURL
+    case transport(String)
+    case decoding(String)
+
+    var errorDescription: String? {
+        switch self {
+        case .unauthorized: "The server rejected the token. Check it in Settings."
+        case .authRequired: "Log in with MitID to continue."
+        case .upstream(let m): "Aula didn't answer properly" + (m.map { ": \($0)" } ?? ".")
+        case .http(let code, let m): m ?? "The server answered with HTTP \(code)."
+        case .notFound: "Not found on the server. It may have been deleted."
+        case .badURL: "The server URL is not valid. Check it in Settings."
+        case .transport(let m): "Can't reach the server. \(m)"
+        case .decoding(let m): "Unexpected answer from the server. \(m)"
+        }
+    }
+}
+
+// MARK: - Client
+
+struct APIClient: Sendable {
+    var baseURL: String
+    var token: String
+
+    private static let session: URLSession = {
+        let config = URLSessionConfiguration.default
+        config.timeoutIntervalForRequest = 30
+        config.waitsForConnectivity = false
+        return URLSession(configuration: config)
+    }()
+
+    func authStatus() async throws -> AuthStatus { try await send("GET", "/auth/status") }
+    func login() async throws -> AuthStatus { try await send("POST", "/auth/login") }
+    func today() async throws -> Today { try await send("GET", "/today") }
+    func pickupOptions(child: Int) async throws -> PickupOptions { try await send("GET", "/children/\(child)/pickup") }
+    func setPickup(child: Int, _ update: PickupUpdate) async throws -> Child {
+        try await send("PUT", "/children/\(child)/pickup", body: update)
+    }
+    func reportSick(child: Int) async throws -> Child { try await send("POST", "/children/\(child)/sick") }
+    func undoSick(child: Int) async throws -> Child { try await send("DELETE", "/children/\(child)/sick") }
+    func setSaved(post: Int, _ saved: Bool) async throws -> Bool {
+        let r: SavedResponse = try await send(saved ? "POST" : "DELETE", "/posts/\(post)/save")
+        return r.saved
+    }
+
+    func threads() async throws -> [ThreadSummary] { try await send("GET", "/threads") }
+    func thread(_ id: String) async throws -> MessageThread { try await send("GET", "/threads/\(id.urlPathEscaped)") }
+    func reply(thread id: String, _ request: ReplyRequest) async throws -> ReplyResponse {
+        try await send("POST", "/threads/\(id.urlPathEscaped)/reply", body: request)
+    }
+
+    /// Downloads an attachment into a fresh temp directory, named after `name`.
+    func download(_ attachment: Attachment) async throws -> URL {
+        let request = try makeRequest("GET", "/attachments/\(attachment.id.urlPathEscaped)")
+        let (tmp, response) = try await perform { try await Self.session.download(for: request) }
+        try check(response, data: (try? Data(contentsOf: tmp)) ?? Data())
+        let dir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("attachments", isDirectory: true)
+            .appendingPathComponent(UUID().uuidString, isDirectory: true)
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        var name = attachment.name
+            .replacingOccurrences(of: "/", with: "-")
+            .replacingOccurrences(of: ":", with: "-")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        if name.isEmpty || name.hasPrefix(".") { name = "attachment" + name }
+        // QuickLook needs an extension to pick a previewer.
+        if (name as NSString).pathExtension.isEmpty,
+           let ext = (response.suggestedFilename as NSString?)?.pathExtension, !ext.isEmpty {
+            name += "." + ext
+        }
+        let dest = dir.appendingPathComponent(name)
+        try FileManager.default.moveItem(at: tmp, to: dest)
+        return dest
+    }
+
+    // MARK: plumbing
+
+    private func makeRequest(_ method: String, _ path: String) throws -> URLRequest {
+        var base = baseURL.trimmingCharacters(in: .whitespacesAndNewlines)
+        while base.hasSuffix("/") { base.removeLast() }
+        guard let url = URL(string: base + path), url.scheme == "http" || url.scheme == "https" else { throw APIError.badURL }
+        var r = URLRequest(url: url)
+        r.httpMethod = method
+        r.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        r.setValue("application/json", forHTTPHeaderField: "Accept")
+        return r
+    }
+
+    private func send<T: Decodable>(_ method: String, _ path: String) async throws -> T {
+        try await send(method, path, bodyData: nil)
+    }
+
+    private func send<T: Decodable, B: Encodable>(_ method: String, _ path: String, body: B) async throws -> T {
+        try await send(method, path, bodyData: try JSONEncoder().encode(body))
+    }
+
+    private func send<T: Decodable>(_ method: String, _ path: String, bodyData: Data?) async throws -> T {
+        var request = try makeRequest(method, path)
+        if let bodyData {
+            request.httpBody = bodyData
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        }
+        let (data, response) = try await perform { try await Self.session.data(for: request) }
+        try check(response, data: data)
+        do {
+            return try JSONDecoder().decode(T.self, from: data)
+        } catch {
+            throw APIError.decoding(String(describing: error))
+        }
+    }
+
+    private func perform<R>(_ op: () async throws -> R) async throws -> R {
+        do { return try await op() }
+        catch let e as URLError where e.code == .cancelled { throw CancellationError() }
+        catch let e as URLError { throw APIError.transport(e.localizedDescription) }
+    }
+
+    private func check(_ response: URLResponse, data: Data) throws {
+        guard let http = response as? HTTPURLResponse else { throw APIError.transport("No HTTP response.") }
+        guard !(200..<300).contains(http.statusCode) else { return }
+        let env = try? JSONDecoder().decode(ErrorEnvelope.self, from: data)
+        switch (http.statusCode, env?.error) {
+        case (401, _): throw APIError.unauthorized
+        case (503, "auth_required"): throw APIError.authRequired
+        case (404, _): throw APIError.notFound
+        case (502, _): throw APIError.upstream(env?.message)
+        default: throw APIError.http(http.statusCode, env?.message ?? env?.error)
+        }
+    }
+}
+
+private extension String {
+    var urlPathEscaped: String {
+        addingPercentEncoding(withAllowedCharacters: .urlPathAllowed.subtracting(CharacterSet(charactersIn: "/"))) ?? self
+    }
+}
+
+// MARK: - Formatting helpers
+
+enum Fmt {
+    static let posix = Locale(identifier: "en_US_POSIX")
+    static let display = Locale(identifier: "en_GB")
+
+    static func day(_ ymd: String) -> Date? {
+        let f = DateFormatter()
+        f.locale = posix
+        f.calendar = Calendar(identifier: .gregorian)
+        f.dateFormat = "yyyy-MM-dd"
+        return f.date(from: ymd)
+    }
+
+    static func timestamp(_ s: String) -> Date? {
+        let a = ISO8601DateFormatter()
+        a.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        if let d = a.date(from: s) { return d }
+        a.formatOptions = [.withInternetDateTime]
+        return a.date(from: s)
+    }
+
+    static func format(_ date: Date, _ pattern: String) -> String {
+        let f = DateFormatter()
+        f.locale = display
+        f.setLocalizedDateFormatFromTemplate(pattern)
+        return f.string(from: date)
+    }
+
+    /// "HH:mm" → minutes since midnight.
+    static func minutes(_ hhmm: String?) -> Int? {
+        guard let hhmm else { return nil }
+        let parts = hhmm.split(separator: ":")
+        guard parts.count >= 2, let h = Int(parts[0]), let m = Int(parts[1]) else { return nil }
+        return h * 60 + m
+    }
+
+    /// Inbox style: time today, "Yesterday", weekday within a week, else "6 Nov" (with the year if it differs).
+    static func relative(_ date: Date, now: Date = Date()) -> String {
+        let cal = Calendar.current
+        if cal.isDate(date, inSameDayAs: now) { return format(date, "HHmm") }
+        if cal.isDateInYesterday(date) { return "Yesterday" }
+        let days = cal.dateComponents([.day], from: cal.startOfDay(for: date), to: cal.startOfDay(for: now)).day ?? 0
+        if days > 0 && days < 7 { return format(date, "EEE") }
+        if cal.component(.year, from: date) != cal.component(.year, from: now) { return format(date, "dMMMyyyy") }
+        return format(date, "dMMM")
+    }
+
+    /// Thread style: the relative day plus the time, e.g. "Yesterday 18:45" or just "13:06" today.
+    static func messageTime(_ date: Date, now: Date = Date()) -> String {
+        let day = relative(date, now: now)
+        return Calendar.current.isDate(date, inSameDayAs: now) ? day : "\(day) \(format(date, "HHmm"))"
+    }
+
+    static func hhmm(_ minutes: Int) -> String { String(format: "%02d:%02d", minutes / 60, minutes % 60) }
+}
