@@ -4,42 +4,32 @@ import Security
 // Compiled into both the app and the widget: settings, the token, the child shape and a `/today` fetch.
 
 enum Shared {
-    static let appGroup = "group.app.sala.ios"
     static let defaultServerURL = "http://localhost:8000"
-    static var defaults: UserDefaults { UserDefaults(suiteName: appGroup) ?? .standard }
 
     private static let urlKey = "serverURL"
     private static let snapshotKey = "todaySnapshot"
 
     static var serverURL: String {
-        let v = defaults.string(forKey: urlKey)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let v = Keychain.string(urlKey)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         return v.isEmpty ? defaultServerURL : v
     }
 
-    static func setServerURL(_ url: String) { defaults.set(url, forKey: urlKey) }
+    static func setServerURL(_ url: String) { Keychain.write(Data(url.utf8), urlKey) }
 
     static var token: String { Keychain.read() ?? "" }
-
-    /// Before the app group, the URL was in the app's own defaults: copy it over once.
-    static func migrate() {
-        if defaults.string(forKey: urlKey) == nil, let old = UserDefaults.standard.string(forKey: urlKey) {
-            setServerURL(old)
-        }
-        Keychain.migrate()
-    }
 
     // MARK: Snapshot (the last good `/today` children, for the widget to fall back on)
 
     static var snapshot: TodaySnapshot? {
-        defaults.data(forKey: snapshotKey).flatMap { try? JSONDecoder().decode(TodaySnapshot.self, from: $0) }
+        Keychain.data(snapshotKey).flatMap { try? JSONDecoder().decode(TodaySnapshot.self, from: $0) }
     }
 
     /// Only the app writes it, so there's one writer.
     static func saveSnapshot(_ s: TodaySnapshot) {
-        if let data = try? JSONEncoder().encode(s) { defaults.set(data, forKey: snapshotKey) }
+        if let data = try? JSONEncoder().encode(s) { Keychain.write(data, snapshotKey) }
     }
 
-    static func clearSnapshot() { defaults.removeObject(forKey: snapshotKey) }
+    static func clearSnapshot() { Keychain.delete(snapshotKey) }
 
     // MARK: Fetch
 
@@ -106,37 +96,41 @@ struct Pickup: Codable, Sendable, Equatable {
     var by: String?
 }
 
-// MARK: - Keychain (shared through the app group as access group)
+// MARK: - Keychain (shared by the app and the widget through a keychain access group)
 
+/// Holds the token, the server URL and the snapshot. A keychain access group instead of an app group,
+/// because a personal (free) team can't register app groups.
 enum Keychain {
-    private static let service = "app.sala.ios"
-    private static let account = "token"
+    private static let service = "com.example.sala"
+    private static let tokenKey = "token"
+    /// `$(AppIdentifierPrefix)com.example.sala`, from Info.plist, since the prefix is the signing team's ID.
+    private static let group = Bundle.main.object(forInfoDictionaryKey: "SalaKeychainGroup") as? String ?? ""
 
     /// Every query names the group: one without it matches the items of every group the process can see.
-    private static var base: [String: Any] {
+    private static func base(_ account: String) -> [String: Any] {
         [kSecClass as String: kSecClassGenericPassword,
          kSecAttrService as String: service,
          kSecAttrAccount as String: account,
-         kSecAttrAccessGroup as String: Shared.appGroup]
+         kSecAttrAccessGroup as String: group]
     }
 
-    static func read() -> String? {
-        var q = base
+    static func data(_ account: String) -> Data? {
+        var q = base(account)
         q[kSecReturnData as String] = true
         q[kSecMatchLimit as String] = kSecMatchLimitOne
         var out: CFTypeRef?
         let s = SecItemCopyMatching(q as CFDictionary, &out)
         if s != errSecSuccess, s != errSecItemNotFound { print("Keychain read failed: \(s)") }
-        guard s == errSecSuccess, let data = out as? Data else { return nil }
-        return String(data: data, encoding: .utf8)
+        return s == errSecSuccess ? out as? Data : nil
     }
 
+    static func string(_ account: String) -> String? { data(account).flatMap { String(data: $0, encoding: .utf8) } }
+
     @discardableResult
-    static func write(_ value: String) -> Bool {
-        let data = Data(value.utf8)
-        let status = SecItemUpdate(base as CFDictionary, [kSecValueData as String: data] as CFDictionary)
+    static func write(_ data: Data, _ account: String) -> Bool {
+        let status = SecItemUpdate(base(account) as CFDictionary, [kSecValueData as String: data] as CFDictionary)
         if status == errSecSuccess { return true }
-        var add = base
+        var add = base(account)
         add[kSecValueData as String] = data
         add[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlock
         let s = SecItemAdd(add as CFDictionary, nil)
@@ -144,29 +138,10 @@ enum Keychain {
         return s == errSecSuccess
     }
 
-    static func delete() { SecItemDelete(base as CFDictionary) }
+    static func delete(_ account: String) { SecItemDelete(base(account) as CFDictionary) }
 
-    /// Moves the token stored before the app group (in the app's default access group) into the shared group.
-    static func migrate() {
-        guard read() == nil else { return }
-        let q: [String: Any] = [kSecClass as String: kSecClassGenericPassword,
-                                kSecAttrService as String: service,
-                                kSecAttrAccount as String: account,
-                                kSecReturnData as String: true,
-                                kSecReturnAttributes as String: true,
-                                kSecMatchLimit as String: kSecMatchLimitOne]
-        var out: CFTypeRef?
-        guard SecItemCopyMatching(q as CFDictionary, &out) == errSecSuccess,
-              let item = out as? [String: Any],
-              let data = item[kSecValueData as String] as? Data,
-              let oldGroup = item[kSecAttrAccessGroup as String] as? String,
-              oldGroup != Shared.appGroup,
-              let token = String(data: data, encoding: .utf8),
-              write(token) else { return }
-        SecItemDelete([kSecClass as String: kSecClassGenericPassword,
-                       kSecAttrService as String: service,
-                       kSecAttrAccount as String: account,
-                       kSecAttrAccessGroup as String: oldGroup] as CFDictionary)
-        print("Keychain: moved the token from \(oldGroup) to \(Shared.appGroup)")
-    }
+    // The token.
+    static func read() -> String? { string(tokenKey) }
+    @discardableResult static func write(_ token: String) -> Bool { write(Data(token.utf8), tokenKey) }
+    static func delete() { delete(tokenKey) }
 }

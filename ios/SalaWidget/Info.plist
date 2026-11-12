@@ -32,5 +32,7 @@
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.widgetkit-extension</string>
 	</dict>
+	<key>SalaKeychainGroup</key>
+	<string>$(AppIdentifierPrefix)com.example.sala</string>
 </dict>
 </plist>

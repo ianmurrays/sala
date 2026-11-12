@@ -80,7 +80,6 @@ final class Store {
 
 
     init() {
-        Shared.migrate()
         let overrideToken = Config.applyLaunchOverrides()
         serverURL = Config.serverURL
         // Keep a launch-argument token in memory too, in case the Keychain write failed.
@@ -628,7 +627,7 @@ struct Paging: Equatable {
     }
 }
 
-// MARK: - Config (app-group UserDefaults + Keychain + launch overrides, see Shared/SalaShared.swift)
+// MARK: - Config (Keychain + launch overrides, see Shared/SalaShared.swift)
 
 enum Config {
     static var serverURL: String { Shared.serverURL }
