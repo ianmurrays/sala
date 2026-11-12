@@ -17,6 +17,7 @@ Rules:
 import asyncio
 import inspect
 import logging
+import os
 from collections.abc import Awaitable, Callable
 from datetime import datetime
 from pathlib import Path
@@ -26,7 +27,9 @@ import httpx
 from aula import AulaApiClient, FileTokenStorage
 from aula.auth_flow import authenticate, create_client
 from aula.http import HttpRequestError
+from aula.http_httpx import HttpxHttpClient
 
+from . import debuglog
 from .fake import FAKE_OTP, FAKE_TOKEN_DATA, FakeAula
 from .mapping import TZ, auth_error
 
@@ -178,7 +181,7 @@ class SessionManager:
                         auth_method="app",
                     )
                 try:
-                    client = await create_client(token_data, token_storage=self.storage)
+                    client = await self._new_client(token_data)
                 except Exception as e:  # noqa: BLE001
                     # MitID worked and the tokens are stored; the client is
                     # built lazily from them on the next call (_connect).
@@ -199,6 +202,12 @@ class SessionManager:
             await old.close()
         self._logged_in()
         _LOGGER.info("Aula login complete")
+
+    async def _new_client(self, token_data: dict):
+        http = HttpxHttpClient(cookies=token_data.get("cookies") or {})
+        if os.environ.get("SALA_DEBUG_SHAPES") == "1":
+            debuglog.attach(http._client)
+        return await create_client(token_data, http_client=http, token_storage=self.storage)
 
     def _logged_in(self) -> None:
         self._loss_notified = False
@@ -253,7 +262,7 @@ class SessionManager:
                 await self._lost("No stored Aula session")
                 raise AuthRequired
             try:
-                self.client = await create_client(token_data, token_storage=self.storage)
+                self.client = await self._new_client(token_data)
             except ValueError as e:
                 await self._lost(f"Stored session unusable: {e}")
                 raise AuthRequired from e

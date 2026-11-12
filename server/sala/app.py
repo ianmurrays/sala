@@ -112,6 +112,20 @@ app = FastAPI(
 )
 
 
+@app.middleware("http")
+async def read_only(request: Request, call_next):
+    """SALA_READ_ONLY=1 blocks every write to Aula (pickup, sick, save, reply), for debugging live."""
+    if (
+        os.environ.get("SALA_READ_ONLY") == "1"
+        and request.method in ("PUT", "POST", "DELETE")
+        and not request.url.path.startswith(("/auth/", "/debug/"))
+    ):
+        return JSONResponse(
+            {"error": "read_only", "message": "Read-only mode: nothing was sent to Aula."}, status_code=403
+        )
+    return await call_next(request)
+
+
 @app.exception_handler(ApiError)
 async def _api_error(request: Request, exc: ApiError):
     return _err(exc.status, exc.error, exc.message)

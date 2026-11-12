@@ -37,6 +37,16 @@ With `NTFY_TOPIC` set, a background poller checks Aula every `POLL_SECONDS` (onl
 
 A message counts as direct when the thread's participants, read from the `messaging.getThreads` row the way the portal does (`recipients` without those who left and without my own mailbox, plus `extraRecipientsCount`, plus the creator and the latest sender), minus my own profiles, are exactly one person, and that person sent the newest message. Threads that include the other parent are therefore not direct.
 
+## Debugging against live Aula
+
+- `SALA_DEBUG_SHAPES=1` logs one line per Aula API call: method, status and the JSON reduced to its shape. Strings become `str[n]`, URLs keep only their host, and dates plus a few enum keys (`status`, `type`, `activityType`, ...) stay readable. Names and message text never reach the log. Writes log their payload shape too (`aula →`).
+- `SALA_READ_ONLY=1` answers every write route (pickup, sick, save, reply) with 403 `read_only`, so nothing reaches the daycare. Opening a thread still marks it read in Aula.
+
+```
+SALA_TOKEN=... AULA_USERNAME=... SALA_DEBUG_SHAPES=1 SALA_READ_ONLY=1 \
+  uv run uvicorn sala.app:app --host 0.0.0.0 --port 8000 2>&1 | tee data/sala.log
+```
+
 ## Fake mode
 
 ```sh
