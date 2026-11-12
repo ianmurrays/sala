@@ -14,7 +14,7 @@ import httpx
 from fastapi import Depends, FastAPI, Query, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
-from pydantic import BaseModel
+from pydantic import BaseModel, StrictBool
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from aula.http import HttpRequestError
@@ -62,6 +62,7 @@ async def lifespan(app: FastAPI):
     fake = os.environ.get("SALA_FAKE") == "1"
     app.state.token = token
     app.state.store = Store(data_dir / "sala.sqlite3")
+    app.state.thread_rows = {}  # thread id -> last listed getThreads row (for PATCH /threads/{id})
     app.state.session = SessionManager(
         data_dir,
         os.environ.get("AULA_USERNAME"),
@@ -114,10 +115,11 @@ app = FastAPI(
 
 @app.middleware("http")
 async def read_only(request: Request, call_next):
-    """SALA_READ_ONLY=1 blocks every write to Aula (pickup, sick, save, reply, holidays, absences), for debugging live."""
+    """SALA_READ_ONLY=1 blocks every write to Aula (pickup, sick, save, reply, holidays, absences,
+    thread and folder changes), for debugging live."""
     if (
         os.environ.get("SALA_READ_ONLY") == "1"
-        and request.method in ("PUT", "POST", "DELETE")
+        and request.method in ("PUT", "POST", "PATCH", "DELETE")
         and not request.url.path.startswith(("/auth/", "/debug/"))
     ):
         return JSONResponse(
@@ -394,9 +396,34 @@ async def attachment(att_id: str, s: SessionManager = Depends(session), st: Stor
 # --- messages ----------------------------------------------------------------
 
 
+def thread_rows(request: Request) -> dict[str, dict]:
+    return request.app.state.thread_rows
+
+
 @app.get("/threads")
-async def list_threads(page: int = Query(0, ge=0, le=100), s: SessionManager = Depends(session)):
-    return await s.call(lambda client: m.threads(client, page))
+async def list_threads(
+    request: Request,
+    page: int = Query(0, ge=0, le=100),
+    folder: int | None = Query(None, ge=1),
+    s: SessionManager = Depends(session),
+):
+    return await s.call(lambda client: m.threads(client, page, folder, seen=thread_rows(request)))
+
+
+class ThreadPatchIn(BaseModel):
+    muted: StrictBool = False
+    starred: StrictBool = False
+    folderId: int | None = None
+
+
+@app.patch("/threads/{thread_id}")
+async def patch_thread(thread_id: str, body: ThreadPatchIn, request: Request, s: SessionManager = Depends(session)):
+    if not thread_id.isdigit():
+        raise ApiError(404, "not_found")
+    changes = {k: getattr(body, k) for k in ("muted", "starred", "folderId") if k in body.model_fields_set}
+    if not changes:
+        raise ApiError(400, "bad_request", "nothing to change")
+    return await s.call(lambda client: m.update_thread(client, thread_rows(request), thread_id, changes))
 
 
 @app.get("/threads/{thread_id}")
@@ -432,6 +459,36 @@ async def reply(thread_id: str, body: ReplyIn, s: SessionManager = Depends(sessi
 
     new_id = await s.call(run)
     return {"ok": True, "threadId": new_id}
+
+
+# --- folders -----------------------------------------------------------------
+
+
+class FolderIn(BaseModel):
+    name: str
+
+
+@app.get("/folders")
+async def list_folders(s: SessionManager = Depends(session)):
+    return await s.call(m.folders)
+
+
+@app.post("/folders")
+async def create_folder(body: FolderIn, s: SessionManager = Depends(session)):
+    m.folder_name(body.name)  # 400 before touching Aula
+    return await s.call(lambda client: m.create_folder(client, body.name))
+
+
+@app.patch("/folders/{folder_id}")
+async def rename_folder(folder_id: int, body: FolderIn, s: SessionManager = Depends(session)):
+    m.folder_name(body.name)
+    return await s.call(lambda client: m.rename_folder(client, folder_id, body.name))
+
+
+@app.delete("/folders/{folder_id}")
+async def delete_folder(folder_id: int, s: SessionManager = Depends(session)):
+    await s.call(lambda client: m.delete_folder(client, folder_id))
+    return {"ok": True}
 
 
 # --- fake-mode helpers (push testing) ---------------------------------------

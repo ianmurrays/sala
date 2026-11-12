@@ -34,11 +34,23 @@ final class Store {
     var authError: String?
 
     // Messages
+    /// The threads of the shown folder (`folder`), or the inbox.
     var threads: [ThreadSummary]?
-    /// Set when the last `/threads` load failed; shown inline in the inbox.
+    /// Set when the last `/threads` load or thread change failed; shown inline in the list.
     var threadsError: String?
-    private(set) var isLoadingThreads = false
-    var unreadThreadCount: Int { threads?.filter(\.unread).count ?? 0 }
+    /// The folder whose `/threads` load is in flight (`.some(nil)` = the inbox); nil when none is.
+    private var loadingThreadsFolder: Int?? = nil
+    /// The shown folder; nil = the inbox.
+    private(set) var folder: Int?
+    private(set) var folders: [Folder] = []
+    /// The inbox's unread threads while a folder is shown, so the tab badge keeps counting the inbox.
+    private var inboxUnread: Set<String> = []
+    var unreadThreadCount: Int { folder == nil ? threads?.filter(\.unread).count ?? 0 : inboxUnread.count }
+    /// Like `childChanges`: each thread id maps to `mutations` at its last local change, so a list load
+    /// that started earlier keeps the local row. `movedOut` are those that left the shown list.
+    private var threadChanges: [String: Int] = [:]
+    private var movedOut: Set<String> = []
+    var folderName: String? { folder.flatMap { id in folders.first { $0.id == id }?.name } }
     /// Paging after the first `/threads` page.
     private(set) var moreThreads = Paging(next: 1)
 
@@ -106,7 +118,10 @@ final class Store {
             morePosts.reset(next: 2)
             phase = .ready
             // Keeps the Messages tab badge current without holding up Today.
-            Task { await loadThreads() }
+            Task {
+                await loadThreads()
+                await refreshInboxUnread()
+            }
         case .failure(let error as CancellationError):
             _ = error
             if phase == .loading { phase = previous == .loading ? .failed("The request was cancelled.") : previous }
@@ -144,13 +159,17 @@ final class Store {
     /// Loads the first page. `reset` (pull to refresh) drops the later pages; otherwise they stay after it,
     /// so going back from a thread or refreshing Today keeps the inbox where it was.
     func loadThreads(reset: Bool = false) async {
-        guard !isLoadingThreads else { return }
-        isLoadingThreads = true
-        defer { isLoadingThreads = false }
+        let f = folder
+        guard loadingThreadsFolder != .some(f) else { return }
+        loadingThreadsFolder = .some(f)
+        defer { if loadingThreadsFolder == .some(f) { loadingThreadsFolder = nil } }
         let c = client
-        let result = await Task { try await c.threads() }.result
+        let startedAt = mutations
+        let result = await Task { try await c.threads(folder: f) }.result
+        guard folder == f else { return }  // switched folders meanwhile
         switch result {
-        case .success(let t):
+        case .success(let rows):
+            let t = keepLocal(rows, since: startedAt)
             if reset || threads == nil {
                 threads = t
                 moreThreads.reset(next: 1)
@@ -168,12 +187,14 @@ final class Store {
     func loadMoreThreads() async {
         guard threads != nil, let (page, epoch) = moreThreads.begin() else { return }
         let c = client
-        let result = await Task { try await c.threads(page: page) }.result
+        let f = folder
+        let startedAt = mutations
+        let result = await Task { try await c.threads(page: page, folder: f) }.result
         guard moreThreads.epoch == epoch else { return }  // refreshed meanwhile
         switch result {
         case .success(let rows):
             let ids = Set(threads?.map(\.id) ?? [])
-            let new = rows.filter { !ids.contains($0.id) }
+            let new = keepLocal(rows, since: startedAt).filter { !ids.contains($0.id) }
             threads?.append(contentsOf: new)
             moreThreads.finish(page: page, added: new.count)
         case .failure(let error):
@@ -181,14 +202,138 @@ final class Store {
         }
     }
 
+    /// Rows from a load that started at `startedAt`, with the local row for threads changed since
+    /// and without those moved out of the shown list since.
+    private func keepLocal(_ rows: [ThreadSummary], since startedAt: Int) -> [ThreadSummary] {
+        rows.compactMap { r in
+            guard threadChanges[r.id, default: 0] > startedAt else { return r }
+            return movedOut.contains(r.id) ? nil : threads?.first { $0.id == r.id } ?? r
+        }
+    }
+
+    /// While a folder is shown, re-reads the inbox's first page for the tab badge.
+    private func refreshInboxUnread() async {
+        guard folder != nil, let rows = try? await client.threads(), folder != nil else { return }
+        inboxUnread = Set(rows.filter(\.unread).map(\.id))
+    }
+
     func retryMoreThreads() async {
         moreThreads.error = nil
         await loadMoreThreads()
     }
 
+    /// Shows a folder (nil = the inbox), starting again from its first page.
+    func selectFolder(_ id: Int?) async {
+        guard id != folder else { return }
+        if folder == nil { inboxUnread = Set(threads?.filter(\.unread).map(\.id) ?? []) }
+        folder = id
+        threads = nil
+        threadsError = nil
+        moreThreads.reset(next: 1)
+        await loadThreads(reset: true)
+    }
+
+    func loadFolders() async {
+        do {
+            folders = try await client.folders()
+        } catch {
+            handle(error)  // the menu keeps the folders it had
+        }
+    }
+
+    func createFolder(name: String) async throws -> Folder {
+        let f = try await routed { try await client.createFolder(name: name) }
+        folders.append(f)
+        return f
+    }
+
+    func renameFolder(_ id: Int, name: String) async throws {
+        let f = try await routed { try await client.renameFolder(id, name: name) }
+        if let i = folders.firstIndex(where: { $0.id == id }) { folders[i] = f }
+    }
+
+    /// Aula deletes the folder's messages with it.
+    func deleteFolder(_ id: Int) async throws {
+        try await routed { try await client.deleteFolder(id) }
+        folders.removeAll { $0.id == id }
+        if folder == id { await selectFolder(nil) }
+    }
+
+    func setMuted(_ id: String, _ muted: Bool) async {
+        await updateThread(id, ThreadPatch(muted: muted)) { $0.muted = muted }
+    }
+
+    func setStarred(_ id: String, _ starred: Bool) async {
+        await updateThread(id, ThreadPatch(starred: starred)) { $0.starred = starred }
+    }
+
+    /// nil moves the thread back to the inbox.
+    func move(_ id: String, to folderID: Int?) async {
+        await updateThread(id, ThreadPatch(folderId: .some(folderID))) { $0.folderId = folderID }
+    }
+
+    /// Optimistic: the row changes (or leaves the shown folder) at once, and only the changed
+    /// fields go back if the server refuses, so overlapping changes to one row don't undo each other.
+    private func updateThread(_ id: String, _ patch: ThreadPatch, apply: (inout ThreadSummary) -> Void) async {
+        guard let i = threads?.firstIndex(where: { $0.id == id }), let old = threads?[i] else { return }
+        var new = old
+        apply(&new)
+        let shown = folder
+        let leaves = patch.folderId != nil && new.folderId != shown
+        markThread(id, movedOut: leaves)
+        if leaves { threads?.remove(at: i) } else { threads?[i] = new }
+        do {
+            _ = try await client.updateThread(id, patch)
+            if folder != shown {
+                // Moved into the folder now shown: list it.
+                if patch.folderId != nil, folder == new.folderId, threads?.contains(where: { $0.id == id }) == false {
+                    await loadThreads()
+                }
+            } else if leaves {
+                // Aula pages by offset, so the next page would skip a thread: merge page 0 again and
+                // continue from page 1; the id dedupe absorbs the overlap.
+                await loadThreads()
+                moreThreads.reset(next: 1)
+            }
+        } catch {
+            markThread(id, movedOut: false)
+            if folder == shown {
+                if let j = threads?.firstIndex(where: { $0.id == id }) {
+                    if patch.muted != nil { threads?[j].muted = old.muted }
+                    if patch.starred != nil { threads?[j].starred = old.starred }
+                    if patch.folderId != nil { threads?[j].folderId = old.folderId }
+                } else if leaves, let count = threads?.count {
+                    threads?.insert(old, at: min(i, count))
+                }
+            }
+            if let msg = handle(error) { threadsError = "Couldn't update the thread. \(msg)" }
+        }
+    }
+
+    private func markThread(_ id: String, movedOut out: Bool) {
+        mutations += 1
+        threadChanges[id] = mutations
+        if out { movedOut.insert(id) } else { movedOut.remove(id) }
+    }
+
+    /// Runs a request, sending a login or token problem to its screen before rethrowing it.
+    private func routed<T>(_ op: () async throws -> T) async throws -> T {
+        do {
+            return try await op()
+        } catch {
+            if case APIError.authRequired = error { handle(error) }
+            if case APIError.unauthorized = error { handle(error) }
+            throw error
+        }
+    }
+
     /// The server marks a thread read when it's fetched; mirror that locally.
+    /// A thread that isn't in the shown folder (say one opened from a push) still leaves the inbox badge.
     func markThreadRead(_ id: String) {
-        guard let i = threads?.firstIndex(where: { $0.id == id }), threads?[i].unread == true else { return }
+        guard let i = threads?.firstIndex(where: { $0.id == id }) else {
+            inboxUnread.remove(id)
+            return
+        }
         threads?[i].unread = false
     }
 

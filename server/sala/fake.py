@@ -164,6 +164,12 @@ class FakeAula:
         self.overrides: dict[str, dict] = {}  # byDate -> day template
         self.posts = self._posts(now)
         self.threads, self.messages = self._threads(now)
+        # messaging.getFolders: two of the user's own folders and Aula's own "deleted" folder.
+        self.folders: dict[int, dict] = {
+            70: {"id": 70, "name": "Slettet post", "type": "deleted"},
+            71: {"id": 71, "name": "Skole", "type": "normal"},
+            72: {"id": 72, "name": "Gemt", "type": "normal"},
+        }
         self.vacations = self._vacations(today)
         # responseId -> one child's answer (presence.getVacationRegistrationResponse)
         self.vacation_responses: dict[int, dict] = {
@@ -693,6 +699,10 @@ class FakeAula:
                 ("m9105-1", METTE, "<p>Oskar har haft en god dag og sovet 1,5 time.</p>", h(23)),
                 ("m9105-2", ME, "<p>Dejligt, tak for besked!</p>", h(22)),
             ]),
+            # In the folder "Skole" (71), not the inbox.
+            (9106, "Skolestart til august", [ME, MARIA, ANNE], True, False, False, [
+                ("m9106-1", ANNE, "<p>Information om skolestart for de ældste børn.</p>", h(90)),
+            ]),
         ]
         # Older, read threads so the app can page through (/threads?page=N): 45 threads in all.
         staff = [ANNE, METTE, KASPER]
@@ -725,9 +735,20 @@ class FakeAula:
                 "creator": msgs[0][1],
                 "recipients": [{**r, "leaveTime": None} for r in recipients],
                 "lastReadMessageId": built[-1]["id"] if read else None,
+                **self._subscription(tid, 71 if tid == 9106 else None),
             }
             self._refresh_latest(tid)
         return threads, messages
+
+    @staticmethod
+    def _subscription(tid: int, folder_id: int | None = None) -> dict:
+        # A subscription id unlike the thread id, so a write naming the wrong one shows.
+        return {"subscriptionId": tid + 500000, "subscriptionType": "Unbundled", "folderId": folder_id, "folderType": "normal"}
+
+    def _by_subscription(self, body: dict) -> list[dict]:
+        sids = set(body.get("subscriptionIds") or [])
+        tids = {int(t) for t in body.get("threadIds") or []}
+        return [t for t in self.threads.values() if t["subscriptionId"] in sids or t["id"] in tids]
 
     def _refresh_latest(self, tid: int) -> None:
         latest = self.messages[tid][0]
@@ -735,7 +756,10 @@ class FakeAula:
         self.threads[tid]["lastUpdatedDate"] = latest["sendDateTime"]
 
     def _messaging_getThreads(self, q, body):
-        threads = sorted(self.threads.values(), key=lambda t: t["lastUpdatedDate"], reverse=True)
+        folder = int(q["folderId"]) if q.get("folderId") else None  # no folderId = the inbox
+        threads = sorted(
+            (t for t in self.threads.values() if t["folderId"] == folder), key=lambda t: t["lastUpdatedDate"], reverse=True
+        )
         page = int(q.get("page", 0))
         rows = threads[page * THREADS_PAGE_SIZE : (page + 1) * THREADS_PAGE_SIZE]
         return _ok({"threads": rows, "moreMessagesExist": (page + 1) * THREADS_PAGE_SIZE < len(threads)})
@@ -786,6 +810,41 @@ class FakeAula:
         self._refresh_latest(tid)
         return _ok([msg])
 
+    def _messaging_setThreadsMuted(self, q, body):
+        for t in self._by_subscription(body):
+            t["muted"] = body["muted"]
+        return _ok(None)
+
+    def _messaging_setThreadsMarked(self, q, body):
+        for t in self._by_subscription(body):
+            t["marked"] = body["marked"]
+        return _ok(None)
+
+    def _messaging_moveThreadsToFolder(self, q, body):
+        for t in self._by_subscription(body):
+            t["folderId"] = body["folderId"]
+        return _ok(None)
+
+    def _messaging_getFolders(self, q, body):
+        return _ok(list(self.folders.values()))
+
+    def _messaging_createFolder(self, q, body):
+        fid = 80 + next(self._ids)
+        self.folders[fid] = {"id": fid, "name": body["folderName"], "type": "normal"}
+        return _ok(None)
+
+    def _messaging_updateFolder(self, q, body):
+        self.folders[int(body["folderId"])]["name"] = body["folderName"]
+        return _ok(None)
+
+    def _messaging_deleteFolder(self, q, body):
+        """Aula's confirm text: the messages in the folder are deleted with it."""
+        fid = int(body["folderId"])
+        del self.folders[fid]
+        for tid in [t["id"] for t in self.threads.values() if t["folderId"] == fid]:
+            del self.threads[tid], self.messages[tid]
+        return _ok(None)
+
     def _messaging_startNewThread(self, q, body):
         tid = 9200 + next(self._ids)
         msg = self._msg(f"m{tid}-1", ME, body["message"]["text"], _now())
@@ -806,6 +865,7 @@ class FakeAula:
             "recipients": [{**ME, "leaveTime": None}]
             + [{**by_id.get(r["id"], r), "leaveTime": None} for r in body["recipients"]],
             "lastReadMessageId": msg["id"],
+            **self._subscription(tid),
         }
         self._refresh_latest(tid)
         # Best reading of the portal: handleSendMessageResponse opens

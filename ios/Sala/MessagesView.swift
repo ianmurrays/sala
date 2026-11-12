@@ -3,25 +3,36 @@ import SwiftUI
 struct MessagesView: View {
     @Environment(Store.self) private var store
     @State private var path: [String] = []
+    @State private var moving: ThreadSummary?
+    @State private var managingFolders = false
 
     var body: some View {
         NavigationStack(path: $path) {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    header
-                    content
-                }
-                .padding(.horizontal, 16)
-                .padding(.bottom, 24)
+            // A List (not a ScrollView) for the swipe actions; inset grouped keeps the card look.
+            List {
+                header
+                    .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 0, trailing: 0))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                content
             }
+            .listStyle(.insetGrouped)
+            .listSectionSpacing(12)
+            .scrollContentBackground(.hidden)
             .background(Color.screen)
-            .refreshable { await store.loadThreads(reset: true) }
+            .refreshable {
+                await store.loadThreads(reset: true)
+                await store.loadFolders()
+            }
             // On the root (not the stack) so it re-runs when popping back from a thread.
             .task { await store.loadThreads() }
+            .task { await store.loadFolders() }
             .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: String.self) { id in
                 ThreadView(threadID: id)
             }
+            .sheet(item: $moving) { MoveToFolderSheet(thread: $0) }
+            .sheet(isPresented: $managingFolders) { ManageFoldersSheet() }
         }
         .onChange(of: store.pendingThreadID, initial: true) { openPendingThread() }
         .onChange(of: store.showSettings) { openPendingThread() }
@@ -37,41 +48,92 @@ struct MessagesView: View {
     }
 
     private var header: some View {
-        Text("Messages")
-            .font(.largeTitle.bold())
-            .accessibilityAddTraits(.isHeader)
-            .padding(.top, 8)
+        HStack(alignment: .firstTextBaseline) {
+            Text(store.folderName ?? "Messages")
+                .font(.largeTitle.bold())
+                .lineLimit(1)
+                .accessibilityAddTraits(.isHeader)
+            Spacer(minLength: 8)
+            folderMenu
+        }
+    }
+
+    private var folderMenu: some View {
+        Menu {
+            Picker("Folder", selection: Binding(
+                get: { store.folder },
+                set: { id in Task { await store.selectFolder(id) } }
+            )) {
+                Label("Inbox", systemImage: "tray").tag(Int?.none)
+                ForEach(store.folders) { f in
+                    Label(f.name, systemImage: "folder").tag(Int?.some(f.id))
+                }
+            }
+            Divider()
+            Button("Manage Folders", systemImage: "folder.badge.gearshape") { managingFolders = true }
+        } label: {
+            Image(systemName: store.folder == nil ? "tray" : "folder")
+                .font(.title3)
+                .frame(width: 30, height: 30)
+        }
+        .buttonStyle(.glass)
+        .accessibilityLabel("Folders")
     }
 
     @ViewBuilder private var content: some View {
         if let error = store.threadsError, store.threads != nil {
             BannerView(text: error) { store.threadsError = nil }
+                .plainRow()
         }
         if let threads = store.threads {
             if threads.isEmpty {
                 ContentUnavailableView {
-                    Label("No messages", systemImage: "tray")
+                    Label(store.folder == nil ? "No messages" : "Empty folder", systemImage: "tray")
                 } description: {
-                    Text("Messages from the institution show up here.")
+                    Text(store.folder == nil
+                         ? "Messages from the institution show up here."
+                         : "Swipe left on a message and tap Move to put it here.")
                 }
                 .padding(.top, 40)
+                .plainRow()
             } else {
-                // Lazy, so the last row appearing means it was scrolled to (keyed on the epoch, see TodayView).
-                LazyVStack(spacing: 0) {
+                Section {
+                    // Lazy, so the last row appearing means it was scrolled to (keyed on the epoch, see TodayView).
                     ForEach(Array(threads.enumerated()), id: \.element.id) { i, thread in
-                        if i > 0 { Divider().padding(.leading, 74) }
-                        NavigationLink(value: thread.id) {
+                        Button { path.append(thread.id) } label: {
                             ThreadRow(thread: thread)
                         }
                         .buttonStyle(.plain)
+                        .listRowInsets(EdgeInsets())
+                        .alignmentGuide(.listRowSeparatorLeading) { _ in 74 }
+                        .swipeActions(edge: .leading) {
+                            Button {
+                                Task { await store.setStarred(thread.id, !thread.starred) }
+                            } label: {
+                                Label(thread.starred ? "Unstar" : "Star", systemImage: thread.starred ? "star.slash" : "star.fill")
+                            }
+                            .tint(.orange)
+                        }
+                        .swipeActions(edge: .trailing) {
+                            Button { moving = thread } label: {
+                                Label("Move", systemImage: "folder")
+                            }
+                            .tint(.indigo)
+                            Button {
+                                Task { await store.setMuted(thread.id, !thread.muted) }
+                            } label: {
+                                Label(thread.muted ? "Unmute" : "Mute", systemImage: thread.muted ? "bell" : "bell.slash")
+                            }
+                            .tint(.gray)
+                        }
                         .task(id: store.moreThreads.epoch) {
                             if i == threads.count - 1 { await store.loadMoreThreads() }
                         }
                     }
                 }
-                .padding(.vertical, 4)
-                .background(Color.card, in: .rect(cornerRadius: 26, style: .continuous))
+                .listRowBackground(Color.card)
                 LoadMoreRow(paging: store.moreThreads) { await store.retryMoreThreads() }
+                    .plainRow()
             }
         } else if let error = store.threadsError {
             ContentUnavailableView {
@@ -83,11 +145,20 @@ struct MessagesView: View {
                     .buttonStyle(.glassProminent)
             }
             .padding(.top, 40)
+            .plainRow()
         } else {
             ProgressView()
                 .frame(maxWidth: .infinity)
                 .padding(.top, 80)
+                .plainRow()
         }
+    }
+}
+
+private extension View {
+    /// A list row without the card background, separators or insets (banners, empty states).
+    func plainRow() -> some View {
+        listRowInsets(EdgeInsets()).listRowBackground(Color.clear).listRowSeparator(.hidden)
     }
 }
 

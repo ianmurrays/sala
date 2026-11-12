@@ -11,6 +11,7 @@
 		0EF6B6061030907C70486123 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61D4DFB892FB869F494631E /* LoginView.swift */; };
 		1741679355FAA673C58359E4 /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DDF8360879C8CE3785836C4 /* MessagesView.swift */; };
 		246B663D497DB08CB122FB6A /* AttachmentOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F700FF859455055509BB54 /* AttachmentOpener.swift */; };
+		323A697D102B8B8A9B1B322D /* FoldersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0623DE8D49000F03DC8C9E59 /* FoldersView.swift */; };
 		5DCACF8FA249D802DAA947DD /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA44F3816DF767D0B3A780A5 /* Store.swift */; };
 		633CE8662528E0F7C29DDB32 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31531B782C08B051F900B8C /* API.swift */; };
 		63AB0B45C45C47BCADC5E654 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7306B89AB0399C4EF4F98F6C /* SettingsView.swift */; };
@@ -21,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0623DE8D49000F03DC8C9E59 /* FoldersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoldersView.swift; sourceTree = "<group>"; };
 		17C4376EE075DB7E8B8A7DD0 /* HolidaySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HolidaySheet.swift; sourceTree = "<group>"; };
 		21FF804A1A12FADBB8F696F3 /* ThreadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadView.swift; sourceTree = "<group>"; };
 		355A0708F4F73D66AC8B9D6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -58,6 +60,7 @@
 			children = (
 				A31531B782C08B051F900B8C /* API.swift */,
 				B6F700FF859455055509BB54 /* AttachmentOpener.swift */,
+				0623DE8D49000F03DC8C9E59 /* FoldersView.swift */,
 				17C4376EE075DB7E8B8A7DD0 /* HolidaySheet.swift */,
 				355A0708F4F73D66AC8B9D6E /* Info.plist */,
 				C61D4DFB892FB869F494631E /* LoginView.swift */,
@@ -133,6 +136,7 @@
 			files = (
 				633CE8662528E0F7C29DDB32 /* API.swift in Sources */,
 				246B663D497DB08CB122FB6A /* AttachmentOpener.swift in Sources */,
+				323A697D102B8B8A9B1B322D /* FoldersView.swift in Sources */,
 				0A36B536863C947DF0F9ABED /* HolidaySheet.swift in Sources */,
 				0EF6B6061030907C70486123 /* LoginView.swift in Sources */,
 				1741679355FAA673C58359E4 /* MessagesView.swift in Sources */,

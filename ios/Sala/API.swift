@@ -144,8 +144,10 @@ struct ThreadSummary: Decodable, Sendable, Equatable, Identifiable {
     var unread: Bool
     var muted: Bool
     var starred: Bool
+    /// The folder it's in; nil in the inbox.
+    var folderId: Int?
 
-    enum CodingKeys: String, CodingKey { case id, subject, from, participants, preview, date, unread, muted, starred }
+    enum CodingKeys: String, CodingKey { case id, subject, from, participants, preview, date, unread, muted, starred, folderId }
 
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -158,8 +160,34 @@ struct ThreadSummary: Decodable, Sendable, Equatable, Identifiable {
         unread = try c.decodeIfPresent(Bool.self, forKey: .unread) ?? false
         muted = try c.decodeIfPresent(Bool.self, forKey: .muted) ?? false
         starred = try c.decodeIfPresent(Bool.self, forKey: .starred) ?? false
+        folderId = try c.decodeIfPresent(Int.self, forKey: .folderId)
     }
 }
+
+/// `PATCH /threads/{id}`: only the fields that are set are sent.
+struct ThreadPatch: Encodable, Sendable {
+    var muted: Bool?
+    var starred: Bool?
+    /// `.some(nil)` moves the thread back to the inbox (sent as `null`).
+    var folderId: Int??
+
+    enum CodingKeys: String, CodingKey { case muted, starred, folderId }
+
+    func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encodeIfPresent(muted, forKey: .muted)
+        try c.encodeIfPresent(starred, forKey: .starred)
+        if let folderId { try c.encode(folderId, forKey: .folderId) }
+    }
+}
+
+/// A row of `GET /folders`.
+struct Folder: Codable, Sendable, Equatable, Hashable, Identifiable {
+    var id: Int
+    var name: String
+}
+
+struct FolderNameRequest: Encodable, Sendable { var name: String }
 
 /// `GET /threads/{id}`. Messages come oldest first.
 struct MessageThread: Decodable, Sendable, Equatable {
@@ -346,7 +374,21 @@ struct APIClient: Sendable {
     }
 
     /// `page` is 0-based like Aula's. Empty means no more.
-    func threads(page: Int = 0) async throws -> [ThreadSummary] { try await send("GET", "/threads?page=\(page)") }
+    /// `folder` nil is the inbox.
+    func threads(page: Int = 0, folder: Int? = nil) async throws -> [ThreadSummary] {
+        try await send("GET", "/threads?page=\(page)" + (folder.map { "&folder=\($0)" } ?? ""))
+    }
+    func updateThread(_ id: String, _ patch: ThreadPatch) async throws -> ThreadSummary {
+        try await send("PATCH", "/threads/\(id.urlPathEscaped)", body: patch)
+    }
+    func folders() async throws -> [Folder] { try await send("GET", "/folders") }
+    func createFolder(name: String) async throws -> Folder { try await send("POST", "/folders", body: FolderNameRequest(name: name)) }
+    func renameFolder(_ id: Int, name: String) async throws -> Folder {
+        try await send("PATCH", "/folders/\(id)", body: FolderNameRequest(name: name))
+    }
+    func deleteFolder(_ id: Int) async throws {
+        let _: OkResponse = try await send("DELETE", "/folders/\(id)")
+    }
     func thread(_ id: String) async throws -> MessageThread { try await send("GET", "/threads/\(id.urlPathEscaped)") }
     func reply(thread id: String, _ request: ReplyRequest) async throws -> ReplyResponse {
         try await send("POST", "/threads/\(id.urlPathEscaped)/reply", body: request)

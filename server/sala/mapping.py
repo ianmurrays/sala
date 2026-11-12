@@ -950,23 +950,142 @@ def thread_out(raw: dict) -> dict:
         "unread": not raw.get("read", True),
         "muted": bool(raw.get("muted")),
         "starred": bool(raw.get("marked")),
+        "folderId": raw.get("folderId"),
     }
 
 
-async def threads(client: AulaApiClient, page: int = 0) -> list[dict]:
-    """One page of threads, newest first. Aula's pages are 0-based; past the end it returns none."""
-    if page == 0:
+async def threads(
+    client: AulaApiClient, page: int = 0, folder: int | None = None, seen: dict[str, dict] | None = None
+) -> list[dict]:
+    """One page of threads, newest first. Aula's pages are 0-based; past the end it returns none.
+
+    ``folder`` lists one folder: the portal adds ``folderId`` to getThreads'
+    params, and leaves it out for the inbox (0.*.js, "inbox"!=t.folderId&&(_.folderId=...)).
+    The folder listing is not tried live (the portal also sends mailBoxOwnerIds; we don't).
+    ``seen`` collects the raw rows by thread id, for update_thread.
+    """
+    if page == 0 and folder is None:
         raws = [t._raw or {} for t in await client.get_message_threads()]
     else:
-        # The library only reads page 0; same request as its get_all_message_threads_result.
-        resp = await client._request_with_version_retry(
-            "get", f"{client.api_url}?method=messaging.getThreads&sortOn=date&orderDirection=desc&page={page}"
-        )
+        # The library only reads page 0 of the inbox; same request as its get_all_message_threads_result.
+        url = f"{client.api_url}?method=messaging.getThreads&sortOn=date&orderDirection=desc&page={page}"
+        if folder is not None:
+            url += f"&folderId={folder}"
+        resp = await client._request_with_version_retry("get", url)
         resp.raise_for_status()
         raws = [t for t in get_in(resp.json(), "data.threads", default=[]) or [] if isinstance(t, dict)]
+    if seen is not None:
+        seen.update((str(raw.get("id")), raw) for raw in raws if raw.get("id") is not None)
     # "date" is non-nullable in API.md; a row without any timestamp is skipped.
     rows = [thread_out(raw) for raw in raws]
     return [r for r in rows if r["date"]]
+
+
+async def _post(client: AulaApiClient, method: str, body: dict) -> Any:
+    resp = await client._request_with_version_retry("post", f"{client.api_url}?method={method}", json=body)
+    resp.raise_for_status()
+    return resp.json()
+
+
+# Folders. Bodies from the portal bundle (app.*.js folder modal, 0.*.js store):
+# createFolder {folderName}, updateFolder {folderName, folderId}, deleteFolder {folderId};
+# getFolders also returns Aula's own "Slettet post" folder (type "deleted", enum in 0.*.js),
+# which is not the user's to rename, delete or move into. Never tried against live Aula
+# (the getFolders row shape, incl. "type", is from the bundle, not a logged response).
+
+
+async def folders(client: AulaApiClient) -> list[dict]:
+    rows = await client.get_message_folders()
+    return [
+        {"id": f.id, "name": f.name}
+        for f in rows
+        if (f._raw or {}).get("type", "normal") == "normal"
+    ]
+
+
+def folder_name(name: str) -> str:
+    name = name.strip()
+    if not 1 <= len(name) <= 100:  # the portal's isValidFolderName
+        raise BadRequest("name must be 1–100 characters")
+    return name
+
+
+async def _folder(client: AulaApiClient, folder_id: int) -> dict:
+    found = next((f for f in await folders(client) if f["id"] == folder_id), None)
+    if found is None:
+        raise NotFound(f"folder {folder_id}")
+    return found
+
+
+async def create_folder(client: AulaApiClient, name: str) -> dict:
+    name = folder_name(name)
+    before = {f["id"] for f in await folders(client)}
+    await _post(client, "messaging.createFolder", {"folderName": name})
+    # The portal ignores the answer and reloads the folders; so do we.
+    new = [f for f in await folders(client) if f["id"] not in before]
+    found = next((f for f in new if f["name"] == name), new[0] if new else None)
+    if found is None:
+        raise UpstreamFailure("Aula did not show the new folder")
+    return found
+
+
+async def rename_folder(client: AulaApiClient, folder_id: int, name: str) -> dict:
+    name = folder_name(name)
+    await _folder(client, folder_id)
+    await _post(client, "messaging.updateFolder", {"folderName": name, "folderId": folder_id})
+    return {"id": folder_id, "name": name}
+
+
+async def delete_folder(client: AulaApiClient, folder_id: int) -> None:
+    """Aula deletes the folder's messages with it (portal's confirm text)."""
+    await _folder(client, folder_id)
+    await _post(client, "messaging.deleteFolder", {"folderId": folder_id})
+
+
+async def update_thread(
+    client: AulaApiClient, seen: dict[str, dict], thread_id: str, changes: dict[str, Any]
+) -> dict:
+    """Mute, star ("marked") and move one thread, like the portal's swipe
+    actions on a thread row (app.*.js subscription list item), which all name
+    the row's subscriptionId, never the thread id:
+
+    - setThreadsMuted {muted, subscriptionIds:[s], commonInboxId:null, otpInboxId:null}
+      (setThreadMutedStatus)
+    - setThreadsMarked {threadIds:[], subscriptionIds:[s], marked, commonInboxId:null, otpInboxId:null}
+      (markSubscriptionToggle -> SWITCH_MARK_SUBSCRIPTIONS in 0.*.js)
+    - moveThreadsToFolder {folderId, threadIds:[], subscriptionIds:[s], commonInboxId:null}
+      (move-to-folder-modal subscription-ids -> MOVE_THREADS_TO_FOLDER; null = inbox)
+
+    The subscription id is only in getThreads rows (not in getMessagesForThread),
+    so the row must have been listed. Never tried against live Aula.
+    """
+    raw = seen.get(thread_id)
+    if raw is None:
+        await threads(client, 0, seen=seen)
+        raw = seen.get(thread_id)
+    subscription_id = (raw or {}).get("subscriptionId")
+    if subscription_id is None:
+        raise Conflict("Thread not in the listed threads; reload the list and try again")
+    if changes.get("folderId") is not None and changes["folderId"] not in {f["id"] for f in await folders(client)}:
+        raise BadRequest(f"unknown folder {changes['folderId']}")
+    raw = seen[thread_id] = dict(raw)  # a copy, updated as each write lands
+    if "muted" in changes:
+        await _post(client, "messaging.setThreadsMuted", {
+            "muted": changes["muted"], "subscriptionIds": [subscription_id], "commonInboxId": None, "otpInboxId": None,
+        })
+        raw["muted"] = changes["muted"]
+    if "starred" in changes:
+        await _post(client, "messaging.setThreadsMarked", {
+            "threadIds": [], "subscriptionIds": [subscription_id], "marked": changes["starred"],
+            "commonInboxId": None, "otpInboxId": None,
+        })
+        raw["marked"] = changes["starred"]
+    if "folderId" in changes:
+        await _post(client, "messaging.moveThreadsToFolder", {
+            "folderId": changes["folderId"], "threadIds": [], "subscriptionIds": [subscription_id], "commonInboxId": None,
+        })
+        raw["folderId"] = changes["folderId"]
+    return thread_out(raw)
 
 
 def _from_me(message: dict, mine: set[int]) -> bool:

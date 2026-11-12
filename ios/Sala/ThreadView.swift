@@ -17,6 +17,7 @@ struct ThreadView: View {
     @State private var sending = false
     @State private var sendError: String?
     @State private var sentPrivately: SentPrivately?
+    @State private var moving: ThreadSummary?
     @FocusState private var fieldFocused: Bool
 
     private struct SentPrivately: Equatable {
@@ -37,7 +38,28 @@ struct ThreadView: View {
             .navigationSubtitle(participants.map { $0 > 1 ? "You + \($0 - 1) \($0 == 2 ? "person" : "people")" : "" } ?? "")
             .navigationBarTitleDisplayMode(.inline)
             .quickLookPreview(attachments)
+            .toolbar {
+                // Only for a thread in the shown list (the server needs it listed, see API.md).
+                if let summary {
+                    ToolbarItem(placement: .topBarTrailing) { actionsMenu(summary) }
+                }
+            }
+            .sheet(item: $moving) { MoveToFolderSheet(thread: $0) }
             .task { await load() }
+    }
+
+    private func actionsMenu(_ t: ThreadSummary) -> some View {
+        Menu {
+            Button(t.starred ? "Unstar" : "Star", systemImage: t.starred ? "star.slash" : "star") {
+                Task { await store.setStarred(t.id, !t.starred) }
+            }
+            Button(t.muted ? "Unmute" : "Mute", systemImage: t.muted ? "bell" : "bell.slash") {
+                Task { await store.setMuted(t.id, !t.muted) }
+            }
+            Button("Move…", systemImage: "folder") { moving = t }
+        } label: {
+            Label("Actions", systemImage: "ellipsis")
+        }
     }
 
     @ViewBuilder private var content: some View {

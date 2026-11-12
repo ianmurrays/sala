@@ -114,9 +114,15 @@ Nullable here: `opensAt`, `closesAt`, `current.time`, `current.by`.
 
 `GET /threads` →
 ```json
-[{"id":"123","subject":"Forældremøde","from":"Leder","participants":57,"preview":"Parent meeting…","date":"timestamp","unread":true,"muted":false,"starred":false}]
+[{"id":"123","subject":"Forældremøde","from":"Leder","participants":57,"preview":"Parent meeting…","date":"timestamp","unread":true,"muted":false,"starred":false,"folderId":null}]
 ```
 `GET /threads?page=N` → one page of threads, newest first. `page` is 0-based like Aula's (default 0, at most 100, else `400`). An empty list means there are no more threads. Page size is Aula's; the client should not assume it.
+`GET /threads?folder=<id>&page=N` → the same for one folder (an `id` from `/folders`). Without `folder` it's the inbox. `folderId` (nullable) is the folder the thread is in, `null` in the inbox.
+
+`PATCH /threads/{id}` body with any of `{"muted":true,"starred":true,"folderId":71}` → the updated thread summary (same shape as in `/threads`).
+- `starred` is Aula's "marked". `folderId: null` moves the thread back to the inbox; a `folderId` that isn't one of `/folders` → `400`. An empty body → `400`.
+- Each field is its own Aula call, in the order muted, starred, folderId; if one fails (`502`) the ones before it are done.
+- The server acts on threads it has listed in `/threads` (it needs Aula's subscription id from the list row). A thread it hasn't listed since it started, and that isn't on the inbox's first page → `409`; reload the list and try again. The returned summary is that list row with the change applied.
 `GET /threads/{id}` (also marks it read) →
 ```json
 {"id":"123","subject":"Forældremøde","canReply":true,
@@ -125,6 +131,12 @@ Nullable here: `opensAt`, `closesAt`, `current.time`, `current.by`.
 `POST /threads/{id}/reply` body `{"text":"...","audience":"everyone|sender","messageId":"m1"}` → `{"ok":true,"threadId":"..."}`.
 - `everyone`: a reply in the thread to all participants (`messaging.reply`).
 - `sender`: a new thread to the sender of `messageId` only (Aula's "Svar afsender direkte", `messaging.startNewThread`). `threadId` is the new thread's id. `messageId` is required, and must not be one of the user's own messages.
+
+## Folders
+
+`GET /folders` → `[{"id":71,"name":"Skole"}]`, the user's own folders (not Aula's "Slettet post" folder).
+`POST /folders` body `{"name":"Skole"}` → the new folder `{"id":72,"name":"Skole"}`. `PATCH /folders/{id}` body `{"name":"..."}` → the renamed folder. The name is trimmed and must be 1–100 characters, else `400`. An unknown folder → `404`.
+`DELETE /folders/{id}` → `{"ok":true}`. Per Aula's own confirmation text ("Hvis denne mappe ikke er tom, vil alle beskeder i mappen blive slettet"; not tried live), the messages in the folder are deleted with it, not moved to the inbox. The client should say so before deleting.
 
 ## Push
 

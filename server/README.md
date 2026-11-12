@@ -40,7 +40,7 @@ A message counts as direct when the thread's participants, read from the `messag
 ## Debugging against live Aula
 
 - `SALA_DEBUG_SHAPES=1` logs one line per Aula API call: method, status and the JSON reduced to its shape. Strings become `str[n]`, URLs keep only their host, and dates plus a few enum keys (`status`, `type`, `activityType`, ...) stay readable. Names and message text never reach the log. Writes log their payload shape too (`aula →`).
-- `SALA_READ_ONLY=1` answers every write route (pickup, sick, save, reply, holiday answers, absences) with 403 `read_only`, so nothing reaches the daycare. Opening a thread still marks it read in Aula.
+- `SALA_READ_ONLY=1` answers every write route (pickup, sick, save, reply, holiday answers, absences, thread mute/star/move, folders) with 403 `read_only`, so nothing reaches the daycare. Opening a thread still marks it read in Aula.
 
 ```
 SALA_TOKEN=... AULA_USERNAME=... SALA_DEBUG_SHAPES=1 SALA_READ_ONLY=1 \
@@ -53,7 +53,7 @@ SALA_TOKEN=... AULA_USERNAME=... SALA_DEBUG_SHAPES=1 SALA_READ_ONLY=1 \
 cd server && SALA_FAKE=1 SALA_TOKEN=dev uv run uvicorn sala.app:app --host 0.0.0.0 --port 8000
 ```
 
-`sala/fake.py` fakes Aula at the HTTP layer (the library's `HttpClient`), so the real client and mapping code run on top of it. Data: daycare "Børnehuset", child Oskar in "Stue", a weekly pickup template, 2 open holiday requests (one due tomorrow, one that asks for drop-off and pickup times) that can be answered, 5 threads, 3 posts with a PDF and a PNG. Writes are recorded (`FakeAula.writes`) and reflected in later reads. It starts in `needs_login`; `POST /auth/login` shows OTP `482915` for about 3 seconds, then `ok`.
+`sala/fake.py` fakes Aula at the HTTP layer (the library's `HttpClient`), so the real client and mapping code run on top of it. Data: daycare "Børnehuset", child Oskar in "Stue", a weekly pickup template, 2 open holiday requests (one due tomorrow, one that asks for drop-off and pickup times) that can be answered, 45 threads in the inbox and 1 in the folder "Skole" (folders "Skole" and "Gemt"), 25 posts (the newest 3 with a PDF, a PNG and a link) with a PDF and a PNG. Writes are recorded (`FakeAula.writes`) and reflected in later reads. It starts in `needs_login`; `POST /auth/login` shows OTP `482915` for about 3 seconds, then `ok`.
 
 Fake mode starts in `needs_login`, so with `NTFY_TOPIC` set it publishes "Aula login needed" at startup (and after each restart, since fake keeps no session). To test push end to end, fake mode adds three routes (bearer token still required; 404 without `SALA_FAKE=1`) that make a new item appear for the next poll:
 
