@@ -169,7 +169,7 @@ struct ThreadRow: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
-            GroupAvatar(name: thread.from, participants: thread.participants)
+            GroupAvatar(name: thread.from, picture: thread.picture, participants: thread.participants)
             VStack(alignment: .leading, spacing: 3) {
                 HStack(alignment: .firstTextBaseline, spacing: 8) {
                     HStack(spacing: 6) {
@@ -233,6 +233,7 @@ struct ThreadRow: View {
 /// Initials on a colour picked from the name, so the same sender keeps the same colour.
 struct InitialsAvatar: View {
     let name: String
+    var picture: String? = nil
     var size: CGFloat = 34
 
     private static let palette: [Color] = [
@@ -260,23 +261,26 @@ struct InitialsAvatar: View {
     }
 
     var body: some View {
-        Text(Self.initials(name))
-            .font(.system(size: size * 0.36, weight: .bold))
-            .foregroundStyle(.white)
-            .frame(width: size, height: size)
-            .background(color, in: .circle)
-            .accessibilityHidden(true)
+        ProfilePicture(id: picture, size: size) {
+            Text(Self.initials(name))
+                .font(.system(size: size * 0.36, weight: .bold))
+                .foregroundStyle(.white)
+                .frame(width: size, height: size)
+                .background(color, in: .circle)
+        }
+        .accessibilityHidden(true)
     }
 }
 
 /// The sender's initials with a "+N" badge for the other people in the thread.
 struct GroupAvatar: View {
     let name: String
+    var picture: String? = nil
     let participants: Int
 
     var body: some View {
         ZStack(alignment: .topLeading) {
-            InitialsAvatar(name: name, size: participants > 2 ? 34 : 46)
+            InitialsAvatar(name: name, picture: picture, size: participants > 2 ? 34 : 46)
                 .overlay { Circle().stroke(Color.card, lineWidth: participants > 2 ? 2 : 0) }
             if participants > 2 {
                 Text("+\(participants - 1)")

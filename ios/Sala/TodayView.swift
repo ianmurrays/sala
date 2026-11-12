@@ -243,16 +243,55 @@ struct BannerView: View {
 
 struct Avatar: View {
     let name: String
+    var picture: String? = nil
     var size: CGFloat = 44
     var body: some View {
-        Text(name.first.map { String($0).uppercased() } ?? "?")
-            .font(.system(size: size * 0.42, weight: .semibold))
-            .foregroundStyle(Color.salaAccent)
-            .frame(width: size, height: size)
-            .background(Color.salaAccent.opacity(0.14), in: .circle)
-            .accessibilityHidden(true)
+        ProfilePicture(id: picture, size: size) {
+            Text(name.first.map { String($0).uppercased() } ?? "?")
+                .font(.system(size: size * 0.42, weight: .semibold))
+                .foregroundStyle(Color.salaAccent)
+                .frame(width: size, height: size)
+                .background(Color.salaAccent.opacity(0.14), in: .circle)
+        }
+        .accessibilityHidden(true)
     }
 }
+
+/// A profile picture from the server, or `fallback` (initials) while it loads, when there is none, or when it fails.
+struct ProfilePicture<Fallback: View>: View {
+    let id: String?
+    let size: CGFloat
+    @ViewBuilder let fallback: Fallback
+    @Environment(Store.self) private var store
+    @State private var image: UIImage?
+
+    init(id: String?, size: CGFloat, @ViewBuilder fallback: () -> Fallback) {
+        self.id = id; self.size = size; self.fallback = fallback()
+        _image = State(initialValue: id.flatMap { pictureCache.object(forKey: $0 as NSString) })
+    }
+
+    var body: some View {
+        Group {
+            if let image {
+                Image(uiImage: image).resizable().scaledToFill().frame(width: size, height: size).clipShape(.circle)
+            } else {
+                fallback
+            }
+        }
+        .task(id: id) {
+            // A row can be reused for another person: never keep the previous face while loading.
+            image = id.flatMap { pictureCache.object(forKey: $0 as NSString) }
+            guard let id, image == nil else { return }
+            // ponytail: a failure just keeps the initials; no banner, no retry until the view comes back.
+            guard let data = try? await store.client.picture(id), let loaded = UIImage(data: data) else { return }
+            pictureCache.setObject(loaded, forKey: id as NSString)
+            image = loaded
+        }
+    }
+}
+
+/// Decoded pictures by id, so scrolling back doesn't decode again. The disk copy is `APIClient.picture`'s URL cache.
+@MainActor private let pictureCache = NSCache<NSString, UIImage>()
 
 struct StatusPill: View {
     let child: Child
@@ -305,7 +344,7 @@ struct ChildCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(spacing: 12) {
-                Avatar(name: child.name)
+                Avatar(name: child.name, picture: child.picture)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(child.name).font(.title3.bold())
                     Text([child.institution, child.group].filter { !$0.isEmpty }.joined(separator: " · "))
@@ -518,7 +557,7 @@ struct PostCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .top, spacing: 10) {
-                Avatar(name: post.author, size: 36)
+                Avatar(name: post.author, picture: post.authorPicture, size: 36)
                 VStack(alignment: .leading, spacing: 1) {
                     Text(post.author).font(.subheadline.weight(.semibold))
                     Text(dateText).font(.footnote).foregroundStyle(.secondary)

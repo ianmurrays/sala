@@ -49,6 +49,19 @@ def fake_qr_codes():
 FILES_BASE = "https://fake-files.aula.dk/files/"
 PDF_URL = FILES_BASE + "praesentation.pdf"
 PNG_URL = FILES_BASE + "skovtur.png"
+# Profile pictures (signed, like Aula's): the child and Mette have one, everyone else falls back to initials.
+PICTURE_URL = FILES_BASE + "profile.png"
+
+
+def _picture() -> dict:
+    return {"id": 77, "url": PICTURE_URL + f"?sig={next(_SIGS)}"}
+
+
+_SIGS = itertools.count()
+
+
+def _no_picture(person: dict) -> dict:
+    return {k: v for k, v in person.items() if k != "profilePicture"}
 
 # What a fake MitID login hands to create_client().
 FAKE_TOKEN_DATA = {"tokens": {"access_token": "fake-access-token"}, "cookies": {}}
@@ -82,7 +95,7 @@ def _person(ip_id: int, name: str, metadata: str, role: str = "employee") -> dic
 ME = _person(GUARDIAN_IP, "Jonas Hansen", "Oskar (Far)", "guardian")
 MARIA = _person(OTHER_GUARDIAN_IP, "Maria Hansen", "Oskar (Mor)", "guardian")
 ANNE = _person(1501, "Anne Holm", "Leder")
-METTE = _person(1502, "Mette Lund", "Pædagog, Stue")
+METTE = {**_person(1502, "Mette Lund", "Pædagog, Stue"), "profilePicture": _picture()}
 KASPER = _person(1503, "Kasper Berg", "Pædagogmedhjælper, Stue")
 
 
@@ -130,7 +143,7 @@ def _pdf() -> bytes:
     return bytes(out)
 
 
-FILES = {PDF_URL: _pdf(), PNG_URL: _png(), FILES_BASE + "madordning.pdf": _pdf()}
+FILES = {PDF_URL: _pdf(), PNG_URL: _png(), FILES_BASE + "madordning.pdf": _pdf(), PICTURE_URL: _png()}
 
 
 class FakeAula:
@@ -208,7 +221,7 @@ class FakeAula:
         return handler(query, json)
 
     async def download_bytes(self, url: str) -> bytes:
-        return FILES[url]
+        return FILES[url.split("?")[0]]  # picture URLs carry a signature query
 
     def get_cookie(self, name: str) -> str | None:
         return "fake-csrf" if name == CSRF_TOKEN_COOKIE else None
@@ -248,7 +261,7 @@ class FakeAula:
                                     "institutionCode": INSTITUTION_CODE,
                                     "metadata": "Stue",
                                 },
-                                "profilePicture": None,
+                                "profilePicture": _picture(),
                             }
                         ],
                     }
@@ -280,6 +293,7 @@ class FakeAula:
                         "institutionCode": INSTITUTION_CODE,
                         "institutionName": INSTITUTION_NAME,
                         "role": "child",
+                        "profilePicture": _picture(),
                     },
                     "mainGroup": {**GROUP, "institutionCode": INSTITUTION_CODE},
                     "status": self.status,
@@ -567,6 +581,7 @@ class FakeAula:
                 "fullName": p["fullName"],
                 "shortName": p["shortName"],
                 "role": "employee",
+                "profilePicture": p.get("profilePicture"),
                 "institution": {"institutionName": INSTITUTION_NAME, "institutionCode": INSTITUTION_CODE},
             }
 
@@ -732,7 +747,8 @@ class FakeAula:
                 "leaveTime": None,
                 "institutionCode": INSTITUTION_CODE,
                 "mailBoxOwner": {"id": GUARDIAN_IP, "mailBoxOwnerType": "institutionProfile"},
-                "creator": msgs[0][1],
+                # Live getThreads rows carry pictures only on recipients, not on creator or latestMessage.
+                "creator": _no_picture(msgs[0][1]),
                 "recipients": [{**r, "leaveTime": None} for r in recipients],
                 "lastReadMessageId": built[-1]["id"] if read else None,
                 **self._subscription(tid, 71 if tid == 9106 else None),
@@ -752,7 +768,7 @@ class FakeAula:
 
     def _refresh_latest(self, tid: int) -> None:
         latest = self.messages[tid][0]
-        self.threads[tid]["latestMessage"] = {k: latest[k] for k in ("id", "text", "sendDateTime", "sender")}
+        self.threads[tid]["latestMessage"] = {k: latest[k] for k in ("id", "text", "sendDateTime")} | {"sender": _no_picture(latest["sender"])}
         self.threads[tid]["lastUpdatedDate"] = latest["sendDateTime"]
 
     def _messaging_getThreads(self, q, body):

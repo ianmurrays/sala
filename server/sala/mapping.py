@@ -33,8 +33,8 @@ from aula.utils.mapping import get_in
 _LOGGER = logging.getLogger(__name__)
 TZ = ZoneInfo("Europe/Copenhagen")
 
-# Register an attachment URL server-side; returns the opaque id to hand out.
-Register = Callable[[str, str], str]
+# Register an attachment URL server-side: (url, name, key=None) -> the opaque id to hand out.
+Register = Callable[..., str]
 
 
 def auth_error(err: BaseException) -> bool:
@@ -228,6 +228,22 @@ def map_attachments(attachments: list[Attachment], register: Register) -> list[d
     return out
 
 
+def picture_id(picture: Any, register: Register | None) -> str | None:
+    """A person's ``profilePicture`` (Aula's dict with ``url``, or the URL itself) as an attachment id.
+
+    Picture URLs may be signed, so the id hashes the URL without its query:
+    it stays the same across loads (the app caches by it) while the stored URL
+    is refreshed each time."""
+    url = get_in(picture, "url") if isinstance(picture, dict) else picture
+    if register is None or not url:
+        return None
+    if not file_url_allowed(url):
+        _LOGGER.warning("Skipping profile picture on a non-Aula host: %s", urlsplit(url).hostname)
+        return None
+    parts = urlsplit(url)
+    return register(url, parts.path.rsplit("/", 1)[-1] or "picture", parts._replace(query="", fragment="").geturl())
+
+
 async def download_attachment(client: AulaApiClient, url: str, max_redirects: int = 5, *, fake: bool = False) -> bytes:
     """Fetch a registered Aula file, following redirects only onto allowed hosts.
 
@@ -404,7 +420,7 @@ def _current_pickup(day: ChildDay) -> tuple[str | None, str | None, str]:
     return when, who, note
 
 
-def child_out(day: ChildDay) -> dict:
+def child_out(day: ChildDay, register: Register) -> dict:
     ov = day.overview
     state = ov.status if ov else None
     when, who, _ = _current_pickup(day)
@@ -417,6 +433,12 @@ def child_out(day: ChildDay) -> dict:
     return {
         "id": day.child.id,
         "name": day.child.name or "",
+        # The overview is fetched fresh; the profile (and its signed URL) is cached for the whole session.
+        "picture": picture_id(
+            (ov.institution_profile.profile_picture.url if ov and ov.institution_profile and ov.institution_profile.profile_picture else None)
+            or day.child.profile_picture,
+            register,
+        ),
         "institution": institution or "",
         "group": group or "",
         "status": _STATUS.get(state, "unknown") if state else "unknown",
@@ -895,6 +917,7 @@ def post_out(post, register: Register) -> dict:
         "id": post.id,
         "title": post.title or "",
         "author": author,
+        "authorPicture": picture_id(owner.profile_picture, register),
         "date": iso(post.timestamp),
         "body": plain(post.content_html),
         "important": bool(post.is_important),
@@ -929,7 +952,15 @@ def _sender_name(sender: Any) -> str | None:
     return get_in(sender, "fullName") or get_in(sender, "answerDirectlyName") or None
 
 
-def thread_out(raw: dict) -> dict:
+def _row_picture(sender: Any, raw: dict) -> Any:
+    """getThreads rows (live) have no picture on creator or latestMessage.sender;
+    the same person's entry in recipients (matched by mailbox owner id) has it."""
+    owner = get_in(sender, "mailBoxOwner.id")
+    match = next((r for r in raw.get("recipients") or [] if isinstance(r, dict) and get_in(r, "mailBoxOwner.id") == owner), None)
+    return get_in(sender, "profilePicture") or (get_in(match, "profilePicture") if owner is not None else None)
+
+
+def thread_out(raw: dict, register: Register | None = None) -> dict:
     """One row of messaging.getThreads. Field names (read, muted, marked,
     recipients[].leaveTime, latestMessage.text.html / sendDateTime, creator)
     are the ones the portal reads; latestMessage.sender is a guess with
@@ -940,10 +971,13 @@ def thread_out(raw: dict) -> dict:
     preview = " ".join(preview.split())
     if len(preview) > 140:
         preview = preview[:139].rstrip() + "…"
+    sender = latest.get("sender") if _sender_name(latest.get("sender")) else raw.get("creator")
     return {
         "id": str(raw.get("id")),
         "subject": raw.get("subject") or "",
-        "from": _sender_name(latest.get("sender")) or _sender_name(raw.get("creator")) or "",
+        "from": _sender_name(sender) or "",
+        # No picture without a register: /today only reads rows for attention items.
+        "picture": picture_id(_row_picture(sender, raw), register),
         "participants": len(recipients) or len(raw.get("participants") or []),
         "preview": preview,
         "date": iso(latest.get("sendDateTime") or raw.get("lastUpdatedDate")),
@@ -955,7 +989,8 @@ def thread_out(raw: dict) -> dict:
 
 
 async def threads(
-    client: AulaApiClient, page: int = 0, folder: int | None = None, seen: dict[str, dict] | None = None
+    client: AulaApiClient, page: int = 0, folder: int | None = None, seen: dict[str, dict] | None = None,
+    register: Register | None = None,
 ) -> list[dict]:
     """One page of threads, newest first. Aula's pages are 0-based; past the end it returns none.
 
@@ -977,7 +1012,7 @@ async def threads(
     if seen is not None:
         seen.update((str(raw.get("id")), raw) for raw in raws if raw.get("id") is not None)
     # "date" is non-nullable in API.md; a row without any timestamp is skipped.
-    rows = [thread_out(raw) for raw in raws]
+    rows = [thread_out(raw, register) for raw in raws]
     return [r for r in rows if r["date"]]
 
 
@@ -1043,7 +1078,7 @@ async def delete_folder(client: AulaApiClient, folder_id: int) -> None:
 
 
 async def update_thread(
-    client: AulaApiClient, seen: dict[str, dict], thread_id: str, changes: dict[str, Any]
+    client: AulaApiClient, seen: dict[str, dict], thread_id: str, changes: dict[str, Any], register: Register
 ) -> dict:
     """Mute, star ("marked") and move one thread, like the portal's swipe
     actions on a thread row (app.*.js subscription list item), which all name
@@ -1085,7 +1120,7 @@ async def update_thread(
             "folderId": changes["folderId"], "threadIds": [], "subscriptionIds": [subscription_id], "commonInboxId": None,
         })
         raw["folderId"] = changes["folderId"]
-    return thread_out(raw)
+    return thread_out(raw, register)
 
 
 def _from_me(message: dict, mine: set[int]) -> bool:
@@ -1118,6 +1153,7 @@ async def thread_detail(client: AulaApiClient, profile: Profile, thread_id: str,
         {
             "id": str(m.get("id")),
             "sender": _sender_name(m.get("sender")) or "",
+            "picture": picture_id(get_in(m, "sender.profilePicture"), register),
             "fromMe": _from_me(m, mine),
             "date": iso(m.get("sendDateTime")),
             "text": plain(get_in(m, "text.html", default="") or (m.get("text") if isinstance(m.get("text"), str) else "")),

@@ -49,6 +49,8 @@ struct Post: Codable, Sendable, Equatable, Identifiable {
     var id: Int
     var title: String
     var author: String
+    /// Id for `GET /attachments/{id}`; nil when the author has no picture.
+    var authorPicture: String?
     /// ISO 8601 timestamp with offset.
     var date: String
     var body: String
@@ -117,6 +119,8 @@ struct ThreadSummary: Decodable, Sendable, Equatable, Identifiable {
     var id: String
     var subject: String
     var from: String
+    /// The `from` person's picture, an id for `GET /attachments/{id}`.
+    var picture: String?
     var participants: Int
     var preview: String
     /// ISO 8601 timestamp with offset.
@@ -127,13 +131,14 @@ struct ThreadSummary: Decodable, Sendable, Equatable, Identifiable {
     /// The folder it's in; nil in the inbox.
     var folderId: Int?
 
-    enum CodingKeys: String, CodingKey { case id, subject, from, participants, preview, date, unread, muted, starred, folderId }
+    enum CodingKeys: String, CodingKey { case id, subject, from, picture, participants, preview, date, unread, muted, starred, folderId }
 
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         id = try c.decodeLenientString(.id) ?? ""
         subject = try c.decodeIfPresent(String.self, forKey: .subject) ?? ""
         from = try c.decodeIfPresent(String.self, forKey: .from) ?? ""
+        picture = try c.decodeIfPresent(String.self, forKey: .picture)
         participants = try c.decodeIfPresent(Int.self, forKey: .participants) ?? 0
         preview = try c.decodeIfPresent(String.self, forKey: .preview) ?? ""
         date = try c.decodeIfPresent(String.self, forKey: .date) ?? ""
@@ -190,18 +195,21 @@ struct MessageThread: Decodable, Sendable, Equatable {
 struct Message: Decodable, Sendable, Equatable, Identifiable {
     var id: String
     var sender: String
+    /// The sender's picture, an id for `GET /attachments/{id}`.
+    var picture: String?
     var fromMe: Bool
     /// ISO 8601 timestamp with offset.
     var date: String
     var text: String
     var attachments: [Attachment]
 
-    enum CodingKeys: String, CodingKey { case id, sender, fromMe, date, text, attachments }
+    enum CodingKeys: String, CodingKey { case id, sender, picture, fromMe, date, text, attachments }
 
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         id = try c.decodeLenientString(.id) ?? ""
         sender = try c.decodeIfPresent(String.self, forKey: .sender) ?? ""
+        picture = try c.decodeIfPresent(String.self, forKey: .picture)
         fromMe = try c.decodeIfPresent(Bool.self, forKey: .fromMe) ?? false
         date = try c.decodeIfPresent(String.self, forKey: .date) ?? ""
         text = try c.decodeIfPresent(String.self, forKey: .text) ?? ""
@@ -352,6 +360,14 @@ struct APIClient: Sendable {
         return URLSession(configuration: config)
     }()
 
+    /// For profile pictures: a disk cache, so lists and relaunches don't refetch them.
+    private static let pictureSession: URLSession = {
+        let config = URLSessionConfiguration.default
+        config.timeoutIntervalForRequest = 30
+        config.urlCache = URLCache(memoryCapacity: 0, diskCapacity: 50_000_000, directory: URL.cachesDirectory.appending(path: "pictures"))
+        return URLSession(configuration: config)
+    }()
+
     /// For `/translate`: a long thread can take the Claude API a while.
     private static let slowSession: URLSession = {
         let config = URLSessionConfiguration.default
@@ -410,6 +426,14 @@ struct APIClient: Sendable {
     func translate(_ texts: [String]) async throws -> [String] {
         let r: TranslateTexts = try await send("POST", "/translate", bodyData: try JSONEncoder().encode(TranslateTexts(texts: texts)), slow: true)
         return r.texts
+    }
+
+    /// A profile picture, from the disk cache while the server's `Cache-Control` allows.
+    func picture(_ id: String) async throws -> Data {
+        let request = try makeRequest("GET", "/attachments/\(id.urlPathEscaped)")
+        let (data, response) = try await perform { try await Self.pictureSession.data(for: request) }
+        try check(response, data: data)
+        return data
     }
 
     /// Downloads an attachment into a fresh temp directory, named after `name`.
