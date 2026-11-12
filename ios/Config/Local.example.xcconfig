@@ -1,0 +1,4 @@
+// Copy to Local.xcconfig. Your team ID is the OU of your "Apple Development" certificate,
+// or Xcode > Settings > Accounts. A free personal team works.
+DEVELOPMENT_TEAM = ABCDE12345
+SALA_BUNDLE_ID = me.yourname.sala

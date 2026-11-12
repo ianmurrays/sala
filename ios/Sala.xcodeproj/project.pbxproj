@@ -60,8 +60,10 @@
 		21FF804A1A12FADBB8F696F3 /* ThreadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadView.swift; sourceTree = "<group>"; };
 		2CCD051E3BB3DC75F5359EEA /* SalaWidget.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = SalaWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		355A0708F4F73D66AC8B9D6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		36463F642252A186DED991A0 /* Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Signing.xcconfig; sourceTree = "<group>"; };
 		3A62848569FE547E44876C3B /* SalaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalaApp.swift; sourceTree = "<group>"; };
 		4DDF8360879C8CE3785836C4 /* MessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesView.swift; sourceTree = "<group>"; };
+		59725711855BD756C7F555B5 /* Local.example.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Local.example.xcconfig; sourceTree = "<group>"; };
 		7306B89AB0399C4EF4F98F6C /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		85A89BBCBDF52ACC866ED673 /* SalaWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SalaWidget.entitlements; sourceTree = "<group>"; };
 		85EAEE828583E51DD8233BA7 /* Sala.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Sala.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -87,6 +89,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		1BF7BA82603EFA58752070E1 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				59725711855BD756C7F555B5 /* Local.example.xcconfig */,
+				36463F642252A186DED991A0 /* Signing.xcconfig */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
 		254DD97CF2BD588B070C06E6 /* SalaWidget */ = {
 			isa = PBXGroup;
 			children = (
@@ -100,6 +111,7 @@
 		576E8E9DAD3D74B01DDED165 = {
 			isa = PBXGroup;
 			children = (
+				1BF7BA82603EFA58752070E1 /* Config */,
 				FDDDB6EC11BDFB38844E0380 /* Sala */,
 				254DD97CF2BD588B070C06E6 /* SalaWidget */,
 				8DC60204D8AB4A280DDA8F24 /* Shared */,
@@ -187,11 +199,11 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					3FD21C71A1095AF44772F1EA = {
-						DevelopmentTeam = ABCDE12345;
+						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 					BB5A52674045B03077B0ED1F = {
-						DevelopmentTeam = ABCDE12345;
+						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -267,7 +279,6 @@
 				CODE_SIGN_ENTITLEMENTS = Sala/Sala.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = ABCDE12345;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Sala/Info.plist;
@@ -275,7 +286,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.sala.app;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(SALA_BUNDLE_ID).app";
 				PRODUCT_NAME = Sala;
 				SDKROOT = iphoneos;
 				SWIFT_STRICT_CONCURRENCY = complete;
@@ -289,7 +300,6 @@
 				CODE_SIGN_ENTITLEMENTS = SalaWidget/SalaWidget.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = ABCDE12345;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = SalaWidget/Info.plist;
@@ -298,7 +308,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.sala.app.widget;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(SALA_BUNDLE_ID).app.widget";
 				PRODUCT_NAME = SalaWidget;
 				SDKROOT = iphoneos;
 				SWIFT_STRICT_CONCURRENCY = complete;
@@ -312,7 +322,6 @@
 				CODE_SIGN_ENTITLEMENTS = SalaWidget/SalaWidget.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = ABCDE12345;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = SalaWidget/Info.plist;
@@ -321,7 +330,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.sala.app.widget;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(SALA_BUNDLE_ID).app.widget";
 				PRODUCT_NAME = SalaWidget;
 				SDKROOT = iphoneos;
 				SWIFT_STRICT_CONCURRENCY = complete;
@@ -336,7 +345,6 @@
 				CODE_SIGN_ENTITLEMENTS = Sala/Sala.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = ABCDE12345;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Sala/Info.plist;
@@ -344,7 +352,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.sala.app;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(SALA_BUNDLE_ID).app";
 				PRODUCT_NAME = Sala;
 				SDKROOT = iphoneos;
 				SWIFT_STRICT_CONCURRENCY = complete;
@@ -354,6 +362,7 @@
 		};
 		71512BA3474A01E88C69D522 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 36463F642252A186DED991A0 /* Signing.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -419,6 +428,7 @@
 		};
 		F7A44A04E6184756BA4EB047 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 36463F642252A186DED991A0 /* Signing.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;

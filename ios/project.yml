@@ -1,9 +1,14 @@
 name: Sala
 options:
-  bundleIdPrefix: com.example
   deploymentTarget:
     iOS: "26.0"
   createIntermediateGroups: true
+fileGroups:
+  - Config/Signing.xcconfig
+  - Config/Local.example.xcconfig
+configFiles:
+  Debug: Config/Signing.xcconfig
+  Release: Config/Signing.xcconfig
 settings:
   base:
     SWIFT_VERSION: "6.0"
@@ -21,15 +26,14 @@ targets:
     entitlements:
       path: Sala/Sala.entitlements
       properties:
-        keychain-access-groups: [$(AppIdentifierPrefix)com.example.sala]
+        keychain-access-groups: [$(AppIdentifierPrefix)$(SALA_BUNDLE_ID)]
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.example.sala.app
+        PRODUCT_BUNDLE_IDENTIFIER: $(SALA_BUNDLE_ID).app
         PRODUCT_NAME: Sala
         TARGETED_DEVICE_FAMILY: "1"
         CODE_SIGN_STYLE: Automatic
         CODE_SIGN_IDENTITY: Apple Development
-        DEVELOPMENT_TEAM: ABCDE12345
         SWIFT_STRICT_CONCURRENCY: complete
         ENABLE_PREVIEWS: YES
         GENERATE_INFOPLIST_FILE: NO
@@ -39,12 +43,12 @@ targets:
         CFBundleDisplayName: Sala
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
-        SalaKeychainGroup: $(AppIdentifierPrefix)com.example.sala
+        SalaKeychainGroup: $(AppIdentifierPrefix)$(SALA_BUNDLE_ID)
         UILaunchScreen: {}
         UIApplicationSupportsIndirectInputEvents: true
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         CFBundleURLTypes:
-          - CFBundleURLName: com.example.sala.app
+          - CFBundleURLName: $(PRODUCT_BUNDLE_IDENTIFIER)
             CFBundleURLSchemes: [sala]
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
@@ -59,15 +63,14 @@ targets:
     entitlements:
       path: SalaWidget/SalaWidget.entitlements
       properties:
-        keychain-access-groups: [$(AppIdentifierPrefix)com.example.sala]
+        keychain-access-groups: [$(AppIdentifierPrefix)$(SALA_BUNDLE_ID)]
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.example.sala.app.widget
+        PRODUCT_BUNDLE_IDENTIFIER: $(SALA_BUNDLE_ID).app.widget
         PRODUCT_NAME: SalaWidget
         TARGETED_DEVICE_FAMILY: "1"
         CODE_SIGN_STYLE: Automatic
         CODE_SIGN_IDENTITY: Apple Development
-        DEVELOPMENT_TEAM: ABCDE12345
         SWIFT_STRICT_CONCURRENCY: complete
         ENABLE_PREVIEWS: YES
         GENERATE_INFOPLIST_FILE: NO
@@ -77,7 +80,7 @@ targets:
         CFBundleDisplayName: Sala
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
-        SalaKeychainGroup: $(AppIdentifierPrefix)com.example.sala
+        SalaKeychainGroup: $(AppIdentifierPrefix)$(SALA_BUNDLE_ID)
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
         NSAppTransportSecurity:

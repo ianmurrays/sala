@@ -4,7 +4,7 @@
 <dict>
 	<key>keychain-access-groups</key>
 	<array>
-		<string>$(AppIdentifierPrefix)com.example.sala</string>
+		<string>$(AppIdentifierPrefix)$(SALA_BUNDLE_ID)</string>
 	</array>
 </dict>
 </plist>

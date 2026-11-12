@@ -101,9 +101,9 @@ struct Pickup: Codable, Sendable, Equatable {
 /// Holds the token, the server URL and the snapshot. A keychain access group instead of an app group,
 /// because a personal (free) team can't register app groups.
 enum Keychain {
-    private static let service = "com.example.sala"
+    private static let service = "sala"
     private static let tokenKey = "token"
-    /// `$(AppIdentifierPrefix)com.example.sala`, from Info.plist, since the prefix is the signing team's ID.
+    /// `$(AppIdentifierPrefix)$(SALA_BUNDLE_ID)`, from Info.plist, since the prefix is the signing team's ID.
     private static let group = Bundle.main.object(forInfoDictionaryKey: "SalaKeychainGroup") as? String ?? ""
 
     /// Every query names the group: one without it matches the items of every group the process can see.

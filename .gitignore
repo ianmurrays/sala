@@ -5,3 +5,4 @@ __pycache__/
 *.xcuserstate
 xcuserdata/
 .DS_Store
+ios/Config/Local.xcconfig
