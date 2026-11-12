@@ -13,10 +13,10 @@ from conftest import AUTH
 from sala import aula_session
 from sala.aula_session import SessionManager
 from sala.fake import CHILD_ID, FAKE_OTP, FILES_BASE, GUARDIAN_IP, METTE
-from sala.mapping import UpstreamFailure, download_attachment
+from sala.mapping import UpstreamFailure, download_attachment, picture_id
 
 CHILD_KEYS = {
-    "id", "name", "institution", "group", "status", "statusLabel", "arrivedAt",
+    "id", "name", "picture", "institution", "group", "status", "statusLabel", "arrivedAt",
     "leftAt", "pickup", "closesAt", "canReportSick",
 }
 
@@ -58,8 +58,8 @@ def test_today_shape(api):
     assert body["date"] == aula_today().isoformat()
     [child] = body["children"]
     assert set(child) == CHILD_KEYS
-    assert child | {"pickup": None} == {
-        "id": CHILD_ID, "name": "Oskar", "institution": "Børnehuset", "group": "Stue",
+    assert child | {"pickup": None, "picture": None} == {
+        "id": CHILD_ID, "name": "Oskar", "picture": None, "institution": "Børnehuset", "group": "Stue",
         "status": "present", "statusLabel": "Present", "arrivedAt": "07:40", "leftAt": None,
         "pickup": None, "closesAt": "16:45", "canReportSick": True,
     }
@@ -374,3 +374,23 @@ def test_pickup_put_refuses_blind_write(api, fake):
     assert r.status_code == 502 and r.json()["error"] == "upstream"
     assert fake.writes_for("presence.updatePresenceTemplate") == []
 
+
+
+def test_profile_pictures_are_stable_opaque_ids(api):
+    first = api.get("/today", headers=AUTH).json()
+    pic = first["children"][0]["picture"]
+    # The fake signs each picture URL anew per load; the id must not change.
+    assert api.get("/today", headers=AUTH).json()["children"][0]["picture"] == pic
+    st = api.app.state.store
+    url = st.attachment(pic)[0]
+    assert "?sig=" in url
+    assert picture_id(url.split("?")[0] + "?sig=new", st.register_attachment) == pic
+    assert st.attachment(pic)[0].endswith("?sig=new")  # the newest signed URL is the one fetched
+    r = api.get(f"/attachments/{pic}", headers=AUTH)
+    assert r.status_code == 200 and r.content.startswith(b"\x89PNG")
+
+    authors = {p["author"].split(" · ")[0]: p["authorPicture"] for p in first["posts"]}
+    assert authors["Mette Lund"] and authors["Anne Holm"] is None  # no picture: app draws initials
+    msgs = [msg for t in api.get("/threads", headers=AUTH).json() for msg in api.get(f"/threads/{t['id']}", headers=AUTH).json()["messages"]]
+    assert {msg["picture"] is None for msg in msgs} == {True, False}
+    assert any(t["picture"] for t in api.get("/threads", headers=AUTH).json())

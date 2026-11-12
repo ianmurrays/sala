@@ -28,6 +28,7 @@ Other upstream failures → `502 {"error":"upstream","message":"..."}`. JSON key
   "children": [{
     "id": 123,
     "name": "Oskar",
+    "picture": "f31f36216c15",
     "institution": "Børnehuset",
     "group": "Stue",
     "status": "present|not_arrived|sick|gone_home|vacation|unknown",
@@ -52,7 +53,7 @@ Other upstream failures → `502 {"error":"upstream","message":"..."}`. JSON key
 ```
 `Post`:
 ```json
-{"id": 9, "title": "Welcome", "author": "Leder · Børnehuset", "date": "timestamp", "body": "plain text", "important": false, "saved": false,
+{"id": 9, "title": "Welcome", "author": "Leder · Børnehuset", "authorPicture": "9c1d…", "date": "timestamp", "body": "plain text", "important": false, "saved": false,
  "attachments": [Attachment]}
 ```
 `Attachment`:
@@ -62,7 +63,9 @@ Other upstream failures → `502 {"error":"upstream","message":"..."}`. JSON key
 - `file` / `image`: an Aula file; fetch it with `GET /attachments/{id}`. No `url`.
 - `link`: a cloud-drive link the author attached. `id` is null and `url` is the link; open it in the browser. The server never fetches it.
 
-Nullable: `arrivedAt`, `leftAt`, `pickup.time`, `pickup.by`, `closesAt`, `threadId`, `subtitle`, Attachment `id` (links), and `threadId` in the `sender` reply response when Aula doesn't return the new thread's id. Every other field is always present and non-null; posts, threads and messages Aula sends without a timestamp are left out.
+Profile pictures: `picture` (child, thread summary, message) and `authorPicture` (post) are opaque ids for `GET /attachments/{id}`, `null` when the person has no picture. Draw initials when it is `null` or the fetch fails. The id stays the same while the picture does (Aula's URL may be re-signed on every load), so the client can cache the image by id. `GET /attachments/{id}` sends `Cache-Control: private, max-age=604800` (a week).
+
+Nullable: `arrivedAt`, `leftAt`, `pickup.time`, `pickup.by`, `closesAt`, `threadId`, `subtitle`, Attachment `id` (links), `picture`, `authorPicture`, and `threadId` in the `sender` reply response when Aula doesn't return the new thread's id. Every other field is always present and non-null; posts, threads and messages Aula sends without a timestamp are left out.
 
 ## Pickup and sick
 
@@ -108,13 +111,13 @@ Nullable here: `opensAt`, `closesAt`, `current.time`, `current.by`.
 `GET /posts?page=N` → `[Post]`, newest first, 10 per page. `page` is 1-based (default 1, at most 100, else `400`); page 1 is the `posts` of `/today`. An empty list means there are no more posts.
 
 `POST /posts/{id}/save` / `DELETE /posts/{id}/save` → `{"saved": true|false}`.
-`GET /attachments/{id}` → the file bytes with its `Content-Type` and `Content-Disposition: inline; filename=...`. `id` is an opaque server-issued id from a Post or Message; the server never fetches a client-supplied URL, only Aula file URLs on Aula's own hosts (https, `*.aula.dk`), and follows redirects only onto those hosts.
+`GET /attachments/{id}` → the file bytes with its `Content-Type` and `Content-Disposition: inline; filename=...`. `id` is an opaque server-issued id from a Post, Message or profile picture; the server never fetches a client-supplied URL, only Aula file URLs on Aula's own hosts (https, `*.aula.dk`), and follows redirects only onto those hosts.
 
 ## Messages
 
 `GET /threads` →
 ```json
-[{"id":"123","subject":"Forældremøde","from":"Leder","participants":57,"preview":"Parent meeting…","date":"timestamp","unread":true,"muted":false,"starred":false,"folderId":null}]
+[{"id":"123","subject":"Forældremøde","from":"Leder","picture":null,"participants":57,"preview":"Parent meeting…","date":"timestamp","unread":true,"muted":false,"starred":false,"folderId":null}]
 ```
 `GET /threads?page=N` → one page of threads, newest first. `page` is 0-based like Aula's (default 0, at most 100, else `400`). An empty list means there are no more threads. Page size is Aula's; the client should not assume it.
 `GET /threads?folder=<id>&page=N` → the same for one folder (an `id` from `/folders`). Without `folder` it's the inbox. `folderId` (nullable) is the folder the thread is in, `null` in the inbox.
@@ -126,7 +129,7 @@ Nullable here: `opensAt`, `closesAt`, `current.time`, `current.by`.
 `GET /threads/{id}` (also marks it read) →
 ```json
 {"id":"123","subject":"Forældremøde","canReply":true,
- "messages":[{"id":"m1","sender":"Leder","fromMe":false,"date":"timestamp","text":"plain text","attachments":[Attachment]}]}
+ "messages":[{"id":"m1","sender":"Leder","picture":"9c1d…","fromMe":false,"date":"timestamp","text":"plain text","attachments":[Attachment]}]}
 ```
 `POST /threads/{id}/reply` body `{"text":"...","audience":"everyone|sender","messageId":"m1"}` → `{"ok":true,"threadId":"..."}`.
 - `everyone`: a reply in the thread to all participants (`messaging.reply`).

@@ -45,13 +45,16 @@ class Store:
                 """
             )
 
-    def register_attachment(self, url: str, name: str) -> str:
-        """Remember an Aula attachment URL and return the opaque id for it."""
-        att_id = attachment_id(url)
+    def register_attachment(self, url: str, name: str, key: str | None = None) -> str:
+        """Remember an Aula attachment URL and return the opaque id for it.
+
+        The id hashes ``key`` (default: the URL). Re-registering an id stores
+        the newest URL, so a stable key keeps one id across signed URLs."""
+        att_id = attachment_id(key or url)
         with self._lock, self._db:
             self._db.execute(
                 "INSERT INTO attachments (id, url, name) VALUES (?, ?, ?) "
-                "ON CONFLICT(id) DO UPDATE SET name = excluded.name, seen_at = CURRENT_TIMESTAMP",
+                "ON CONFLICT(id) DO UPDATE SET url = excluded.url, name = excluded.name, seen_at = CURRENT_TIMESTAMP",
                 (att_id, url, name),
             )
         return att_id

@@ -248,7 +248,7 @@ async def today(s: SessionManager = Depends(session), st: Store = Depends(store)
     async def run(client):
         profile = await s.profile(client)
         days = [await m.load_child_day(client, c) for c in profile.children]
-        children = [m.child_out(d) for d in days]
+        children = [m.child_out(d, st.register_attachment) for d in days]
         child_ids = [c.id for c in profile.children]
         attention = await m._optional("holiday requests", m.holiday_requests(client, child_ids)) or []
         thread_rows = await m._optional("threads", m.threads(client)) or []
@@ -276,8 +276,8 @@ class PickupIn(BaseModel):
     note: str | None = None
 
 
-async def _child_response(s: SessionManager, client, child) -> dict:
-    return m.child_out(await m.load_child_day(client, child))
+async def _child_response(st: Store, client, child) -> dict:
+    return m.child_out(await m.load_child_day(client, child), st.register_attachment)
 
 
 @app.get("/children/{child_id}/pickup")
@@ -290,35 +290,37 @@ async def get_pickup(child_id: int, s: SessionManager = Depends(session)):
 
 
 @app.put("/children/{child_id}/pickup")
-async def put_pickup(child_id: int, body: PickupIn, s: SessionManager = Depends(session)):
+async def put_pickup(
+    child_id: int, body: PickupIn, s: SessionManager = Depends(session), st: Store = Depends(store)
+):
     if not m.valid_hhmm(body.time):
         raise ApiError(400, "bad_request", "time must be HH:mm")
 
     async def run(client):
         child = m.find_child(await s.profile(client), child_id)
         await m.set_pickup(client, child, body.time, body.by, body.note)
-        return await _child_response(s, client, child)
+        return await _child_response(st, client, child)
 
     return await s.call(run)
 
 
-async def _sick(s: SessionManager, child_id: int, sick: bool) -> dict:
+async def _sick(s: SessionManager, st: Store, child_id: int, sick: bool) -> dict:
     async def run(client):
         child = m.find_child(await s.profile(client), child_id)
         await m.set_sick(client, child, sick)
-        return await _child_response(s, client, child)
+        return await _child_response(st, client, child)
 
     return await s.call(run)
 
 
 @app.post("/children/{child_id}/sick")
-async def report_sick(child_id: int, s: SessionManager = Depends(session)):
-    return await _sick(s, child_id, True)
+async def report_sick(child_id: int, s: SessionManager = Depends(session), st: Store = Depends(store)):
+    return await _sick(s, st, child_id, True)
 
 
 @app.delete("/children/{child_id}/sick")
-async def unreport_sick(child_id: int, s: SessionManager = Depends(session)):
-    return await _sick(s, child_id, False)
+async def unreport_sick(child_id: int, s: SessionManager = Depends(session), st: Store = Depends(store)):
+    return await _sick(s, st, child_id, False)
 
 
 # --- holidays ----------------------------------------------------------------
@@ -428,7 +430,9 @@ async def attachment(att_id: str, s: SessionManager = Depends(session), st: Stor
     content_type = mimetypes.guess_type(name)[0] or "application/octet-stream"
     ascii_name = name.encode("ascii", "replace").decode().replace('"', "")
     disposition = f"inline; filename=\"{ascii_name}\"; filename*=UTF-8''{quote(name)}"
-    return Response(content=data, media_type=content_type, headers={"Content-Disposition": disposition})
+    # An id names one Aula file (pictures: one picture), so the app may keep its copy.
+    headers = {"Content-Disposition": disposition, "Cache-Control": "private, max-age=604800"}
+    return Response(content=data, media_type=content_type, headers=headers)
 
 
 # --- messages ----------------------------------------------------------------
@@ -444,8 +448,11 @@ async def list_threads(
     page: int = Query(0, ge=0, le=100),
     folder: int | None = Query(None, ge=1),
     s: SessionManager = Depends(session),
+    st: Store = Depends(store),
 ):
-    return await s.call(lambda client: m.threads(client, page, folder, seen=thread_rows(request)))
+    return await s.call(
+        lambda client: m.threads(client, page, folder, seen=thread_rows(request), register=st.register_attachment)
+    )
 
 
 class ThreadPatchIn(BaseModel):
@@ -455,13 +462,15 @@ class ThreadPatchIn(BaseModel):
 
 
 @app.patch("/threads/{thread_id}")
-async def patch_thread(thread_id: str, body: ThreadPatchIn, request: Request, s: SessionManager = Depends(session)):
+async def patch_thread(
+    thread_id: str, body: ThreadPatchIn, request: Request, s: SessionManager = Depends(session), st: Store = Depends(store)
+):
     if not thread_id.isdigit():
         raise ApiError(404, "not_found")
     changes = {k: getattr(body, k) for k in ("muted", "starred", "folderId") if k in body.model_fields_set}
     if not changes:
         raise ApiError(400, "bad_request", "nothing to change")
-    return await s.call(lambda client: m.update_thread(client, thread_rows(request), thread_id, changes))
+    return await s.call(lambda client: m.update_thread(client, thread_rows(request), thread_id, changes, st.register_attachment))
 
 
 @app.get("/threads/{thread_id}")

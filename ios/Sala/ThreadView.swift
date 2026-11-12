@@ -331,7 +331,7 @@ struct MessageBubble: View {
             if message.fromMe {
                 Spacer(minLength: 44)
             } else {
-                InitialsAvatar(name: message.sender)
+                InitialsAvatar(name: message.sender, picture: message.picture)
             }
             VStack(alignment: .leading, spacing: 6) {
                 HStack(alignment: .firstTextBaseline, spacing: 8) {
