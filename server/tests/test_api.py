@@ -38,15 +38,18 @@ def test_fake_mitid_login_flow(client):
     assert first["state"] == "logging_in"
     again = client.post("/auth/login", headers=AUTH).json()  # single-flight no-op
     assert again["state"] == "logging_in" and again["since"] == first["since"]
-    seen_otp = None
+    seen_otp = seen_qr = None
     for _ in range(50):
         status = client.get("/auth/status", headers=AUTH).json()
         seen_otp = seen_otp or status["otpCode"]
+        seen_qr = seen_qr or status["qr"]
         if status["state"] == "ok":
             break
         time.sleep(0.02)
     assert status == {**status, "state": "ok", "otpCode": None, "qr": None}
     assert seen_otp == FAKE_OTP
+    assert len(seen_qr) == 2 and set("".join(seen_qr[0])) == {"0", "1"}
+    assert len(seen_qr[0]) == len(seen_qr[0][0])  # square module matrix
     assert client.get("/today", headers=AUTH).status_code == 200
 
 

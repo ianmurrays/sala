@@ -124,6 +124,8 @@ struct AuthStatus: Codable, Sendable, Equatable {
     /// `ok|needs_login|logging_in|error`
     var state: String
     var otpCode: String?
+    /// The two MitID QR halves, each as rows of "0"/"1" modules. Shown alternating.
+    var qr: [[String]]?
     var message: String?
     var since: String?
 }

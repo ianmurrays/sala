@@ -31,6 +31,19 @@ INSTITUTION_NAME = "Børnehuset"
 GROUP = {"id": 3001, "name": "Stue", "shortName": "Stue"}
 FAKE_OTP = "482915"
 
+
+def fake_qr_codes():
+    """Two QR halves shaped like MitID's (see aula/auth/browser_client.py)."""
+    import qrcode
+
+    codes = []
+    for part, h in ((1, "a1b2c3d4e5f6a7b8"), (2, "c9d0e1f2a3b4c5d6")):
+        q = qrcode.QRCode(border=1)
+        q.add_data(f'{{"v":1,"p":{part},"t":2,"h":"{h}","uc":1}}')
+        q.make()
+        codes.append(q)
+    return codes
+
 # On an aula.dk subdomain so the attachment host allowlist applies unchanged.
 FILES_BASE = "https://fake-files.aula.dk/files/"
 PDF_URL = FILES_BASE + "praesentation.pdf"

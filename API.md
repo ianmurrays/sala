@@ -11,10 +11,10 @@ Other upstream failures → `502 {"error":"upstream","message":"..."}`. JSON key
 
 `GET /auth/status` →
 ```json
-{"state":"ok|needs_login|logging_in|error","otpCode":"123456|null","qr":null,"message":"string|null","since":"timestamp|null"}
+{"state":"ok|needs_login|logging_in|error","otpCode":"123456|null","qr":[["0101…"],["1100…"]],"message":"string|null","since":"timestamp|null"}
 ```
 - `needs_login`: no valid session; nothing running. Client offers "Log in with MitID".
-- `logging_in`: a MitID request was sent to the MitID app. `otpCode` is set when MitID asks the user to type a code into the app.
+- `logging_in`: a MitID request was sent to the MitID app. `otpCode` is set when MitID asks the user to type a code into the app. `qr` is set while MitID wants its QR code scanned: two halves, each a list of rows of `"0"`/`"1"` modules. Show them alternating in one spot, about a second each, on a white background.
 - `error`: last login failed; `message` says why. The server never retries on its own.
 
 `POST /auth/login` → starts one login (single-flight; calling it again while `logging_in` is a no-op). Returns the status object.

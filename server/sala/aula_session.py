@@ -30,7 +30,7 @@ from aula.http import HttpRequestError
 from aula.http_httpx import HttpxHttpClient
 
 from . import debuglog
-from .fake import FAKE_OTP, FAKE_TOKEN_DATA, FakeAula
+from .fake import FAKE_OTP, FAKE_TOKEN_DATA, FakeAula, fake_qr_codes
 from .mapping import TZ, auth_error
 
 _LOGGER = logging.getLogger(__name__)
@@ -64,6 +64,8 @@ class SessionManager:
 
         self.state = "needs_login"
         self.otp_code: str | None = None
+        # The two MitID QR halves as rows of "0"/"1" modules; the app alternates them.
+        self.qr: list[list[str]] | None = None
         self.message: str | None = None
         self.since: datetime | None = datetime.now(TZ)
 
@@ -112,7 +114,7 @@ class SessionManager:
         return {
             "state": self.state,
             "otpCode": self.otp_code if self.state == "logging_in" else None,
-            "qr": None,
+            "qr": self.qr if self.state == "logging_in" else None,
             "message": self.message,
             "since": self.since.isoformat(timespec="seconds") if self.since else None,
         }
@@ -123,6 +125,7 @@ class SessionManager:
         self.since = datetime.now(TZ)
         if state != "logging_in":
             self.otp_code = None
+            self.qr = None
 
     async def login(self) -> dict:
         """Start one MitID login. No-op while logging in or already logged in."""
@@ -161,13 +164,26 @@ class SessionManager:
         except Exception:  # noqa: BLE001
             _LOGGER.exception("could not record OTP code")
 
+    def _on_qr_codes(self, *codes) -> None:
+        # Must never raise, like _on_otp_code. MitID rotates the codes now and then.
+        try:
+            self.qr = [["".join("1" if c else "0" for c in row) for row in q.get_matrix()] for q in codes]
+        except Exception:  # noqa: BLE001
+            _LOGGER.exception("could not record MitID QR codes")
+
+    def _on_qr_done(self) -> None:
+        self.qr = None
+
     async def _run_login(self) -> None:
         try:
             if self.fake:
-                lead = min(0.5, self.fake_login_seconds / 5)
-                await asyncio.sleep(lead)
+                # Fake MitID: QR phase for the first half, then the OTP phase.
+                half = self.fake_login_seconds / 2
+                self._on_qr_codes(*fake_qr_codes())
+                await asyncio.sleep(half)
+                self._on_qr_done()
                 self._on_otp_code(FAKE_OTP)
-                await asyncio.sleep(self.fake_login_seconds - lead)
+                await asyncio.sleep(half)
                 client = await create_client(dict(FAKE_TOKEN_DATA), http_client=self.fake_aula)
             else:
                 # force_login: never reuse/refresh here, this IS the MitID login.
@@ -177,6 +193,8 @@ class SessionManager:
                         self.username,
                         self.storage,
                         on_otp_code=self._on_otp_code,
+                        on_qr_codes=self._on_qr_codes,
+                        on_qr_done=self._on_qr_done,
                         force_login=True,
                         auth_method="app",
                     )

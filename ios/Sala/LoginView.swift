@@ -31,12 +31,12 @@ struct LoginView: View {
                 }
             }
         }
-        // Poll every 2 s while a login is running. The task is cancelled when the view goes away
+        // Poll every second while a login is running. The task is cancelled when the view goes away
         // or when the state leaves `logging_in`.
         .task(id: state) {
             guard state == "logging_in" else { return }
             while !Task.isCancelled {
-                try? await Task.sleep(for: .seconds(2))
+                try? await Task.sleep(for: .seconds(1))
                 if Task.isCancelled { break }
                 await store.refreshAuthStatus()
             }
@@ -51,6 +51,12 @@ struct LoginView: View {
                 Text("Approve in the MitID app")
                     .font(.title2.bold())
                     .multilineTextAlignment(.center)
+                if let qr = store.auth?.qr, qr.count == 2 {
+                    Text("Open the MitID app, tap the QR scanner and hold the camera steady until both halves are read.")
+                        .multilineTextAlignment(.center)
+                        .foregroundStyle(.secondary)
+                    MitIDQRView(halves: qr)
+                }
                 if let code = store.auth?.otpCode, !code.isEmpty {
                     Text("Enter this code in the app")
                         .foregroundStyle(.secondary)
@@ -121,5 +127,30 @@ struct LoginView: View {
         .buttonStyle(.glassProminent)
         .controlSize(.large)
         .disabled(starting)
+    }
+}
+
+/// MitID's QR code comes in two halves that take turns in one spot, the way mitid.dk shows them.
+struct MitIDQRView: View {
+    let halves: [[String]]
+
+    var body: some View {
+        TimelineView(.periodic(from: .now, by: 1)) { context in
+            let half = halves[Int(context.date.timeIntervalSinceReferenceDate) % 2]
+            Canvas { gc, size in
+                let n = CGFloat(max(half.count, 1))
+                let cell = min(size.width, size.height) / n
+                for (y, row) in half.enumerated() {
+                    for (x, bit) in row.enumerated() where bit == "1" {
+                        gc.fill(Path(CGRect(x: CGFloat(x) * cell, y: CGFloat(y) * cell, width: cell, height: cell)),
+                                with: .color(.black))
+                    }
+                }
+            }
+            .frame(width: 260, height: 260)
+            .padding(16)
+            .background(.white, in: .rect(cornerRadius: 16))  // white in dark mode too, or it won't scan
+        }
+        .accessibilityLabel("MitID QR code")
     }
 }
