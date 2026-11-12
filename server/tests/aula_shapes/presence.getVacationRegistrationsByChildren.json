@@ -1,0 +1,38 @@
+[
+ {
+  "child": {
+   "id": "int",
+   "institutionCode": "str",
+   "institutionName": "str",
+   "institutionRole": "str",
+   "mainGroup": "null",
+   "metadata": "str",
+   "name": "str",
+   "profileId": "int",
+   "profilePicture": {
+    "bucket": "str",
+    "id": "int",
+    "isImageScalingPending": "bool",
+    "key": "str",
+    "scanningStatus": "str",
+    "url": "str"
+   },
+   "role": "str",
+   "shortName": "str"
+  },
+  "vacationRegistrations": [
+   {
+    "endDate": "str",
+    "isEditable": "bool",
+    "isMissingAnswer": "bool",
+    "isPresenceTimesRequired": "bool",
+    "noteToGuardian": "str",
+    "responseDeadline": "str",
+    "responseId": "int",
+    "startDate": "str",
+    "title": "str",
+    "vacationRegistrationId": "int"
+   }
+  ]
+ }
+]

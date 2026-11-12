@@ -1,0 +1,14 @@
+[
+ {
+  "pickupSuggestions": [],
+  "relatedPersons": [
+   {
+    "groupHomeId": "null",
+    "institutionProfileId": "int",
+    "name": "str",
+    "relation": "str"
+   }
+  ],
+  "uniStudentId": "int"
+ }
+]

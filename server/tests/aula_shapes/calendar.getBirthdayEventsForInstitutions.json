@@ -1,0 +1,12 @@
+[
+ {
+  "birthday": "str",
+  "institutionCode": "str",
+  "institutionProfileId": "int",
+  "mainGroupName": "str",
+  "name": "str",
+  "relatedChildrenIds": [
+   "int"
+  ]
+ }
+]

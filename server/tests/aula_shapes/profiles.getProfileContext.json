@@ -1,0 +1,203 @@
+{
+ "groupHomes": [],
+ "homePhonenumber": "null",
+ "id": "int",
+ "institutionProfile": {
+  "address": {
+   "id": "int",
+   "postalCode": "int",
+   "postalDistrict": "str",
+   "street": "str"
+  },
+  "birthday": "str",
+  "communicationBlock": "bool",
+  "delegatedCalendarProfiles": [],
+  "email": "str",
+  "encryptionKey": "str",
+  "firstName": "str",
+  "fullName": "str",
+  "gender": "str",
+  "id": "int",
+  "institution": {
+   "administrativeAuthority": {
+    "id": "int",
+    "institutionCodes": [],
+    "name": "str"
+   },
+   "institutionCode": "str",
+   "institutionName": "str",
+   "municipalityCode": "str",
+   "municipalityName": "str",
+   "type": "str"
+  },
+  "lastName": "str",
+  "mailBoxId": "int",
+  "mainGroupName": "null",
+  "metadata": "str",
+  "phone": "str",
+  "profileId": "int",
+  "profilePicture": "null",
+  "relations": [
+   {
+    "firstName": "str",
+    "fullName": "str",
+    "gender": "str",
+    "id": "int",
+    "institution": {
+     "administrativeAuthority": {
+      "id": "int",
+      "institutionCodes": [],
+      "name": "str"
+     },
+     "institutionCode": "str",
+     "institutionName": "str",
+     "municipalityCode": "str",
+     "municipalityName": "str",
+     "type": "str"
+    },
+    "lastName": "str",
+    "mailBoxId": "int",
+    "mainGroupName": "str",
+    "metadata": "str",
+    "profileId": "int",
+    "profilePicture": {
+     "bucket": "str",
+     "id": "int",
+     "isImageScalingPending": "bool",
+     "key": "str",
+     "scanningStatus": "str",
+     "url": "str"
+    },
+    "role": "str",
+    "shortName": "str",
+    "uniPersonId": "int"
+   }
+  ],
+  "role": "str",
+  "shortName": "str",
+  "uniPersonId": "int"
+ },
+ "institutions": [
+  {
+   "administrativeAuthority": {
+    "id": "int",
+    "institutionCodes": [
+     "str"
+    ],
+    "name": "str"
+   },
+   "children": [
+    {
+     "hasCustodyOrExtendedAccess": "bool",
+     "id": "int",
+     "institutionCode": "str",
+     "name": "str",
+     "profileId": "int",
+     "profilePicture": {
+      "bucket": "str",
+      "id": "int",
+      "isImageScalingPending": "bool",
+      "key": "str",
+      "scanningStatus": "str",
+      "url": "str"
+     },
+     "shortName": "str",
+     "userId": "str"
+    }
+   ],
+   "communicationBlock": "bool",
+   "groups": [
+    {
+     "dashboardEnabled": "bool",
+     "description": "str",
+     "endTime": "null",
+     "groupType": "str",
+     "id": "int",
+     "membershipId": "int",
+     "membershipType": "str",
+     "name": "str",
+     "role": "str",
+     "uniGroupId": "str"
+    }
+   ],
+   "institutionCode": "str",
+   "institutionProfileId": "int",
+   "institutionRole": "str",
+   "institutionType": "str",
+   "mailboxId": "int",
+   "municipalityCode": "str",
+   "name": "str",
+   "permissions": [
+    {
+     "groupScopes": [
+      "int"
+     ],
+     "institutionScope": "bool",
+     "permissionId": "int",
+     "stepUp": "bool"
+    }
+   ],
+   "shortName": "str"
+  }
+ ],
+ "isGroupHomeAdmin": "bool",
+ "isSteppedUp": "bool",
+ "loginPortalRole": "null",
+ "mobilePhonenumber": "null",
+ "municipalAdmin": "bool",
+ "municipalGroups": [
+  {
+   "dashboardEnabled": "bool",
+   "description": "str",
+   "endTime": "null",
+   "groupType": "str",
+   "id": "int",
+   "membershipId": "null",
+   "membershipInstitutions": [
+    "str"
+   ],
+   "membershipType": "str",
+   "name": "str",
+   "role": "str",
+   "uniGroupId": "null"
+  }
+ ],
+ "pageConfiguration": {
+  "editorPluginDetails": [
+   {
+    "institutionType": "str",
+    "municipalityCode": "str",
+    "pluginName": "str"
+   }
+  ],
+  "moduleConfigurations": [
+   {
+    "aggregatedDisplayMode": "str",
+    "centralDisplayMode": "str",
+    "id": "int",
+    "institutionDisplayMode": "str",
+    "institutionRole": "str",
+    "institutionalRestrictedGroups": [],
+    "module": {
+     "canBePlacedOnGroup": "bool",
+     "description": "str",
+     "icon": "str",
+     "id": "int",
+     "name": "str",
+     "type": "str",
+     "url": "str"
+    },
+    "municipalityDisplayMode": "str",
+    "order": "int",
+    "placement": "str",
+    "restrictedGroups": [],
+    "scope": "str"
+   }
+  ],
+  "widgetConfigurations": []
+ },
+ "portalRole": "str",
+ "supportRole": "bool",
+ "userId": "str",
+ "workPhonenumber": "null"
+}

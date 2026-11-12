@@ -1,0 +1,108 @@
+{
+ "extraRecipientsCount": "null",
+ "firstMessage": {
+  "attachments": "null",
+  "canReplyToMessage": "bool",
+  "deletedAt": "null",
+  "hasAttachments": "bool",
+  "id": "str",
+  "inviterName": "null",
+  "leaverNames": "null",
+  "messageType": "str",
+  "newRecipients": "null",
+  "originalRecipients": "null",
+  "pendingMedia": "bool",
+  "sendDateTime": "str",
+  "sender": {
+   "answerDirectlyName": "str",
+   "fullName": "str",
+   "institutionCode": "str",
+   "mailBoxOwner": {
+    "id": "int",
+    "isDeactivated": "bool",
+    "mailBoxOwnerType": "str",
+    "portalRole": "str",
+    "profileId": "int"
+   },
+   "metadata": "str",
+   "profilePicture": {
+    "url": "str"
+   },
+   "shortName": "str"
+  },
+  "text": {
+   "html": "str"
+  }
+ },
+ "folderName": "null",
+ "hasSecureDocuments": "bool",
+ "id": "int",
+ "institutionCode": "str",
+ "isArchived": "bool",
+ "isThreadForwarded": "bool",
+ "lastReadMessageId": "str",
+ "mailBoxOwner": {
+  "id": "int",
+  "isDeactivated": "bool",
+  "mailBoxOwnerType": "str",
+  "portalRole": "str",
+  "profileId": "int"
+ },
+ "marked": "bool",
+ "messages": [],
+ "moreMessagesExist": "bool",
+ "muted": "bool",
+ "page": "int",
+ "recipients": [
+  {
+   "answerDirectlyName": "str",
+   "deletedAt": "null",
+   "fullName": "str",
+   "lastReadMessageId": "str",
+   "lastReadTimestamp": "str",
+   "leaveTime": "null",
+   "mailBoxOwner": {
+    "id": "int",
+    "isDeactivated": "bool",
+    "mailBoxOwnerType": "str",
+    "portalRole": "str",
+    "profileId": "int"
+   },
+   "metadata": "str",
+   "profilePicture": {
+    "bucket": "str",
+    "id": "int",
+    "isImageScalingPending": "bool",
+    "key": "str",
+    "scanningStatus": "str",
+    "url": "str"
+   },
+   "shortName": "str"
+  }
+ ],
+ "sensitive": "bool",
+ "subject": "str",
+ "threadCreator": {
+  "answerDirectlyName": "str",
+  "fullName": "str",
+  "institutionCode": "str",
+  "mailBoxOwner": {
+   "id": "int",
+   "isDeactivated": "bool",
+   "mailBoxOwnerType": "str",
+   "portalRole": "str",
+   "profileId": "int"
+  },
+  "metadata": "str",
+  "profilePicture": {
+   "url": "str"
+  },
+  "shortName": "str"
+ },
+ "threadEntityLinkDto": {
+  "entityId": "null",
+  "threadType": "str"
+ },
+ "threadStartedDateTime": "str",
+ "totalMessageCount": "int"
+}

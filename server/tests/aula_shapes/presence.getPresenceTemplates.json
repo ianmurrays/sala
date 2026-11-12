@@ -1,0 +1,50 @@
+{
+ "currentDate": "str",
+ "presenceWeekTemplates": [
+  {
+   "dayTemplates": [
+    {
+     "activityType": "null",
+     "byDate": "str",
+     "comment": "null",
+     "dayOfWeek": "int",
+     "entryTime": "null",
+     "exitTime": "null",
+     "exitWith": "null",
+     "id": "null",
+     "isDefaultEntryTime": "bool",
+     "isDefaultExitTime": "bool",
+     "isOnVacation": "bool",
+     "isPlannedTimesOutsideOpeningHours": "bool",
+     "repeatFromDate": "str",
+     "repeatPattern": "str",
+     "repeatToDate": "null",
+     "selfDeciderEndTime": "null",
+     "selfDeciderStartTime": "null",
+     "spareTimeActivity": "null",
+     "vacation": "null"
+    }
+   ],
+   "institutionProfile": {
+    "id": "int",
+    "institutionCode": "str",
+    "institutionName": "str",
+    "institutionRole": "str",
+    "mainGroup": "null",
+    "metadata": "str",
+    "name": "str",
+    "profileId": "int",
+    "profilePicture": {
+     "bucket": "str",
+     "id": "int",
+     "isImageScalingPending": "bool",
+     "key": "str",
+     "scanningStatus": "str",
+     "url": "str"
+    },
+    "role": "str",
+    "shortName": "str"
+   }
+  }
+ ]
+}

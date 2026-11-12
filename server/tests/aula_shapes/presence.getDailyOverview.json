@@ -1,0 +1,54 @@
+[
+ {
+  "activityType": "int",
+  "checkInTime": "str",
+  "checkOutTime": "str",
+  "comment": "null",
+  "editablePresenceStates": [],
+  "entryTime": "str",
+  "exitTime": "str",
+  "exitWith": "str",
+  "id": "int",
+  "institutionProfile": {
+   "id": "int",
+   "institutionCode": "str",
+   "institutionName": "str",
+   "institutionRole": "str",
+   "mainGroup": "null",
+   "metadata": "str",
+   "name": "str",
+   "profileId": "int",
+   "profilePicture": {
+    "bucket": "str",
+    "id": "int",
+    "isImageScalingPending": "bool",
+    "key": "str",
+    "scanningStatus": "str",
+    "url": "str"
+   },
+   "role": "str",
+   "shortName": "str"
+  },
+  "isDefaultEntryTime": "bool",
+  "isDefaultExitTime": "bool",
+  "isPlannedTimesOutsideOpeningHours": "bool",
+  "location": "null",
+  "mainGroup": {
+   "allowMembersToBeShown": "bool",
+   "id": "int",
+   "institutionCode": "str",
+   "institutionName": "str",
+   "isDeactivated": "bool",
+   "mainGroup": "bool",
+   "name": "str",
+   "shortName": "str",
+   "uniGroupType": "str"
+  },
+  "selfDeciderEndTime": "null",
+  "selfDeciderStartTime": "null",
+  "sleepIntervals": [],
+  "spareTimeActivity": "null",
+  "status": "int",
+  "vacationNote": "null"
+ }
+]

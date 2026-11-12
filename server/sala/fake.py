@@ -60,8 +60,18 @@ def _picture() -> dict:
 _SIGS = itertools.count()
 
 
-def _no_picture(person: dict) -> dict:
-    return {k: v for k, v in person.items() if k != "profilePicture"}
+def _row_person(person: dict, *, recipient: bool = False) -> dict:
+    """A person as live getThreads rows have them (tests/aula_shapes): profileId and
+    role sit on mailBoxOwner, and only recipients carry shortName and the picture."""
+    out = {
+        "fullName": person["fullName"],
+        "metadata": person["metadata"],
+        "answerDirectlyName": person["answerDirectlyName"],
+        "mailBoxOwner": {**person["mailBoxOwner"], "profileId": person["profileId"], "portalRole": person["role"]},
+    }
+    if recipient:
+        out |= {"shortName": person["shortName"], "profilePicture": person.get("profilePicture"), "leaveTime": None}
+    return out
 
 # What a fake MitID login hands to create_client().
 FAKE_TOKEN_DATA = {"tokens": {"access_token": "fake-access-token"}, "cookies": {}}
@@ -748,8 +758,8 @@ class FakeAula:
                 "institutionCode": INSTITUTION_CODE,
                 "mailBoxOwner": {"id": GUARDIAN_IP, "mailBoxOwnerType": "institutionProfile"},
                 # Live getThreads rows carry pictures only on recipients, not on creator or latestMessage.
-                "creator": _no_picture(msgs[0][1]),
-                "recipients": [{**r, "leaveTime": None} for r in recipients],
+                "creator": _row_person(msgs[0][1]),
+                "recipients": [_row_person(r, recipient=True) for r in recipients],
                 "lastReadMessageId": built[-1]["id"] if read else None,
                 **self._subscription(tid, 71 if tid == 9106 else None),
             }
@@ -768,13 +778,13 @@ class FakeAula:
 
     def _refresh_latest(self, tid: int) -> None:
         latest = self.messages[tid][0]
-        self.threads[tid]["latestMessage"] = {k: latest[k] for k in ("id", "text", "sendDateTime")} | {"sender": _no_picture(latest["sender"])}
-        self.threads[tid]["lastUpdatedDate"] = latest["sendDateTime"]
+        # Live rows name no sender for the latest message (tests/aula_shapes).
+        self.threads[tid]["latestMessage"] = {k: latest[k] for k in ("id", "text", "sendDateTime")}
 
     def _messaging_getThreads(self, q, body):
         folder = int(q["folderId"]) if q.get("folderId") else None  # no folderId = the inbox
         threads = sorted(
-            (t for t in self.threads.values() if t["folderId"] == folder), key=lambda t: t["lastUpdatedDate"], reverse=True
+            (t for t in self.threads.values() if t["folderId"] == folder), key=lambda t: t["latestMessage"]["sendDateTime"], reverse=True
         )
         page = int(q.get("page", 0))
         rows = threads[page * THREADS_PAGE_SIZE : (page + 1) * THREADS_PAGE_SIZE]
@@ -795,7 +805,6 @@ class FakeAula:
                 "mailBoxOwner": thread["mailBoxOwner"],
                 "sensitive": thread["sensitive"],
                 "isArchived": thread["isArchived"],
-                "leaveTime": thread["leaveTime"],
                 "messages": rows,
                 "moreMessagesExist": (page + 1) * limit < len(self.messages[tid]),
                 "lastReadMessageId": thread["lastReadMessageId"],
@@ -877,9 +886,8 @@ class FakeAula:
             "leaveTime": None,
             "institutionCode": INSTITUTION_CODE,
             "mailBoxOwner": {"id": GUARDIAN_IP, "mailBoxOwnerType": "institutionProfile"},
-            "creator": ME,
-            "recipients": [{**ME, "leaveTime": None}]
-            + [{**by_id.get(r["id"], r), "leaveTime": None} for r in body["recipients"]],
+            "creator": _row_person(ME),
+            "recipients": [_row_person(p, recipient=True) for p in (ME, *(by_id[r["id"]] for r in body["recipients"]))],
             "lastReadMessageId": msg["id"],
             **self._subscription(tid),
         }
