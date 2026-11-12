@@ -3,6 +3,8 @@ import SwiftUI
 struct TodayView: View {
     @Environment(Store.self) private var store
     @State private var pickupChild: Child?
+    @State private var holidayItem: AttentionItem?
+    @State private var showAbsence = false
     @State private var attachments = AttachmentOpener()
 
     var body: some View {
@@ -21,6 +23,12 @@ struct TodayView: View {
             .toolbar(.hidden, for: .navigationBar)
             .sheet(item: $pickupChild) { child in
                 PickupSheet(child: child)
+            }
+            .sheet(item: $holidayItem) { item in
+                HolidaySheet(item: item)
+            }
+            .sheet(isPresented: $showAbsence) {
+                AbsenceSheet()
             }
             .quickLookPreview(attachments)
         }
@@ -100,6 +108,15 @@ struct TodayView: View {
         ForEach(today.children) { child in
             ChildCard(child: child) { pickupChild = child }
         }
+        if !today.children.isEmpty {
+            Button { showAbsence = true } label: {
+                Label("Register holiday or days off", systemImage: "sun.max")
+                    .font(.body.weight(.semibold))
+                    .frame(maxWidth: .infinity, minHeight: 30)
+            }
+            .buttonStyle(.glass)
+            .tint(.salaAccent)
+        }
 
         if !today.attention.isEmpty {
             VStack(alignment: .leading, spacing: 10) {
@@ -108,7 +125,7 @@ struct TodayView: View {
                     ForEach(Array(today.attention.enumerated()), id: \.element.id) { i, item in
                         if i > 0 { Divider().padding(.leading, 56) }
                         AttentionRow(item: item) {
-                            store.openThread(item.threadId)
+                            if item.kind == "holiday_request" { holidayItem = item } else { store.openThread(item.threadId) }
                         }
                     }
                 }
@@ -371,15 +388,16 @@ struct ChildCard: View {
 
 struct AttentionRow: View {
     let item: AttentionItem
-    let openMessage: () -> Void
+    let open: () -> Void
 
     private var isMessage: Bool { item.kind == "message" }
+    private var opens: Bool { isMessage || item.kind == "holiday_request" }
 
     var body: some View {
-        if isMessage {
-            Button(action: openMessage) { row }
+        if opens {
+            Button(action: open) { row }
                 .buttonStyle(.plain)
-                .accessibilityHint("Opens the message")
+                .accessibilityHint(isMessage ? "Opens the message" : "Opens the request to answer it")
         } else {
             row
         }
@@ -402,7 +420,7 @@ struct AttentionRow: View {
                 }
             }
             Spacer(minLength: 0)
-            if isMessage {
+            if opens {
                 Image(systemName: "chevron.right")
                     .font(.footnote.weight(.semibold))
                     .foregroundStyle(.tertiary)

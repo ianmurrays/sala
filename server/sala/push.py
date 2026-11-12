@@ -7,7 +7,8 @@ publishes one ntfy notification per new item:
   plus exactly one other person, sent by that person
 - important post: a post with ``isImportant``
 - holiday request: an unanswered vacation registration (high priority when
-  the deadline is 2 days away or less)
+  the deadline is 2 days away or less), plus a reminder the day before its
+  deadline and one on the deadline day (see ``holiday_events``)
 - login needed: while the session is ``needs_login`` or ``error``, every poll
   (and ``SessionManager.login_needed_hooks``, for an immediate attempt) tries to
   publish one notification per loss until ntfy accepts it. The loss marker is
@@ -35,7 +36,7 @@ notifies either. An item is marked seen only after ntfy answers
 import asyncio
 import logging
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, time
 from typing import Any
 
 from urllib.parse import urlsplit, urlunsplit
@@ -54,6 +55,7 @@ _LOGGER = logging.getLogger(__name__)
 PRIORITY_DEFAULT = 3
 PRIORITY_HIGH = 4
 KINDS = ("message", "post", "holiday")
+REMINDER_HOUR = 7  # deadline reminders wait until 07:00 Danish time, not midnight
 LOSS_MARKER = "login_loss"  # store state key: when the current session loss began
 
 
@@ -66,6 +68,8 @@ class Event:
     priority: int = PRIORITY_DEFAULT
     notify: bool = True  # False: just remember it (my own message, a group thread)
     at: datetime | None = None  # when it was sent, if known
+    covers: list[str] = field(default_factory=list)  # keys also marked seen when this one is sent
+    not_before: datetime | None = None  # held back (not marked seen) until then
 
 
 def _owner_id(person: Any) -> Any:
@@ -135,22 +139,45 @@ def post_event(post) -> Event | None:
     )
 
 
-def holiday_event(reg, today) -> Event | None:
+def holiday_events(reg, today) -> list[Event]:
+    """The new-request event, plus a deadline reminder on the day before the
+    deadline and on the deadline day.
+
+    Each reminder key names its day (``holiday-due:<id>:<deadline>:1`` / ``:0``)
+    and exists only on that day, so a refused reminder is retried that day but
+    never sent late, and nothing is sent once the deadline has passed. It is
+    held back until 07:00. A new-request notification sent the same poll
+    covers that day's reminder, so on such a day it also waits until 07:00.
+    """
     if not reg.is_missing_answer:
-        return None
-    start, end = m._date(reg.start_date), m._date(reg.end_date)
-    deadline = m._date(reg.response_deadline)
-    title = f"Holiday request {m.date_range_label(start, end) if start else reg.title or ''}".rstrip()
-    if deadline:
-        title += f" · answer by {m._short_date(deadline)}"
+        return []
+    start, end = m.local_date(reg.start_date), m.local_date(reg.end_date)
+    deadline = m.local_date(reg.response_deadline)
+    label = f"Holiday request {m.date_range_label(start, end) if start else reg.title or ''}".rstrip()
+    title = label + (f" · answer by {m._short_date(deadline)}" if deadline else "")
     urgent = bool(deadline and (deadline - today).days <= 2)
-    return Event(
+    days_left = (deadline - today).days if deadline else None
+    reminder = None
+    if days_left in (0, 1):
+        reminder = Event(
+            key=f"holiday-due:{reg.id}:{deadline.isoformat()}:{days_left}",
+            title=label + (" · answer today" if days_left == 0 else " · answer by tomorrow"),
+            click="sala://today",
+            tags=["palm_tree"],
+            priority=PRIORITY_HIGH,
+            not_before=datetime.combine(today, time(REMINDER_HOUR), m.TZ),
+        )
+    request = Event(
         key=f"holiday:{reg.id}",
         title=title,
         click="sala://today",
         tags=["palm_tree"],
         priority=PRIORITY_HIGH if urgent else PRIORITY_DEFAULT,
+        covers=[reminder.key] if reminder else [],
+        # Standing in for that day's reminder, it waits for the morning too.
+        not_before=reminder.not_before if reminder else None,
     )
+    return [request, reminder] if reminder else [request]
 
 
 async def collect(session: SessionManager, client, seen=lambda key: False) -> dict[str, list[Event] | None]:
@@ -191,7 +218,7 @@ async def collect(session: SessionManager, client, seen=lambda key: False) -> di
     async def holidays():
         today = aula_today()
         regs = await client.get_vacation_registrations([c.id for c in profile.children])
-        return [e for e in (holiday_event(r, today) for r in regs) if e]
+        return [e for r in regs for e in holiday_events(r, today)]
 
     return {
         "message": await m._optional("push: threads", messages()),
@@ -348,7 +375,7 @@ class Pusher:
                 _LOGGER.info("push: seeded %s (%d items, no notifications)", kind, len(events))
                 continue
             for e in events:
-                if self.store.seen(e.key):
+                if self.store.seen(e.key) or (e.not_before and m.now() < e.not_before):
                     continue
                 # Older than seeding (e.g. slid into the fetched page when a
                 # newer item was deleted): remember it, don't notify.
@@ -356,6 +383,6 @@ class Pusher:
                     self.store.mark_seen([e.key])
                     continue
                 if await self.publish(e.title, click=e.click, priority=e.priority, tags=e.tags):
-                    self.store.mark_seen([e.key])
+                    self.store.mark_seen([e.key, *e.covers])
                     sent += 1
         return sent

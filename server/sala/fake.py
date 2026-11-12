@@ -165,6 +165,15 @@ class FakeAula:
         self.posts = self._posts(now)
         self.threads, self.messages = self._threads(now)
         self.vacations = self._vacations(today)
+        # responseId -> one child's answer (presence.getVacationRegistrationResponse)
+        self.vacation_responses: dict[int, dict] = {
+            v["responseId"]: {"vacationRegistrationResponseId": v["responseId"], "childId": CHILD_ID, "comment": "", "days": []}
+            for v in self.vacations
+        }
+        self.vacation_responses[5401]["days"] = [
+            {"date": d.isoformat(), "isComing": False, "entryTime": None, "exitTime": None}
+            for d in (today - timedelta(days=20 - i) for i in range(5))
+        ]
 
     # --- HttpClient protocol -------------------------------------------------
 
@@ -392,7 +401,7 @@ class FakeAula:
                 "title": "Juleferie",
                 "startDate": dec.isoformat(),
                 "endDate": (dec + timedelta(days=2)).isoformat(),
-                "responseId": 0,
+                "responseId": 5501,
                 "responseDeadline": (today + timedelta(days=1)).isoformat(),
                 "noteToGuardian": "Giv besked om Oskar holder fri.",
                 "isEditable": True,
@@ -403,18 +412,19 @@ class FakeAula:
                 "title": "Vinterferie",
                 "startDate": feb.isoformat(),
                 "endDate": (feb + timedelta(days=4)).isoformat(),
-                "responseId": 0,
+                "responseId": 5601,
                 "responseDeadline": (today + timedelta(days=12)).isoformat(),
                 "noteToGuardian": "",
                 "isEditable": True,
                 "isMissingAnswer": True,
+                "isPresenceTimesRequired": True,
             },
             {
                 "vacationRegistrationId": 54,
                 "title": "Efterårsferie",
                 "startDate": (today - timedelta(days=20)).isoformat(),
                 "endDate": (today - timedelta(days=16)).isoformat(),
-                "responseId": 9,
+                "responseId": 5401,
                 "responseDeadline": (today - timedelta(days=30)).isoformat(),
                 "isEditable": False,
                 "isMissingAnswer": False,
@@ -423,6 +433,28 @@ class FakeAula:
 
     def _presence_getVacationRegistrationsByChildren(self, q, body):
         return _ok([{"child": {"id": CHILD_ID, "name": "Oskar"}, "vacationRegistrations": self.vacations}])
+
+    def _presence_getVacationRegistrationResponse(self, q, body):
+        rid = int(q["vacationRegistrationResponseId"])
+        reg = next(v for v in self.vacations if v["responseId"] == rid)
+        return _ok({"vacationRegistration": reg, "vacationRegistrationResponse": self.vacation_responses[rid]})
+
+    def _calendar_respondToVacationRegistrationRequest(self, q, body):
+        rid = body["vacationRegistrationResponseId"]
+        self.vacation_responses[rid].update(comment=body["comment"], days=body["days"])
+        next(v for v in self.vacations if v["responseId"] == rid)["isMissingAnswer"] = False
+        return _ok(None)
+
+    def _calendar_addVacation(self, q, body):
+        """Marks the weekdays as absent (isOnVacation) in the day templates."""
+        for interval in body["intervals"]:
+            day, end = date.fromisoformat(interval["startDate"]), date.fromisoformat(interval["endDate"])
+            while day <= end:
+                if day.isoweekday() < 6:
+                    key = day.isoformat()
+                    self.overrides[key] = {**self._template_for(key), "isOnVacation": True}
+                day += timedelta(days=1)
+        return _ok(True)
 
     # --- debug: new items for push testing -----------------------------------
 
@@ -457,13 +489,17 @@ class FakeAula:
     def add_holiday_request(self, deadline_days: int = 1) -> int:
         rid = 60 + next(self._ids)
         start = aula_today() + timedelta(days=30)
+        response_id = 6000 + rid
+        self.vacation_responses[response_id] = {
+            "vacationRegistrationResponseId": response_id, "childId": CHILD_ID, "comment": "", "days": []
+        }
         self.vacations.append(
             {
                 "vacationRegistrationId": rid,
                 "title": "Sommerferie",
                 "startDate": start.isoformat(),
                 "endDate": (start + timedelta(days=2)).isoformat(),
-                "responseId": 0,
+                "responseId": response_id,
                 "responseDeadline": (aula_today() + timedelta(days=deadline_days)).isoformat(),
                 "noteToGuardian": "",
                 "isEditable": True,

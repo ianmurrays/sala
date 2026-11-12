@@ -28,7 +28,7 @@ On start the server loads the stored session and lets the library refresh it. It
 
 ## Push (ntfy)
 
-With `NTFY_TOPIC` set, a background poller checks Aula every `POLL_SECONDS` (only while the session is `ok`) and publishes new direct messages, important posts and holiday requests to ntfy. While the session is `needs_login` or `error` it instead publishes "Aula login needed", once per loss: retried every poll until ntfy accepts it, and not repeated after a restart (the loss is recorded in `sala.sqlite3` and cleared by a successful login). See the Push section of [`../API.md`](../API.md) for the exact events. Titles only, never message or post bodies.
+With `NTFY_TOPIC` set, a background poller checks Aula every `POLL_SECONDS` (only while the session is `ok`) and publishes new direct messages, important posts and holiday requests to ntfy, plus a reminder for each unanswered holiday request the day before its deadline and on the deadline day. While the session is `needs_login` or `error` it instead publishes "Aula login needed", once per loss: retried every poll until ntfy accepts it, and not repeated after a restart (the loss is recorded in `sala.sqlite3` and cleared by a successful login). See the Push section of [`../API.md`](../API.md) for the exact events. Titles only, never message or post bodies.
 
 - Install the ntfy iOS app and subscribe to the topic (same server as `NTFY_URL`).
 - On public ntfy.sh anyone who knows the topic can read it: use a long random topic, e.g. `python3 -c "import secrets; print('sala-' + secrets.token_urlsafe(24))"`.
@@ -40,7 +40,7 @@ A message counts as direct when the thread's participants, read from the `messag
 ## Debugging against live Aula
 
 - `SALA_DEBUG_SHAPES=1` logs one line per Aula API call: method, status and the JSON reduced to its shape. Strings become `str[n]`, URLs keep only their host, and dates plus a few enum keys (`status`, `type`, `activityType`, ...) stay readable. Names and message text never reach the log. Writes log their payload shape too (`aula →`).
-- `SALA_READ_ONLY=1` answers every write route (pickup, sick, save, reply) with 403 `read_only`, so nothing reaches the daycare. Opening a thread still marks it read in Aula.
+- `SALA_READ_ONLY=1` answers every write route (pickup, sick, save, reply, holiday answers, absences) with 403 `read_only`, so nothing reaches the daycare. Opening a thread still marks it read in Aula.
 
 ```
 SALA_TOKEN=... AULA_USERNAME=... SALA_DEBUG_SHAPES=1 SALA_READ_ONLY=1 \
@@ -53,7 +53,7 @@ SALA_TOKEN=... AULA_USERNAME=... SALA_DEBUG_SHAPES=1 SALA_READ_ONLY=1 \
 cd server && SALA_FAKE=1 SALA_TOKEN=dev uv run uvicorn sala.app:app --host 0.0.0.0 --port 8000
 ```
 
-`sala/fake.py` fakes Aula at the HTTP layer (the library's `HttpClient`), so the real client and mapping code run on top of it. Data: daycare "Børnehuset", child Oskar in "Stue", a weekly pickup template, 2 open holiday requests (one due tomorrow), 5 threads, 3 posts with a PDF and a PNG. Writes are recorded (`FakeAula.writes`) and reflected in later reads. It starts in `needs_login`; `POST /auth/login` shows OTP `482915` for about 3 seconds, then `ok`.
+`sala/fake.py` fakes Aula at the HTTP layer (the library's `HttpClient`), so the real client and mapping code run on top of it. Data: daycare "Børnehuset", child Oskar in "Stue", a weekly pickup template, 2 open holiday requests (one due tomorrow, one that asks for drop-off and pickup times) that can be answered, 5 threads, 3 posts with a PDF and a PNG. Writes are recorded (`FakeAula.writes`) and reflected in later reads. It starts in `needs_login`; `POST /auth/login` shows OTP `482915` for about 3 seconds, then `ok`.
 
 Fake mode starts in `needs_login`, so with `NTFY_TOPIC` set it publishes "Aula login needed" at startup (and after each restart, since fake keeps no session). To test push end to end, fake mode adds three routes (bearer token still required; 404 without `SALA_FAKE=1`) that make a new item appear for the next poll:
 

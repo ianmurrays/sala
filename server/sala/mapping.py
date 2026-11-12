@@ -22,8 +22,9 @@ from zoneinfo import ZoneInfo
 
 import httpx
 from aula import AulaApiClient
+from aula.api_client import validate_vacation
 from aula.http import AulaAuthenticationError, AulaInvalidTokenError, AulaSessionExpiredError, HttpRequestError
-from aula.models import ActivityType, Child, PresenceModule, PresenceState, Profile
+from aula.models import ActivityType, Child, PresenceModule, PresenceModulePermission, PresenceState, Profile
 from aula.models.attachment import Attachment, parse_attachments
 from aula.utils.dates import aula_today, parse_api_datetime
 from aula.utils.html import html_to_plain
@@ -136,6 +137,19 @@ def date_range_label(start: date, end: date | None) -> str:
     if (start.year, start.month) == (end.year, end.month):
         return f"{start.day}–{end.day} {end.strftime('%b')}"
     return f"{_short_date(start)} – {_short_date(end)}"
+
+
+def valid_hhmm(value: Any) -> bool:
+    """Exactly "HH:mm" (fromisoformat alone accepts "24:00" and other ISO forms)."""
+    try:
+        return isinstance(value, str) and len(value) == 5 and time.fromisoformat(value).strftime("%H:%M") == value
+    except ValueError:
+        return False
+
+
+def local_date(value: Any) -> date | None:
+    """A date or timestamp from Aula -> the date in Copenhagen ("2026-12-20T23:00:00Z" is 21 Dec)."""
+    return _date(iso(value) or value)
 
 
 def _date(value: Any) -> date | None:
@@ -310,26 +324,31 @@ async def opening_hours(client: AulaApiClient, institution_code: str, day: date)
     general_opening_hours, closed_day, default_opening_hours). Axios sends
     array params as ``institutionCodes[]``.
     """
+    for entry in await _opening_hours_rows(client, institution_code, day, day):
+        if str(entry.get("date", ""))[:10] == day.isoformat():
+            if entry.get("type") == "closed_day":
+                return None, None
+            return hhmm(entry.get("openTime")), hhmm(entry.get("closeTime"))
+    return None, None
+
+
+async def _opening_hours_rows(client: AulaApiClient, institution_code: str, start: date, end: date) -> list[dict]:
     resp = await client._request_with_version_retry(
         "get",
         client.api_url,
         params={
             "method": "presence.getOpeningHoursByInstitutionCodes",
             "institutionCodes[]": [institution_code],
-            "startDate": day.isoformat(),
-            "endDate": day.isoformat(),
+            "startDate": start.isoformat(),
+            "endDate": end.isoformat(),
         },
     )
     resp.raise_for_status()
+    rows = []
     for overview in get_in(resp.json(), "data.openingHoursOverviewDto", default=[]) or []:
-        if not isinstance(overview, dict) or overview.get("institutionCode") != institution_code:
-            continue
-        for entry in overview.get("openingHoursDto") or []:
-            if isinstance(entry, dict) and str(entry.get("date", ""))[:10] == day.isoformat():
-                if entry.get("type") == "closed_day":
-                    return None, None
-                return hhmm(entry.get("openTime")), hhmm(entry.get("closeTime"))
-    return None, None
+        if isinstance(overview, dict) and overview.get("institutionCode") == institution_code:
+            rows += [e for e in overview.get("openingHoursDto") or [] if isinstance(e, dict)]
+    return rows
 
 
 def person_label(person) -> str:
@@ -518,11 +537,13 @@ async def set_sick(client: AulaApiClient, child: Child, sick: bool) -> None:
 async def holiday_requests(client: AulaApiClient, child_ids: list[int]) -> list[dict]:
     today = aula_today()
     out = []
+    ids: set[int] = set()
     for reg in await client.get_vacation_registrations(child_ids):
-        if not reg.is_missing_answer:
+        if not reg.is_missing_answer or reg.id in ids:  # one row per child; one card per request
             continue
-        start, end = _date(reg.start_date), _date(reg.end_date)
-        deadline = _date(reg.response_deadline)
+        ids.add(reg.id)
+        start, end = local_date(reg.start_date), local_date(reg.end_date)
+        deadline = local_date(reg.response_deadline)
         title = f"Holiday request: {date_range_label(start, end) if start else reg.title or 'no dates'}"
         out.append(
             {
@@ -597,6 +618,271 @@ async def upcoming(client: AulaApiClient, children: list[Child], groups: list[st
 
     items.sort(key=lambda i: i["date"])
     return items[:limit]
+
+
+# --- holidays ----------------------------------------------------------------
+
+
+def _weekdays(start: date, end: date) -> list[date]:
+    return [start + timedelta(days=i) for i in range((end - start).days + 1) if (start + timedelta(days=i)).isoweekday() <= 5]
+
+
+async def _vacation_response(client: AulaApiClient, response_id: int) -> dict:
+    """One child's answer to a holiday request.
+
+    Endpoint from the portal bundle (0.*.js LOAD_VACATION_REQUEST_RESPONSE:
+    GET ``?method=presence.getVacationRegistrationResponse`` with param
+    ``vacationRegistrationResponseId``, the request row's ``responseId``).
+    The drawer (10.*.js) reads ``data.vacationRegistrationResponse`` with
+    vacationRegistrationResponseId, childId, comment and
+    days[]{date, isComing, entryTime, exitTime}. Not in the library.
+    """
+    resp = await client._request_with_version_retry(
+        "get",
+        client.api_url,
+        params={"method": "presence.getVacationRegistrationResponse", "vacationRegistrationResponseId": response_id},
+    )
+    resp.raise_for_status()
+    data = get_in(resp.json(), "data.vacationRegistrationResponse")
+    if not isinstance(data, dict):
+        raise UpstreamFailure("Aula sent no answer for the holiday request")
+    return data
+
+
+async def _closed_days(client: AulaApiClient, institution_code: str, start: date, end: date) -> set[date]:
+    rows = await _opening_hours_rows(client, institution_code, start, end)
+    return {d for r in rows if r.get("type") == "closed_day" and (d := _date(r.get("date")))}
+
+
+async def _holiday(client: AulaApiClient, profile: Profile, request_id: str, *, strict: bool) -> tuple[dict, dict[int, dict]]:
+    """``GET /holiday-requests/{id}``, plus each child's raw Aula answer by child id.
+
+    Title, note, deadline and dates come from the request rows the library
+    parses (``presence.getVacationRegistrationsByChildren``, one row per
+    child); the answer read gives only the days, the comment and the ids.
+    Days follow the portal drawer (10.*.js populateVacationRequestDaysList /
+    updateDisabled): Mon–Fri from startDate to endDate; a day is disabled
+    when it is today or earlier, a closed day, or the deadline has passed.
+    ``strict`` (before a write) fails on any read; otherwise the answer and
+    closed-day reads are optional.
+    """
+    reg_id = request_id.removeprefix("vacation-")
+    if not request_id.startswith("vacation-") or not reg_id.isdigit():
+        raise NotFound(f"holiday request {request_id}")
+    regs = [r for r in await client.get_vacation_registrations([c.id for c in profile.children]) if r.id == int(reg_id)]
+    if not regs:
+        raise NotFound(f"holiday request {request_id}")
+    today = aula_today()
+    first = regs[0]
+    start, end = local_date(first.start_date), local_date(first.end_date)
+    deadline = local_date(first.response_deadline)
+    open_ = deadline is None or today <= deadline
+
+    async def read[T](label: str, coro) -> T | None:
+        return await coro if strict else await _optional(label, coro)
+
+    children, responses = [], {}
+    for reg in regs:
+        child = next((c for c in profile.children if c.id == reg.child_id), None)
+        response = (await read("holiday answer", _vacation_response(client, reg.response_id)) if reg.response_id else None) or {}
+        responses[reg.child_id] = response
+        answers = {}
+        for d in response.get("days") or []:
+            day = local_date(d.get("date")) if isinstance(d, dict) else None
+            if day:
+                answers[day] = d
+        code = child.institution_code if child else None
+        closed = (await read("opening hours", _closed_days(client, code, start, end)) if code and start and end else None) or set()
+        may_answer = open_ and (child is None or child.has_custody_or_extended_access is not False)
+        days = []
+        for day in _weekdays(start, end) if start and end else []:
+            a = answers.get(day, {})
+            coming = a.get("isComing")
+            days.append(
+                {
+                    "date": day.isoformat(),
+                    "coming": coming if isinstance(coming, bool) else None,
+                    "entryTime": hhmm(a.get("entryTime")),
+                    "exitTime": hhmm(a.get("exitTime")),
+                    "editable": may_answer and day > today and day not in closed,
+                }
+            )
+        children.append(
+            {
+                "id": reg.child_id,
+                "name": (child.name if child else None) or reg.child_name or "",
+                "answered": not reg.is_missing_answer,
+                "comment": response.get("comment") or "",
+                "days": days,
+            }
+        )
+    out = {
+        "id": f"vacation-{first.id}",
+        "title": first.title or "",
+        "note": first.note_to_guardian or None,
+        "deadline": deadline.isoformat() if deadline else None,
+        "startDate": start.isoformat() if start else None,
+        "endDate": end.isoformat() if end else None,
+        "timesRequired": bool(first.is_presence_times_required),
+        "answered": all(c["answered"] for c in children),
+        "editable": open_,
+        "children": children,
+    }
+    return out, responses
+
+
+async def holiday_request(client: AulaApiClient, profile: Profile, request_id: str) -> dict:
+    return (await _holiday(client, profile, request_id, strict=False))[0]
+
+
+@dataclass
+class DayAnswer:
+    date: str
+    coming: bool
+    entry_time: str | None = None
+    exit_time: str | None = None
+
+
+@dataclass
+class ChildAnswer:
+    days: list[DayAnswer]
+    comment: str = ""
+
+
+async def answer_holiday_request(
+    client: AulaApiClient, profile: Profile, request_id: str, answers: dict[int, ChildAnswer]
+) -> None:
+    """Answer a holiday request for one or more children, one Aula write per child.
+
+    Payload from the portal bundle (10.*.js, the guardian's vacation response
+    drawer, ``updateVacationResponses`` -> ``ADD_VACATION`` action in 0.*.js,
+    which POSTs it to ``?method=calendar.respondToVacationRegistrationRequest``):
+    ``{vacationRegistrationResponseId, childId, days:[{date, isComing,
+    entryTime, exitTime}], comment}``, both ids from the answer read
+    (``vacationRegistrationResponse``). ``days`` holds only the enabled days
+    (``filter(!isDisabled)``), dates as "YYYY-MM-DD"; times are "" unless the
+    child comes and the request has ``isPresenceTimesRequired`` ("HH:mm" from
+    the time picker). Every enabled day must have an answer (validateIsComing).
+    Never tried against live Aula.
+    """
+    if not answers:
+        raise BadRequest("children is empty")
+    out, responses = await _holiday(client, profile, request_id, strict=True)
+    if not out["editable"]:
+        raise Conflict("The deadline for this holiday request has passed")
+    by_child = {c["id"]: c for c in out["children"]}
+    payloads = []
+    for child_id, answer in answers.items():
+        child = by_child.get(child_id)
+        if child is None:
+            raise BadRequest(f"child {child_id} is not part of this holiday request")
+        known = {d["date"]: d for d in child["days"]}
+        given: dict[str, DayAnswer] = {}
+        for a in answer.days:
+            if a.date not in known:
+                raise BadRequest(f"{a.date} is not a day of this holiday request")
+            if not known[a.date]["editable"]:
+                raise BadRequest(f"{a.date} can no longer be answered")
+            if a.date in given:
+                raise BadRequest(f"{a.date} is answered twice")
+            for t in (a.entry_time, a.exit_time):
+                if t is not None and not valid_hhmm(t):
+                    raise BadRequest(f"{a.date}: times must be HH:mm")
+            if a.coming and out["timesRequired"]:
+                if not (a.entry_time and a.exit_time):
+                    raise BadRequest(f"{a.date}: entryTime and exitTime are required")
+                if a.entry_time >= a.exit_time:
+                    raise BadRequest(f"{a.date}: entryTime must be before exitTime")
+            given[a.date] = a
+        missing = sorted(d for d, info in known.items() if info["editable"] and d not in given)
+        if missing:
+            raise BadRequest(f"{child['name'] or child_id}: no answer for {missing[0]}")
+        if not given:
+            raise Conflict(f"{child['name'] or child_id} has no days left to answer")
+        response = responses.get(child_id) or {}
+        response_id = response.get("vacationRegistrationResponseId")
+        if not response_id:
+            raise UpstreamFailure(f"Aula gave no answer id for {child['name'] or child_id}")
+        with_times = out["timesRequired"]
+        payloads.append(
+            {
+                "vacationRegistrationResponseId": response_id,
+                "childId": response.get("childId") or child_id,
+                "days": [
+                    {
+                        "date": d,
+                        "isComing": a.coming,
+                        "entryTime": a.entry_time if a.coming and with_times else "",
+                        "exitTime": a.exit_time if a.coming and with_times else "",
+                    }
+                    for d, a in sorted(given.items())
+                ],
+                "comment": answer.comment,  # per child: each answer has its own comment in Aula
+            }
+        )
+    for payload in payloads:
+        resp = await client._request_with_version_retry(
+            "post", f"{client.api_url}?method=calendar.respondToVacationRegistrationRequest", json=payload
+        )
+        resp.raise_for_status()
+
+
+async def _vacation_denials(client: AulaApiClient, children: list[Child]) -> dict[int, str]:
+    """Children Aula is known to refuse an absence for, with the reason.
+
+    Copied from the library CLI's ``_vacation_denials`` (aula/cli.py): no
+    custody, or the presence configuration doesn't let guardians edit VACATION.
+    A child Aula hasn't said either way about (configuration unreadable or
+    missing) is left out, so Aula decides.
+    """
+    denials = {
+        c.id: "you have no custody of or extended access to this child; a guardian with custody must register it"
+        for c in children
+        if c.has_custody_or_extended_access is False
+    }
+    candidates = [c for c in children if c.id not in denials]
+    if not candidates:
+        return denials
+    try:
+        configs = await client.get_presence_configuration([c.id for c in candidates])
+    except Exception as e:
+        if session_gone(e):
+            raise
+        _LOGGER.warning("Could not fetch presence configuration, leaving it to Aula: %s", e)
+        return denials
+    by_child = {c.child_id: c for c in configs if c.child_id is not None}
+    for child in candidates:
+        config = by_child.get(child.id)
+        if config is None:
+            _LOGGER.warning("No presence configuration for child %s, leaving it to Aula", child.id)
+        elif not config.can_edit(PresenceModule.VACATION):
+            denials[child.id] = (
+                "absence registration is read-only for guardians; contact the institution"
+                if config.permission(PresenceModule.VACATION) is PresenceModulePermission.READABLE
+                else "the institution has not enabled absence registration for guardians; contact the institution"
+            )
+    return denials
+
+
+async def add_absence(client: AulaApiClient, profile: Profile, child_ids: list[int], start: date, end: date, comment: str) -> None:
+    """Register a holiday / days off (``client.add_vacation``, the library's
+    ``calendar.addVacation``). Its own checks run first so a bad request is a 400."""
+    if not child_ids:
+        raise BadRequest("childIds is empty")
+    known = {c.id: c for c in profile.children}
+    for cid in child_ids:
+        if cid not in known:
+            raise BadRequest(f"unknown child {cid}")
+    try:
+        validate_vacation(start, end, comment, today=aula_today())
+    except ValueError as e:
+        raise BadRequest(str(e)) from e
+    targets = [known[cid] for cid in dict.fromkeys(child_ids)]
+    denials = await _vacation_denials(client, targets)
+    if denials:
+        cid, reason = next(iter(denials.items()))
+        raise BadRequest(f"{known[cid].name or cid}: {reason}")
+    await client.add_vacation(list(dict.fromkeys(child_ids)), start, end, comment)
 
 
 # --- posts -------------------------------------------------------------------

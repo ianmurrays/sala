@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0A36B536863C947DF0F9ABED /* HolidaySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C4376EE075DB7E8B8A7DD0 /* HolidaySheet.swift */; };
 		0EF6B6061030907C70486123 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61D4DFB892FB869F494631E /* LoginView.swift */; };
 		1741679355FAA673C58359E4 /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DDF8360879C8CE3785836C4 /* MessagesView.swift */; };
 		246B663D497DB08CB122FB6A /* AttachmentOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F700FF859455055509BB54 /* AttachmentOpener.swift */; };
@@ -20,6 +21,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		17C4376EE075DB7E8B8A7DD0 /* HolidaySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HolidaySheet.swift; sourceTree = "<group>"; };
 		21FF804A1A12FADBB8F696F3 /* ThreadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadView.swift; sourceTree = "<group>"; };
 		355A0708F4F73D66AC8B9D6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		3A62848569FE547E44876C3B /* SalaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalaApp.swift; sourceTree = "<group>"; };
@@ -56,6 +58,7 @@
 			children = (
 				A31531B782C08B051F900B8C /* API.swift */,
 				B6F700FF859455055509BB54 /* AttachmentOpener.swift */,
+				17C4376EE075DB7E8B8A7DD0 /* HolidaySheet.swift */,
 				355A0708F4F73D66AC8B9D6E /* Info.plist */,
 				C61D4DFB892FB869F494631E /* LoginView.swift */,
 				4DDF8360879C8CE3785836C4 /* MessagesView.swift */,
@@ -130,6 +133,7 @@
 			files = (
 				633CE8662528E0F7C29DDB32 /* API.swift in Sources */,
 				246B663D497DB08CB122FB6A /* AttachmentOpener.swift in Sources */,
+				0A36B536863C947DF0F9ABED /* HolidaySheet.swift in Sources */,
 				0EF6B6061030907C70486123 /* LoginView.swift in Sources */,
 				1741679355FAA673C58359E4 /* MessagesView.swift in Sources */,
 				6E75E7B5960FC1B9B3ED9B82 /* PickupSheet.swift in Sources */,

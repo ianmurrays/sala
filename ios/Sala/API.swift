@@ -226,6 +226,55 @@ struct ReplyResponse: Decodable, Sendable {
     }
 }
 
+/// `GET /holiday-requests/{id}`.
+struct HolidayRequest: Decodable, Sendable, Equatable {
+    var id: String
+    var title: String
+    var note: String?
+    var deadline: String?
+    var startDate: String?
+    var endDate: String?
+    /// The institution wants drop-off and pickup times for days the child comes.
+    var timesRequired: Bool
+    var answered: Bool
+    /// False once the deadline has passed.
+    var editable: Bool
+    var children: [HolidayChild]
+}
+
+struct HolidayChild: Decodable, Sendable, Equatable, Identifiable {
+    var id: Int
+    var name: String
+    var answered: Bool
+    var comment: String
+    var days: [HolidayDay]
+}
+
+struct HolidayDay: Decodable, Sendable, Equatable {
+    var date: String
+    /// nil = not answered yet.
+    var coming: Bool?
+    var entryTime: String?
+    var exitTime: String?
+    /// Today, past and closed days can't be answered and aren't sent.
+    var editable: Bool
+}
+
+struct HolidayAnswer: Encodable, Sendable {
+    struct Child: Encodable, Sendable { var id: Int; var comment: String; var days: [Day] }
+    struct Day: Encodable, Sendable { var date: String; var coming: Bool; var entryTime: String?; var exitTime: String? }
+    var children: [Child]
+}
+
+struct AbsenceRequest: Encodable, Sendable {
+    var childIds: [Int]
+    var startDate: String
+    var endDate: String
+    var comment: String
+}
+
+struct OkResponse: Decodable, Sendable { var ok: Bool }
+
 private struct ErrorEnvelope: Decodable { var error: String?; var message: String? }
 
 extension KeyedDecodingContainer {
@@ -301,6 +350,14 @@ struct APIClient: Sendable {
     func thread(_ id: String) async throws -> MessageThread { try await send("GET", "/threads/\(id.urlPathEscaped)") }
     func reply(thread id: String, _ request: ReplyRequest) async throws -> ReplyResponse {
         try await send("POST", "/threads/\(id.urlPathEscaped)/reply", body: request)
+    }
+
+    func holidayRequest(_ id: String) async throws -> HolidayRequest { try await send("GET", "/holiday-requests/\(id.urlPathEscaped)") }
+    func answerHolidayRequest(_ id: String, _ answer: HolidayAnswer) async throws -> HolidayRequest {
+        try await send("POST", "/holiday-requests/\(id.urlPathEscaped)", body: answer)
+    }
+    func addAbsence(_ request: AbsenceRequest) async throws {
+        let _: OkResponse = try await send("POST", "/absences", body: request)
     }
 
     /// Downloads an attachment into a fresh temp directory, named after `name`.
@@ -446,4 +503,21 @@ enum Fmt {
     }
 
     static func hhmm(_ minutes: Int) -> String { String(format: "%02d:%02d", minutes / 60, minutes % 60) }
+
+    /// Gregorian calendar in Aula's time zone (Europe/Copenhagen).
+    static let copenhagen: Calendar = {
+        var c = Calendar(identifier: .gregorian)
+        c.timeZone = TimeZone(identifier: "Europe/Copenhagen") ?? .current
+        return c
+    }()
+
+    /// Date → "yyyy-MM-dd" as a day in Copenhagen.
+    static func ymd(_ date: Date) -> String {
+        let f = DateFormatter()
+        f.locale = posix
+        f.calendar = copenhagen
+        f.timeZone = copenhagen.timeZone
+        f.dateFormat = "yyyy-MM-dd"
+        return f.string(from: date)
+    }
 }

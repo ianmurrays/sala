@@ -77,6 +77,32 @@ Nullable here: `opensAt`, `closesAt`, `current.time`, `current.by`.
 
 `POST /children/{id}/sick` → updated child (status `sick`). `DELETE /children/{id}/sick` → takes the report back, returns the updated child: status goes back to present if the child was checked in today and not checked out, otherwise to not arrived.
 
+## Holidays
+
+`GET /holiday-requests/{id}` (`id` is the attention item's `id`, e.g. `vacation-55`) →
+```json
+{"id":"vacation-55","title":"Juleferie","note":"Giv besked om Oskar holder fri.","deadline":"2026-11-13",
+ "startDate":"2026-12-21","endDate":"2026-12-23","timesRequired":false,"answered":false,"editable":true,
+ "children":[{"id":123,"name":"Oskar","answered":false,"comment":"",
+   "days":[{"date":"2026-12-21","coming":null,"entryTime":null,"exitTime":null,"editable":true}]}]}
+```
+- One entry in `children` per child the request is for. `days` are the weekdays from `startDate` to `endDate`, as in Aula's own form.
+- `coming` is the current answer (`null` = not answered). `editable` is false for days that are today or past, days the institution is closed, every day once the deadline has passed, and every day of a child Aula says you have no custody of. Those days are not sent.
+- `answered` is true when every child has an answer. `editable` (top level) is false once the deadline has passed; then a `POST` → `409`.
+- `timesRequired`: the institution wants drop-off and pickup times for the days the child comes.
+- Nullable: `note`, `deadline`, `startDate`, `endDate`, `days[].coming`, `days[].entryTime`, `days[].exitTime`.
+
+`POST /holiday-requests/{id}` body
+```json
+{"children":[{"id":123,"days":[{"date":"2026-12-21","coming":true,"entryTime":"08:00","exitTime":"15:00"}],"comment":""}]}
+```
+→ the updated request (same shape as `GET`).
+- Answer one or more of the request's children. For each, every editable day must have an answer. A day that isn't listed or isn't editable, an unknown child, or a time that isn't `HH:mm` → `400`.
+- Times are only used when `timesRequired`. Then a day with `coming: true` needs both `entryTime` and `exitTime`, with entry before exit, else `400`. Otherwise times are ignored, like Aula's form.
+- `comment` is per child (Aula keeps one per child's answer); a missing `comment` is sent as empty, replacing that child's previous one.
+
+`POST /absences` body `{"childIds":[123],"startDate":"2026-12-27","endDate":"2026-12-30","comment":""}` → `{"ok":true}`. Registers a holiday or days off (Aula's "Ferie/fri"). `endDate` may equal `startDate` for one day. Start in the past, end before start, end more than a year after start, a comment over 250 characters, no children, an unknown child, or a child Aula won't take an absence for (no custody, or the institution doesn't let guardians register absences; when that can't be read, Aula decides) → `400` with the reason in `message`. There is no listing or cancelling.
+
 ## Posts
 
 `GET /posts?page=N` → `[Post]`, newest first, 10 per page. `page` is 1-based (default 1, at most 100, else `400`); page 1 is the `posts` of `/today`. An empty list means there are no more posts.
@@ -110,7 +136,9 @@ Notifications (titles only, never message or post bodies):
 | --- | --- | --- | --- |
 | New message (not from me) in a thread with me and exactly one other person | `New message from Mette Lund` (`New message` when the sender can't be determined) | default | `sala://thread/<threadId>` |
 | New important post | `Important post: <post title>` | default | `sala://today` |
-| New unanswered holiday request | `Holiday request 21–23 Dec · answer by 13 Nov` | high when the deadline is 2 days away or less | `sala://today` |
+| New unanswered holiday request (held until 07:00 when its deadline is today or tomorrow) | `Holiday request 21–23 Dec · answer by 13 Nov` | high when the deadline is 2 days away or less | `sala://today` |
+| Unanswered holiday request, the day before its deadline, from 07:00 (not sent when the new-request notification above goes out in the same poll) | `Holiday request 21–23 Dec · answer by tomorrow` | high | `sala://today` |
+| Unanswered holiday request, on its deadline day, from 07:00 (same rule) | `Holiday request 21–23 Dec · answer today` | high | `sala://today` |
 | Aula session lost (once per loss, retried until delivered, not repeated after a server restart) | `Aula login needed` | high | `sala://today` |
 
-Items that exist when push is first enabled never notify. The app handles the `sala://` links (`thread/<id>` opens the thread, `today` the Today tab).
+Items that exist when push is first enabled never notify. Each reminder is sent at most once, only on its own day: a reminder ntfy refused is retried on later polls that same day, never after it, and never after the deadline. The app handles the `sala://` links (`thread/<id>` opens the thread, `today` the Today tab).

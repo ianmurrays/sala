@@ -4,7 +4,8 @@ import asyncio
 import json
 import logging
 import time
-from datetime import timedelta
+from datetime import date, datetime, timedelta
+from datetime import time as time_of_day
 from types import SimpleNamespace
 
 import httpx
@@ -310,3 +311,89 @@ def test_ntfy_url_path_is_stripped(caplog):
     assert pusher.url == "https://ntfy.example"
     assert "server root" in caplog.text
     assert Pusher(None, None, topic="t", url="https://ntfy.example/").url == "https://ntfy.example"
+
+
+@pytest.fixture(autouse=True)
+def morning(monkeypatch):
+    """Pin the clock to 09:00 today, after reminders are allowed; set ``at`` to move it."""
+    clock = SimpleNamespace(at=time_of_day(9))
+    monkeypatch.setattr(mapping, "now", lambda: datetime.combine(aula_today(), clock.at, mapping.TZ))
+    return clock
+
+
+def _due_in(fake, reg_id: int, days: int) -> str:
+    """Move a fixture request's deadline; returns its date-range label."""
+    v = next(v for v in fake.vacations if v["vacationRegistrationId"] == reg_id)
+    v["responseDeadline"] = (aula_today() + timedelta(days=days)).isoformat()
+    start = date.fromisoformat(v["startDate"])
+    return date_range_label(start, date.fromisoformat(v["endDate"]))
+
+
+@pytest.mark.parametrize("days,suffix", [(1, "answer by tomorrow"), (0, "answer today")])
+def test_holiday_deadline_reminder_once(push, fake, days, suffix):
+    ntfy, poll, _ = push
+    label = _due_in(fake, 56, days)
+    assert poll() == 1
+    assert _titles(ntfy) == [(f"Holiday request {label} · {suffix}", 4, "sala://today")]
+    assert poll() == 0 and len(ntfy.posts) == 1
+
+
+def test_holiday_reminders_day_before_then_on_the_day(push, fake):
+    ntfy, poll, _ = push
+    _due_in(fake, 56, 1)
+    assert poll() == 1
+    _due_in(fake, 56, 0)  # a day later
+    assert poll() == 1
+    assert [p["title"].rsplit("· ", 1)[1] for p in ntfy.posts] == ["answer by tomorrow", "answer today"]
+
+
+@pytest.mark.parametrize("days", [-1, 2])
+def test_no_reminder_after_deadline_or_too_early(push, fake, days):
+    ntfy, poll, _ = push
+    _due_in(fake, 56, days)
+    assert poll() == 0 and ntfy.posts == []
+
+
+def test_no_reminder_for_answered_request(push, fake):
+    ntfy, poll, _ = push
+    _due_in(fake, 56, 0)
+    next(v for v in fake.vacations if v["vacationRegistrationId"] == 56)["isMissingAnswer"] = False
+    assert poll() == 0 and ntfy.posts == []
+
+
+def test_failed_reminder_is_retried(push, fake):
+    ntfy, poll, _ = push
+    _due_in(fake, 56, 1)
+    ntfy.fail = True
+    assert poll() == 0
+    ntfy.fail = False
+    assert poll() == 1 and len(ntfy.posts) == 1
+    assert poll() == 0
+
+
+def test_new_request_due_tomorrow_sends_one_notification(push, fake):
+    ntfy, poll, _ = push
+    fake.add_holiday_request(deadline_days=1)
+    assert poll() == 1
+    assert ntfy.posts[0]["title"].endswith(f"answer by {_short_date(aula_today() + timedelta(days=1))}")
+    assert poll() == 0 and len(ntfy.posts) == 1
+
+
+def test_reminder_waits_for_the_morning(push, fake, morning):
+    ntfy, poll, _ = push
+    _due_in(fake, 56, 0)
+    morning.at = time_of_day(6, 59)
+    assert poll() == 0 and ntfy.posts == []
+    morning.at = time_of_day(7, 0)
+    assert poll() == 1 and ntfy.posts[0]["title"].endswith("answer today")
+
+
+def test_new_request_due_soon_waits_for_the_morning(push, fake, morning):
+    ntfy, poll, _ = push
+    morning.at = time_of_day(3)
+    fake.add_holiday_request(deadline_days=1)
+    assert poll() == 0 and ntfy.posts == []
+    morning.at = time_of_day(7)
+    assert poll() == 1 and len(ntfy.posts) == 1
+    assert ntfy.posts[0]["priority"] == 4
+    assert poll() == 0  # it stood in for that day's reminder

@@ -5,7 +5,7 @@ import mimetypes
 import os
 import secrets
 from contextlib import asynccontextmanager
-from datetime import time as dtime
+from datetime import date
 from pathlib import Path
 from typing import Literal
 from urllib.parse import quote
@@ -114,7 +114,7 @@ app = FastAPI(
 
 @app.middleware("http")
 async def read_only(request: Request, call_next):
-    """SALA_READ_ONLY=1 blocks every write to Aula (pickup, sick, save, reply), for debugging live."""
+    """SALA_READ_ONLY=1 blocks every write to Aula (pickup, sick, save, reply, holidays, absences), for debugging live."""
     if (
         os.environ.get("SALA_READ_ONLY") == "1"
         and request.method in ("PUT", "POST", "DELETE")
@@ -251,12 +251,7 @@ async def get_pickup(child_id: int, s: SessionManager = Depends(session)):
 
 @app.put("/children/{child_id}/pickup")
 async def put_pickup(child_id: int, body: PickupIn, s: SessionManager = Depends(session)):
-    try:
-        # fromisoformat alone accepts "24:00" (Python 3.14) and other ISO forms.
-        valid = len(body.time) == 5 and dtime.fromisoformat(body.time).strftime("%H:%M") == body.time
-    except ValueError:
-        valid = False
-    if not valid:
+    if not m.valid_hhmm(body.time):
         raise ApiError(400, "bad_request", "time must be HH:mm")
 
     async def run(client):
@@ -284,6 +279,66 @@ async def report_sick(child_id: int, s: SessionManager = Depends(session)):
 @app.delete("/children/{child_id}/sick")
 async def unreport_sick(child_id: int, s: SessionManager = Depends(session)):
     return await _sick(s, child_id, False)
+
+
+# --- holidays ----------------------------------------------------------------
+
+
+@app.get("/holiday-requests/{request_id}")
+async def get_holiday_request(request_id: str, s: SessionManager = Depends(session)):
+    async def run(client):
+        return await m.holiday_request(client, await s.profile(client), request_id)
+
+    return await s.call(run)
+
+
+class HolidayDayIn(BaseModel):
+    date: str
+    coming: bool
+    entryTime: str | None = None
+    exitTime: str | None = None
+
+
+class HolidayChildIn(BaseModel):
+    id: int
+    days: list[HolidayDayIn]
+    comment: str = ""
+
+
+class HolidayAnswerIn(BaseModel):
+    children: list[HolidayChildIn]
+
+
+@app.post("/holiday-requests/{request_id}")
+async def answer_holiday_request(request_id: str, body: HolidayAnswerIn, s: SessionManager = Depends(session)):
+    answers: dict[int, m.ChildAnswer] = {}
+    for c in body.children:
+        if c.id in answers:
+            raise ApiError(400, "bad_request", f"child {c.id} is listed twice")
+        answers[c.id] = m.ChildAnswer([m.DayAnswer(d.date, d.coming, d.entryTime, d.exitTime) for d in c.days], c.comment)
+
+    async def run(client):
+        profile = await s.profile(client)
+        await m.answer_holiday_request(client, profile, request_id, answers)
+        return await m.holiday_request(client, profile, request_id)
+
+    return await s.call(run)
+
+
+class AbsenceIn(BaseModel):
+    childIds: list[int]
+    startDate: date
+    endDate: date
+    comment: str = ""
+
+
+@app.post("/absences")
+async def add_absence(body: AbsenceIn, s: SessionManager = Depends(session)):
+    async def run(client):
+        await m.add_absence(client, await s.profile(client), body.childIds, body.startDate, body.endDate, body.comment)
+
+    await s.call(run)
+    return {"ok": True}
 
 
 # --- posts & attachments -----------------------------------------------------
