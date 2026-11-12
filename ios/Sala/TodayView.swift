@@ -268,13 +268,7 @@ struct StatusPill: View {
         }
     }
 
-    private var colors: (Color, Color) {
-        switch child.status {
-        case "present": (.presentText, .presentFill)
-        case "sick": (.sickText, .sickFill)
-        default: (.secondary, Color(uiColor: .tertiarySystemFill))
-        }
-    }
+    private var colors: (Color, Color) { child.statusColors }
 
     var body: some View {
         HStack(spacing: 6) {

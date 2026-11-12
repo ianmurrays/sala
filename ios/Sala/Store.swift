@@ -1,6 +1,6 @@
 import Foundation
 import Observation
-import Security
+import WidgetKit
 
 enum AppTab: Hashable { case today, messages }
 
@@ -78,9 +78,9 @@ final class Store {
     private var childChanges: [Int: Int] = [:]
     private var postChanges: [Int: Int] = [:]
 
-    nonisolated static let defaultServerURL = "http://localhost:8000"
 
     init() {
+        Shared.migrate()
         let overrideToken = Config.applyLaunchOverrides()
         serverURL = Config.serverURL
         // Keep a launch-argument token in memory too, in case the Keychain write failed.
@@ -94,7 +94,7 @@ final class Store {
         let url = serverURL.trimmingCharacters(in: .whitespacesAndNewlines)
         let tok = token.trimmingCharacters(in: .whitespacesAndNewlines)
         Config.save(serverURL: url, token: tok)
-        self.serverURL = url.isEmpty ? Self.defaultServerURL : url
+        self.serverURL = url.isEmpty ? Shared.defaultServerURL : url
         self.token = tok
         Task { await load() }
     }
@@ -123,6 +123,7 @@ final class Store {
                 }
             }
             today = t
+            syncWidgets()
             morePosts.reset(next: 2)
             phase = .ready
             Task { if let f = try? await c.features() { canTranslate = f.translate } }
@@ -151,6 +152,7 @@ final class Store {
             Task { await refreshAuthStatus() }
             return nil
         case APIError.unauthorized:
+            Config.clearWidgets()
             phase = .unauthorized
             showSettings = true
             return nil
@@ -383,6 +385,14 @@ final class Store {
         childChanges[child.id] = mutations
         guard let i = today?.children.firstIndex(where: { $0.id == child.id }) else { return }
         today?.children[i] = child
+        syncWidgets()
+    }
+
+    /// Hands the current children to the widgets and asks them to redraw.
+    private func syncWidgets() {
+        guard let today else { return }
+        Shared.saveSnapshot(TodaySnapshot(date: today.date, children: today.children, fetchedAt: .now))
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     func toggleSick(_ child: Child) async {
@@ -611,21 +621,23 @@ struct Paging: Equatable {
     }
 }
 
-// MARK: - Config (UserDefaults + Keychain + launch overrides)
+// MARK: - Config (app-group UserDefaults + Keychain + launch overrides, see Shared/SalaShared.swift)
 
 enum Config {
-    private static let urlKey = "serverURL"
-
-    static var serverURL: String {
-        let v = UserDefaults.standard.string(forKey: urlKey)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        return v.isEmpty ? Store.defaultServerURL : v
-    }
-
-    static var token: String { Keychain.read() ?? "" }
+    static var serverURL: String { Shared.serverURL }
+    static var token: String { Shared.token }
 
     static func save(serverURL: String, token: String) {
-        UserDefaults.standard.set(serverURL, forKey: urlKey)
+        let urlChanged = (serverURL.isEmpty ? Shared.defaultServerURL : serverURL) != Shared.serverURL
+        Shared.setServerURL(serverURL)
         if token.isEmpty { Keychain.delete() } else { Keychain.write(token) }
+        if token.isEmpty || urlChanged { clearWidgets() }
+    }
+
+    /// Drops the widgets' snapshot, so they don't keep showing data the settings no longer reach.
+    static func clearWidgets() {
+        Shared.clearSnapshot()
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     /// `-serverURL <url> -token <token>` launch arguments, or `SALA_SERVER_URL` / `SALA_TOKEN`
@@ -639,8 +651,7 @@ enum Config {
             return a[i + 1]
         }
         if let url = arg("-serverURL") ?? info.environment["SALA_SERVER_URL"], !url.isEmpty {
-            // Write to the persistent domain (the argument domain is volatile).
-            UserDefaults.standard.set(url, forKey: urlKey)
+            Shared.setServerURL(url)
         }
         if let tok = arg("-token") ?? info.environment["SALA_TOKEN"], !tok.isEmpty {
             Keychain.write(tok)
@@ -648,39 +659,4 @@ enum Config {
         }
         return nil
     }
-}
-
-enum Keychain {
-    private static let service = "app.sala.ios"
-    private static let account = "token"
-
-    private static var base: [String: Any] {
-        [kSecClass as String: kSecClassGenericPassword,
-         kSecAttrService as String: service,
-         kSecAttrAccount as String: account]
-    }
-
-    static func read() -> String? {
-        var q = base
-        q[kSecReturnData as String] = true
-        q[kSecMatchLimit as String] = kSecMatchLimitOne
-        var out: CFTypeRef?
-        guard SecItemCopyMatching(q as CFDictionary, &out) == errSecSuccess, let data = out as? Data else { return nil }
-        return String(data: data, encoding: .utf8)
-    }
-
-    @discardableResult
-    static func write(_ value: String) -> Bool {
-        let data = Data(value.utf8)
-        let status = SecItemUpdate(base as CFDictionary, [kSecValueData as String: data] as CFDictionary)
-        if status == errSecSuccess { return true }
-        var add = base
-        add[kSecValueData as String] = data
-        add[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlock
-        let s = SecItemAdd(add as CFDictionary, nil)
-        if s != errSecSuccess { print("Keychain write failed: \(s)") }
-        return s == errSecSuccess
-    }
-
-    static func delete() { SecItemDelete(base as CFDictionary) }
 }

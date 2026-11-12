@@ -10,26 +10,6 @@ struct Today: Codable, Sendable, Equatable {
     var posts: [Post]
 }
 
-struct Child: Codable, Sendable, Equatable, Identifiable {
-    var id: Int
-    var name: String
-    var institution: String
-    var group: String
-    /// `present|not_arrived|sick|gone_home|vacation|unknown`, kept as a string so a new value never breaks decoding.
-    var status: String
-    var statusLabel: String
-    var arrivedAt: String?
-    var leftAt: String?
-    var pickup: Pickup?
-    var closesAt: String?
-    var canReportSick: Bool
-}
-
-struct Pickup: Codable, Sendable, Equatable {
-    var time: String?
-    var by: String?
-}
-
 struct AttentionItem: Codable, Sendable, Equatable, Identifiable {
     var id: String
     /// `holiday_request|message`

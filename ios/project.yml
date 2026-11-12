@@ -15,6 +15,13 @@ targets:
     platform: iOS
     sources:
       - path: Sala
+      - path: Shared
+    dependencies:
+      - target: SalaWidget
+    entitlements:
+      path: Sala/Sala.entitlements
+      properties:
+        com.apple.security.application-groups: [group.app.sala.ios]
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.sala.ios
@@ -42,3 +49,35 @@ targets:
           NSAllowsArbitraryLoads: true
           NSAllowsLocalNetworking: true
         NSLocalNetworkUsageDescription: Sala talks to your home server on the local network.
+  SalaWidget:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: SalaWidget
+      - path: Shared
+    entitlements:
+      path: SalaWidget/SalaWidget.entitlements
+      properties:
+        com.apple.security.application-groups: [group.app.sala.ios]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.sala.ios.widget
+        PRODUCT_NAME: SalaWidget
+        TARGETED_DEVICE_FAMILY: "1"
+        CODE_SIGN_STYLE: Manual
+        CODE_SIGN_IDENTITY: "-"
+        DEVELOPMENT_TEAM: ""
+        SWIFT_STRICT_CONCURRENCY: complete
+        ENABLE_PREVIEWS: YES
+        GENERATE_INFOPLIST_FILE: NO
+    info:
+      path: SalaWidget/Info.plist
+      properties:
+        CFBundleDisplayName: Sala
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+          NSAllowsLocalNetworking: true
