@@ -22,6 +22,7 @@
 		6E75E7B5960FC1B9B3ED9B82 /* PickupSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996EC5D2487693CC0C6083BE /* PickupSheet.swift */; };
 		9C2453DE392E1047EBE204AD /* SalaWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F70E090695CF7260BD21760 /* SalaWidget.swift */; };
 		9E7EB7F36848F154EB071342 /* SalaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A62848569FE547E44876C3B /* SalaApp.swift */; };
+		A1E0A0B6A8296DA131ED182A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E0E0A3B6F2E75335F323F6C7 /* Assets.xcassets */; };
 		B3D4FF9E850FCCDB4798F518 /* SalaShared.swift in Sources */ = {isa = PBXBuildFile; fileRef = B052EF3B3E1998CE1C0471B2 /* SalaShared.swift */; };
 		C6931429278AC39200B6AEC1 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7E6AB823A3C5EB7D36DDA80 /* Theme.swift */; };
 		E8AF275F830BEFC95BA2294C /* SalaShared.swift in Sources */ = {isa = PBXBuildFile; fileRef = B052EF3B3E1998CE1C0471B2 /* SalaShared.swift */; };
@@ -73,6 +74,7 @@
 		B6F700FF859455055509BB54 /* AttachmentOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentOpener.swift; sourceTree = "<group>"; };
 		C61D4DFB892FB869F494631E /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		CBDA4ACCCAD7122465646C4E /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayView.swift; sourceTree = "<group>"; };
+		E0E0A3B6F2E75335F323F6C7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E7E6AB823A3C5EB7D36DDA80 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		EA06833B223D9F880A0BA980 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		EA44F3816DF767D0B3A780A5 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
@@ -132,6 +134,7 @@
 			isa = PBXGroup;
 			children = (
 				A31531B782C08B051F900B8C /* API.swift */,
+				E0E0A3B6F2E75335F323F6C7 /* Assets.xcassets */,
 				B6F700FF859455055509BB54 /* AttachmentOpener.swift */,
 				0623DE8D49000F03DC8C9E59 /* FoldersView.swift */,
 				17C4376EE075DB7E8B8A7DD0 /* HolidaySheet.swift */,
@@ -158,6 +161,7 @@
 			buildConfigurationList = 2171D96F8321871CBBF67BA0 /* Build configuration list for PBXNativeTarget "Sala" */;
 			buildPhases = (
 				1C8B9D472B71F548C44C7186 /* Sources */,
+				ABA22DFA9F289824472F49F3 /* Resources */,
 				2A343F300E528415A934A38D /* Embed Foundation Extensions */,
 			);
 			buildRules = (
@@ -227,6 +231,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		ABA22DFA9F289824472F49F3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1E0A0B6A8296DA131ED182A /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1C8B9D472B71F548C44C7186 /* Sources */ = {
