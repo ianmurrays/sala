@@ -12,6 +12,7 @@
 		1741679355FAA673C58359E4 /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DDF8360879C8CE3785836C4 /* MessagesView.swift */; };
 		246B663D497DB08CB122FB6A /* AttachmentOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F700FF859455055509BB54 /* AttachmentOpener.swift */; };
 		323A697D102B8B8A9B1B322D /* FoldersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0623DE8D49000F03DC8C9E59 /* FoldersView.swift */; };
+		3593FECD2B5F90E892AE593A /* StillSick.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18E6F59015D2651602B6C5CF /* StillSick.swift */; };
 		5DCACF8FA249D802DAA947DD /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA44F3816DF767D0B3A780A5 /* Store.swift */; };
 		633CE8662528E0F7C29DDB32 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31531B782C08B051F900B8C /* API.swift */; };
 		63AB0B45C45C47BCADC5E654 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7306B89AB0399C4EF4F98F6C /* SettingsView.swift */; };
@@ -24,6 +25,7 @@
 /* Begin PBXFileReference section */
 		0623DE8D49000F03DC8C9E59 /* FoldersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoldersView.swift; sourceTree = "<group>"; };
 		17C4376EE075DB7E8B8A7DD0 /* HolidaySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HolidaySheet.swift; sourceTree = "<group>"; };
+		18E6F59015D2651602B6C5CF /* StillSick.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StillSick.swift; sourceTree = "<group>"; };
 		21FF804A1A12FADBB8F696F3 /* ThreadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadView.swift; sourceTree = "<group>"; };
 		355A0708F4F73D66AC8B9D6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		3A62848569FE547E44876C3B /* SalaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalaApp.swift; sourceTree = "<group>"; };
@@ -68,6 +70,7 @@
 				996EC5D2487693CC0C6083BE /* PickupSheet.swift */,
 				3A62848569FE547E44876C3B /* SalaApp.swift */,
 				7306B89AB0399C4EF4F98F6C /* SettingsView.swift */,
+				18E6F59015D2651602B6C5CF /* StillSick.swift */,
 				EA44F3816DF767D0B3A780A5 /* Store.swift */,
 				21FF804A1A12FADBB8F696F3 /* ThreadView.swift */,
 				CBDA4ACCCAD7122465646C4E /* TodayView.swift */,
@@ -143,6 +146,7 @@
 				6E75E7B5960FC1B9B3ED9B82 /* PickupSheet.swift in Sources */,
 				9E7EB7F36848F154EB071342 /* SalaApp.swift in Sources */,
 				63AB0B45C45C47BCADC5E654 /* SettingsView.swift in Sources */,
+				3593FECD2B5F90E892AE593A /* StillSick.swift in Sources */,
 				5DCACF8FA249D802DAA947DD /* Store.swift in Sources */,
 				FE1D817BA0982720E207D92F /* ThreadView.swift in Sources */,
 				69B5B68BFDA0BB9C081CE07E /* TodayView.swift in Sources */,

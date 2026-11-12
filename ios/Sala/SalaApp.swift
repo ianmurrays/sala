@@ -3,12 +3,12 @@ import UIKit
 
 @main
 struct SalaApp: App {
-    @State private var store = Store()
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var delegate
 
     var body: some Scene {
         WindowGroup {
             RootView()
-                .environment(store)
+                .environment(delegate.store)
                 .tint(.salaAccent)
         }
     }

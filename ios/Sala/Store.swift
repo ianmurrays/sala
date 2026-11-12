@@ -381,12 +381,56 @@ final class Store {
         sickInFlight.insert(child.id)
         defer { sickInFlight.remove(child.id) }
         do {
-            let updated = child.status == "sick"
+            let undo = child.status == "sick"
+            let updated = undo
                 ? try await client.undoSick(child: child.id)
                 : try await client.reportSick(child: child.id)
             replace(updated)
+            if undo {
+                dismissStillSick(child.id)
+                StillSick.cancel(child: child.id)
+            } else {
+                // Not awaited: the first time this waits on the permission prompt.
+                Task { await noteSick(updated) }
+            }
         } catch {
             if let msg = handle(error) { banner = msg }
+        }
+    }
+
+    // MARK: Still sick
+
+    /// The day ("yyyy-MM-dd") each child's "Still sick?" notification is for; the card asks on that morning too.
+    private(set) var stillSickAsks = StillSick.loadAsks()
+
+    /// Children whose ask day is this morning and who aren't sick (Aula reset them).
+    var stillSickChildren: [Child] {
+        guard let day = StillSick.askDay(), let today else { return [] }
+        return today.children.filter { $0.status != "sick" && $0.canReportSick && stillSickAsks[$0.id] == day }
+    }
+
+    func dismissStillSick(_ id: Int) {
+        stillSickAsks[id] = nil
+        StillSick.saveAsks(stillSickAsks)
+    }
+
+    private func noteSick(_ child: Child) async {
+        let at = StillSick.nextMorning(after: Date())
+        stillSickAsks[child.id] = Fmt.ymd(at)
+        StillSick.saveAsks(stillSickAsks)
+        await StillSick.schedule(child: child.id, name: child.name, at: at)
+    }
+
+    /// The notification's "Still sick" action; may run with the app in the background.
+    func reportStillSick(child id: Int, name: String) async {
+        do {
+            let c = client
+            let updated = try await StillSick.withDeadline(20) { try await c.reportSick(child: id) }
+            replace(updated)
+            await noteSick(updated)
+        } catch {
+            let msg = handle(error) ?? "Open Sala to check the server and try again."
+            await StillSick.notifyFailure(name: name, msg)
         }
     }
 

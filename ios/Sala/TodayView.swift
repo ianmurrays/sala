@@ -118,12 +118,17 @@ struct TodayView: View {
             .tint(.salaAccent)
         }
 
-        if !today.attention.isEmpty {
+        let stillSick = store.stillSickChildren
+        if !today.attention.isEmpty || !stillSick.isEmpty {
             VStack(alignment: .leading, spacing: 10) {
                 SectionHeader("Needs attention")
                 VStack(spacing: 0) {
-                    ForEach(Array(today.attention.enumerated()), id: \.element.id) { i, item in
+                    ForEach(Array(stillSick.enumerated()), id: \.element.id) { i, child in
                         if i > 0 { Divider().padding(.leading, 56) }
+                        StillSickRow(child: child)
+                    }
+                    ForEach(Array(today.attention.enumerated()), id: \.element.id) { i, item in
+                        if i > 0 || !stillSick.isEmpty { Divider().padding(.leading, 56) }
                         AttentionRow(item: item) {
                             if item.kind == "holiday_request" { holidayItem = item } else { store.openThread(item.threadId) }
                         }
@@ -431,6 +436,40 @@ struct AttentionRow: View {
         .padding(.vertical, 10)
         .contentShape(.rect)
         .accessibilityElement(children: .combine)
+    }
+}
+
+/// Aula reset yesterday's sick report: one tap reports the child sick again.
+struct StillSickRow: View {
+    @Environment(Store.self) private var store
+    let child: Child
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "cross.case.fill")
+                .font(.body.weight(.semibold))
+                .foregroundStyle(Color.sickText)
+                .frame(width: 32, height: 32)
+                .background(Color.sickFill, in: .rect(cornerRadius: 9, style: .continuous))
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Is \(child.name) still sick?").font(.body.weight(.semibold))
+                Text("Aula reset the sick report overnight.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer(minLength: 0)
+            Button("Still sick") { Task { await store.toggleSick(child) } }
+                .buttonStyle(.glassProminent)
+                .tint(.sickButton)
+                .disabled(store.sickInFlight.contains(child.id))
+            Button("Dismiss", systemImage: "xmark") { store.dismissStillSick(child.id) }
+                .labelStyle(.iconOnly)
+                .buttonStyle(.borderless)
+                .foregroundStyle(.secondary)
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
     }
 }
 

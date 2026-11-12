@@ -56,6 +56,15 @@ struct SettingsView: View {
                 } footer: {
                     Text("Stored in the Keychain on this device.")
                 }
+
+                #if DEBUG
+                Section("Debug") {
+                    Button("Test still-sick notification in 5 s") {
+                        let child = store.today?.children.first
+                        Task { await StillSick.schedule(child: child?.id ?? 0, name: child?.name ?? "Oskar", at: Date() + 5) }
+                    }
+                }
+                #endif
             }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
