@@ -43,10 +43,12 @@ struct Provider: TimelineProvider {
             }
             let refresh = Self.nextRefresh(after: now)
             var entries = [entry]
-            // Data is never shown past the day it's for.
+            // Data is shown for at most an hour after it was fetched, and never past its day,
+            // in case WidgetKit delays the next refresh.
             if entry.message == nil,
                let midnight = Shared.calendar.date(byAdding: .day, value: 1, to: Shared.calendar.startOfDay(for: now)) {
-                entries.append(SalaEntry(date: midnight, message: "Open Sala"))
+                let expiry = min((entry.asOf ?? now).addingTimeInterval(3600), midnight)
+                entries.append(SalaEntry(date: expiry, message: "Open Sala"))
             }
             completion(Timeline(entries: entries, policy: .after(refresh)))
         }
