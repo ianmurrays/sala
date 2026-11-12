@@ -145,7 +145,7 @@ Nullable here: `opensAt`, `closesAt`, `current.time`, `current.by`.
 `POST /translate` body `{"texts":["Hej","..."]}` → `{"texts":["Hi","..."]}`, one translation per text, same order. Translates into English (the server's `SALA_TRANSLATE_LANG`) with the Claude API; empty texts come back as they are and text already in English comes back unchanged. Only on a tap, never automatically.
 - At most 50 texts, each at most 20 000 characters, else `400`.
 - Translation off (no `ANTHROPIC_API_KEY` on the server) → `404 {"error":"not_enabled"}`.
-- The Claude API failing (error status, refusal, a cut-off or malformed answer) → `502 {"error":"upstream","message":"Translation failed..."}`. Nothing is cached then.
+- The Claude API failing (error status, refusal, a cut-off or malformed answer) → `502 {"error":"upstream","message":"Translation failed..."}`. The server translates in chunks of about 12 000 characters and caches each chunk as it succeeds, so after a failure a retry only sends what is still untranslated.
 - Translations are cached on the server by text, so asking again costs nothing. Works without an Aula session.
 
 ## Push
@@ -156,7 +156,7 @@ Notifications (titles only, never message or post bodies):
 
 | Event | Title | Priority | Click |
 | --- | --- | --- | --- |
-| New message (not from me) in a thread with me and exactly one other person | `New message from Mette Lund` (`New message` when the sender can't be determined) | default | `sala://thread/<threadId>` |
+| New message (not from me) in an unmuted thread with me and exactly one other person | `New message from Mette Lund` (`New message` when the sender can't be determined) | default | `sala://thread/<threadId>` |
 | New important post | `Important post: <post title>` | default | `sala://today` |
 | New unanswered holiday request (held until 07:00 when its deadline is today or tomorrow) | `Holiday request 21–23 Dec · answer by 13 Nov` | high when the deadline is 2 days away or less | `sala://today` |
 | Unanswered holiday request, the day before its deadline, from 07:00 (not sent when the new-request notification above goes out in the same poll) | `Holiday request 21–23 Dec · answer by tomorrow` | high | `sala://today` |

@@ -43,7 +43,7 @@ A message counts as direct when the thread's participants, read from the `messag
 
 ## Translation (Claude API)
 
-Apple's Translation framework has no Danish, so with `ANTHROPIC_API_KEY` set the server translates with the Claude API (one request per tap, the uncached texts in one batch). Translations are cached in `sala.sqlite3` by a hash of model, language and text, so a text is sent once.
+Apple's Translation framework has no Danish, so with `ANTHROPIC_API_KEY` set the server translates with the Claude API (the app sends at most 50 texts per request; the server sends the uncached ones to Claude in chunks of about 12 000 characters, caching each chunk as it succeeds). Translations are cached in `sala.sqlite3` by a hash of model, language and text, so a text is sent once.
 
 Privacy: when the user taps Translate, that post's title and text, or the text of every message in that thread, is sent to Anthropic. Nothing is sent automatically. The translation is stored in `sala.sqlite3` in clear text, keyed by a hash of the original. Message text and the API key are never logged.
 
