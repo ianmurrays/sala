@@ -297,6 +297,11 @@ final class Store {
         if leaves { threads?.remove(at: i) } else { threads?[i] = new }
         do {
             _ = try await client.updateThread(id, patch)
+            // Stamp again and re-apply: a list load that ran during the request may hold Aula's old row.
+            markThread(id, movedOut: leaves)
+            if folder == shown, let j = threads?.firstIndex(where: { $0.id == id }) {
+                if leaves { threads?.remove(at: j) } else { apply(&threads![j]) }
+            }
             if folder != shown {
                 // Moved into the folder now shown: list it.
                 if patch.folderId != nil, folder == new.folderId, threads?.contains(where: { $0.id == id }) == false {
