@@ -112,7 +112,7 @@ struct PickupSheet: View {
                         by = person
                     } label: {
                         HStack {
-                            Text(person).foregroundStyle(.primary)
+                            Text(person).foregroundStyle(Color.primary)
                             Spacer()
                             if by == person {
                                 Image(systemName: "checkmark")
@@ -122,6 +122,8 @@ struct PickupSheet: View {
                         }
                         .contentShape(.rect)
                     }
+                    // Form buttons draw their label in the tint; only the checkmark should be blue.
+                    .tint(Color.primary)
                     .accessibilityAddTraits(by == person ? .isSelected : [])
                 }
             }

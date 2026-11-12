@@ -4,6 +4,7 @@ The contract between `server/` and `ios/`. Both sides follow this file; change i
 
 All endpoints need `Authorization: Bearer <SALA_TOKEN>`. Missing or wrong token → `401 {"error":"unauthorized"}`.
 When the Aula session is gone and a MitID login is needed → `503 {"error":"auth_required"}` (client shows the login screen, see `/auth/*`).
+A write that makes no sense in today's state → `409 {"error":"conflict","message":"..."}`.
 Other upstream failures → `502 {"error":"upstream","message":"..."}`. JSON keys are camelCase. Dates are `YYYY-MM-DD`, timestamps ISO 8601 with offset, times `HH:mm`.
 
 ## Auth (MitID, held by the server)
@@ -52,9 +53,16 @@ Other upstream failures → `502 {"error":"upstream","message":"..."}`. JSON key
 `Post`:
 ```json
 {"id": 9, "title": "Welcome", "author": "Leder · Børnehuset", "date": "timestamp", "body": "plain text", "important": false, "saved": false,
- "attachments": [{"id": "a1b2", "name": "Præsentation.pdf", "kind": "file|image"}]}
+ "attachments": [Attachment]}
 ```
-Nullable: `arrivedAt`, `leftAt`, `pickup.time`, `pickup.by`, `closesAt`, `threadId`, `subtitle`.
+`Attachment`:
+```json
+{"id": "a1b2", "name": "Præsentation.pdf", "kind": "file|image|link", "url": "https://… (links only)"}
+```
+- `file` / `image`: an Aula file; fetch it with `GET /attachments/{id}`. No `url`.
+- `link`: a cloud-drive link the author attached. `id` is null and `url` is the link; open it in the browser. The server never fetches it.
+
+Nullable: `arrivedAt`, `leftAt`, `pickup.time`, `pickup.by`, `closesAt`, `threadId`, `subtitle`, Attachment `id` (links), and `threadId` in the `sender` reply response when Aula doesn't return the new thread's id. Every other field is always present and non-null; posts, threads and messages Aula sends without a timestamp are left out.
 
 ## Pickup and sick
 
@@ -63,14 +71,16 @@ Nullable: `arrivedAt`, `leftAt`, `pickup.time`, `pickup.by`, `closesAt`, `thread
 {"date":"2026-11-12","opensAt":"06:30","closesAt":"16:45","times":["15:30","16:00","16:15","16:30","16:45"],
  "people":["Jonas (Far)","Mor (Mor)"],"current":{"time":"16:15","by":"Jonas (Far)"},"note":""}
 ```
-`PUT /children/{id}/pickup` body `{"time":"16:15","by":"Jonas (Far)","note":""}` → the updated child object (same shape as in `/today`). Changes today only; `by` must be one of `people`, else `400`.
+Nullable here: `opensAt`, `closesAt`, `current.time`, `current.by`.
 
-`POST /children/{id}/sick` → updated child (status `sick`). `DELETE /children/{id}/sick` → takes the report back, returns the updated child.
+`PUT /children/{id}/pickup` body `{"time":"16:15","by":"Jonas (Far)","note":""}` → the updated child object (same shape as in `/today`). Changes today only. `time` must be a valid `HH:mm` and `by` one of `people`, else `400`. When the child is registered absent today (vacation) → `409 {"error":"conflict","message":"Oskar is registered absent today"}` and nothing is written.
+
+`POST /children/{id}/sick` → updated child (status `sick`). `DELETE /children/{id}/sick` → takes the report back, returns the updated child: status goes back to present if the child was checked in today and not checked out, otherwise to not arrived.
 
 ## Posts
 
 `POST /posts/{id}/save` / `DELETE /posts/{id}/save` → `{"saved": true|false}`.
-`GET /attachments/{id}` → the file bytes with its `Content-Type` and `Content-Disposition: inline; filename=...`. `id` is an opaque server-issued id from a Post or Message; the server never fetches a client-supplied URL.
+`GET /attachments/{id}` → the file bytes with its `Content-Type` and `Content-Disposition: inline; filename=...`. `id` is an opaque server-issued id from a Post or Message; the server never fetches a client-supplied URL, only Aula file URLs on Aula's own hosts (https, `*.aula.dk`), and follows redirects only onto those hosts.
 
 ## Messages
 
@@ -89,4 +99,15 @@ Nullable: `arrivedAt`, `leftAt`, `pickup.time`, `pickup.by`, `closesAt`, `thread
 
 ## Push
 
-`POST /devices` body `{"token":"<apns hex>"}` → `{"ok":true}`. The server polls Aula and sends APNs pushes for new direct messages, new important posts and new holiday requests. Payload carries `{"kind":"message|post|holiday_request","threadId"?,"postId"?}` next to `aps`.
+There is no push endpoint. Push goes through [ntfy](https://ntfy.sh): the server polls Aula every `POLL_SECONDS` and publishes to the ntfy topic `NTFY_TOPIC`; the phone subscribes to that topic in the ntfy iOS app. Push is off when `NTFY_TOPIC` is unset.
+
+Notifications (titles only, never message or post bodies):
+
+| Event | Title | Priority | Click |
+| --- | --- | --- | --- |
+| New message (not from me) in a thread with me and exactly one other person | `New message from Mette Lund` (`New message` when the sender can't be determined) | default | `sala://thread/<threadId>` |
+| New important post | `Important post: <post title>` | default | `sala://today` |
+| New unanswered holiday request | `Holiday request 21–23 Dec · answer by 13 Nov` | high when the deadline is 2 days away or less | `sala://today` |
+| Aula session lost (once per loss, retried until delivered, not repeated after a server restart) | `Aula login needed` | high | `sala://today` |
+
+Items that exist when push is first enabled never notify. The app handles the `sala://` links (`thread/<id>` opens the thread, `today` the Today tab).

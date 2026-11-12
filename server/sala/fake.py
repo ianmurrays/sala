@@ -31,7 +31,8 @@ INSTITUTION_NAME = "Børnehuset"
 GROUP = {"id": 3001, "name": "Stue", "shortName": "Stue"}
 FAKE_OTP = "482915"
 
-FILES_BASE = "https://fake.aula.local/files/"
+# On an aula.dk subdomain so the attachment host allowlist applies unchanged.
+FILES_BASE = "https://fake-files.aula.dk/files/"
 PDF_URL = FILES_BASE + "praesentation.pdf"
 PNG_URL = FILES_BASE + "skovtur.png"
 
@@ -129,7 +130,8 @@ class FakeAula:
         now = _now()
         today = aula_today()
         self.status = 3  # PresenceState.PRESENT
-        self.check_in = "07:40"
+        self.check_in: str | None = "07:40"  # kept when a sick report is made
+        self.check_out: str | None = None
         # A repeating weekly template covers every weekday; a single-day
         # override (written by updatePresenceTemplate without an id) wins.
         self.weekly_template = {
@@ -148,6 +150,7 @@ class FakeAula:
         self.overrides: dict[str, dict] = {}  # byDate -> day template
         self.posts = self._posts(now)
         self.threads, self.messages = self._threads(now)
+        self.vacations = self._vacations(today)
 
     # --- HttpClient protocol -------------------------------------------------
 
@@ -253,8 +256,8 @@ class FakeAula:
                     "status": self.status,
                     "location": None,
                     "sleepIntervals": [],
-                    "checkInTime": self.check_in if self.status in (3, 4, 5, 6, 7, 8) else None,
-                    "checkOutTime": None,
+                    "checkInTime": self.check_in,
+                    "checkOutTime": self.check_out,
                     "entryTime": tmpl["entryTime"],
                     "exitTime": tmpl["exitTime"],
                     "exitWith": tmpl["exitWith"],
@@ -365,51 +368,95 @@ class FakeAula:
             }
         )
 
-    def _presence_getVacationRegistrationsByChildren(self, q, body):
-        today = aula_today()
+    @staticmethod
+    def _vacations(today: date) -> list[dict]:
         dec = date(today.year if today.month < 12 or today.day < 21 else today.year + 1, 12, 21)
         feb = date(dec.year + 1, 2, 16)
-        return _ok(
-            [
-                {
-                    "child": {"id": CHILD_ID, "name": "Oskar"},
-                    "vacationRegistrations": [
-                        {
-                            "vacationRegistrationId": 55,
-                            "title": "Juleferie",
-                            "startDate": dec.isoformat(),
-                            "endDate": (dec + timedelta(days=2)).isoformat(),
-                            "responseId": 0,
-                            "responseDeadline": (today + timedelta(days=1)).isoformat(),
-                            "noteToGuardian": "Giv besked om Oskar holder fri.",
-                            "isEditable": True,
-                            "isMissingAnswer": True,
-                        },
-                        {
-                            "vacationRegistrationId": 56,
-                            "title": "Vinterferie",
-                            "startDate": feb.isoformat(),
-                            "endDate": (feb + timedelta(days=4)).isoformat(),
-                            "responseId": 0,
-                            "responseDeadline": (today + timedelta(days=12)).isoformat(),
-                            "noteToGuardian": "",
-                            "isEditable": True,
-                            "isMissingAnswer": True,
-                        },
-                        {
-                            "vacationRegistrationId": 54,
-                            "title": "Efterårsferie",
-                            "startDate": (today - timedelta(days=20)).isoformat(),
-                            "endDate": (today - timedelta(days=16)).isoformat(),
-                            "responseId": 9,
-                            "responseDeadline": (today - timedelta(days=30)).isoformat(),
-                            "isEditable": False,
-                            "isMissingAnswer": False,
-                        },
-                    ],
-                }
-            ]
+        return [
+            {
+                "vacationRegistrationId": 55,
+                "title": "Juleferie",
+                "startDate": dec.isoformat(),
+                "endDate": (dec + timedelta(days=2)).isoformat(),
+                "responseId": 0,
+                "responseDeadline": (today + timedelta(days=1)).isoformat(),
+                "noteToGuardian": "Giv besked om Oskar holder fri.",
+                "isEditable": True,
+                "isMissingAnswer": True,
+            },
+            {
+                "vacationRegistrationId": 56,
+                "title": "Vinterferie",
+                "startDate": feb.isoformat(),
+                "endDate": (feb + timedelta(days=4)).isoformat(),
+                "responseId": 0,
+                "responseDeadline": (today + timedelta(days=12)).isoformat(),
+                "noteToGuardian": "",
+                "isEditable": True,
+                "isMissingAnswer": True,
+            },
+            {
+                "vacationRegistrationId": 54,
+                "title": "Efterårsferie",
+                "startDate": (today - timedelta(days=20)).isoformat(),
+                "endDate": (today - timedelta(days=16)).isoformat(),
+                "responseId": 9,
+                "responseDeadline": (today - timedelta(days=30)).isoformat(),
+                "isEditable": False,
+                "isMissingAnswer": False,
+            },
+        ]
+
+    def _presence_getVacationRegistrationsByChildren(self, q, body):
+        return _ok([{"child": {"id": CHILD_ID, "name": "Oskar"}, "vacationRegistrations": self.vacations}])
+
+    # --- debug: new items for push testing -----------------------------------
+
+    def add_message(self, tid: int, sender: dict, html: str) -> str:
+        """A new incoming message in an existing thread (unread)."""
+        msg = self._msg(f"m{tid}-n{next(self._ids)}", sender, html, _now())
+        self.messages[tid].insert(0, msg)
+        self.threads[tid]["read"] = False
+        self._refresh_latest(tid)
+        return msg["id"]
+
+    def add_direct_message(self) -> int:
+        """Mette writes in 9105, a thread between Jonas and Mette only."""
+        self.add_message(9105, METTE, "<p>Oskar spurgte efter dig i dag.</p>")
+        return 9105
+
+    def add_important_post(self) -> int:
+        pid = 500 + next(self._ids)
+        base = self.posts[401]
+        self.posts[pid] = {
+            **base,
+            "id": pid,
+            "title": "Børnehuset lukker tidligt på fredag",
+            "content": {"html": "<p>Vi lukker kl. 14 på grund af personalemøde.</p>"},
+            "timestamp": _ts(_now()),
+            "isImportant": True,
+            "isBookmarked": False,
+            "attachments": [],
+        }
+        return pid
+
+    def add_holiday_request(self, deadline_days: int = 1) -> int:
+        rid = 60 + next(self._ids)
+        start = aula_today() + timedelta(days=30)
+        self.vacations.append(
+            {
+                "vacationRegistrationId": rid,
+                "title": "Sommerferie",
+                "startDate": start.isoformat(),
+                "endDate": (start + timedelta(days=2)).isoformat(),
+                "responseId": 0,
+                "responseDeadline": (aula_today() + timedelta(days=deadline_days)).isoformat(),
+                "noteToGuardian": "",
+                "isEditable": True,
+                "isMissingAnswer": True,
+            }
         )
+        return rid
 
     # --- calendar ------------------------------------------------------------
 
@@ -512,7 +559,10 @@ class FakeAula:
                 "ownerProfile": owner(KASPER, 1503),
                 "isImportant": False,
                 "isBookmarked": True,
-                "attachments": [],
+                # A cloud-drive link: shown as kind "link", never fetched by the server.
+                "attachments": [
+                    {"id": 9904, "status": "available", "link": {"service": "onedrive", "name": "Tøjliste", "url": "https://onedrive.live.com/view?id=fake"}}
+                ],
             },
         ]
         for p in posts:
@@ -520,7 +570,7 @@ class FakeAula:
         return {p["id"]: p for p in posts}
 
     def _posts_getAllPosts(self, q, body):
-        posts = sorted(self.posts.values(), key=lambda p: p["timestamp"], reverse=True)
+        posts = sorted(self.posts.values(), key=lambda p: p["timestamp"] or "", reverse=True)
         return _ok({"posts": posts})
 
     def _posts_getById(self, q, body):

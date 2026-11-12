@@ -32,7 +32,6 @@
 		C61D4DFB892FB869F494631E /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		CBDA4ACCCAD7122465646C4E /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayView.swift; sourceTree = "<group>"; };
 		EA44F3816DF767D0B3A780A5 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
-		FD2E145876A2ECFC2DB2AAD5 /* Sala.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Sala.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -61,7 +60,6 @@
 				C61D4DFB892FB869F494631E /* LoginView.swift */,
 				4DDF8360879C8CE3785836C4 /* MessagesView.swift */,
 				996EC5D2487693CC0C6083BE /* PickupSheet.swift */,
-				FD2E145876A2ECFC2DB2AAD5 /* Sala.entitlements */,
 				3A62848569FE547E44876C3B /* SalaApp.swift */,
 				7306B89AB0399C4EF4F98F6C /* SettingsView.swift */,
 				EA44F3816DF767D0B3A780A5 /* Store.swift */,
@@ -150,7 +148,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = Sala/Sala.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
@@ -173,7 +170,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = Sala/Sala.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";

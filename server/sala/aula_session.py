@@ -3,12 +3,15 @@
 Rules:
 - Only ``POST /auth/login`` (``SessionManager.login``) ever starts MitID, and it
   never retries on its own: repeated failed MitID attempts can lock the identity.
+  When stored tokens exist it first tries them once (token refresh, no MitID).
 - Startup and keep-alive only load stored tokens and let the library refresh
   them (``create_client`` + its 401 refresh hook).
 - Any auth error on a call (401/403/session-expired/invalid-token, after the
   library's own refresh) triggers one ``get_profile`` probe. Only if the probe
   is also refused is the session gone; a refused call with a working probe
-  (step-up for a sensitive thread, say) is a 502 and the session stays.
+  (step-up for a sensitive thread, say) is a 502 and the session stays. A probe
+  for a client that has since been replaced (a late request from before a new
+  login) never touches the new session.
 """
 
 import asyncio
@@ -30,6 +33,7 @@ from .mapping import TZ, auth_error
 _LOGGER = logging.getLogger(__name__)
 
 KEEP_ALIVE_SECONDS = 600
+MITID_TIMEOUT_SECONDS = 300
 
 
 class AuthRequired(Exception):
@@ -70,6 +74,8 @@ class SessionManager:
         # Hook for the push stage: called (sync or async, no args) whenever the
         # session is lost and a MitID login is needed.
         self.login_needed_hooks: list[Callable[[], Any]] = []
+        # Called (sync, no args) when a login succeeds and the session is ok again.
+        self.logged_in_hooks: list[Callable[[], Any]] = []
 
     # --- lifecycle -----------------------------------------------------------
 
@@ -120,6 +126,24 @@ class SessionManager:
         async with self._login_lock:
             if self.state in ("logging_in", "ok"):
                 return self.status()
+            if not self.fake and self.state == "needs_login" and await self.storage.load():
+                # Stored tokens may still refresh; that costs no MitID attempt.
+                # Only from needs_login: after an error the next tap goes to MitID.
+                try:
+                    client = await self._connect()
+                    profile = await client.get_profile()  # init() alone may not prove the session
+                except AuthRequired:
+                    pass  # tokens refused: fall through to MitID
+                except Exception as e:  # noqa: BLE001
+                    await self._drop_client()
+                    if not auth_error(e):
+                        # Aula unreachable: MitID would fail too, so don't spend an attempt.
+                        self._set("error", f"Could not reach Aula: {e}")
+                        return self.status()
+                else:
+                    self._profile = (client, profile)
+                    self._logged_in()
+                    return self.status()
             if not self.fake and not self.username:
                 self._set("error", "AULA_USERNAME is not set on the server")
                 return self.status()
@@ -144,16 +168,28 @@ class SessionManager:
                 client = await create_client(dict(FAKE_TOKEN_DATA), http_client=self.fake_aula)
             else:
                 # force_login: never reuse/refresh here, this IS the MitID login.
-                token_data = await authenticate(
-                    self.username,
-                    self.storage,
-                    on_otp_code=self._on_otp_code,
-                    force_login=True,
-                    auth_method="app",
-                )
-                client = await create_client(token_data, token_storage=self.storage)
+                # authenticate() saves the new tokens to self.storage itself.
+                async with asyncio.timeout(MITID_TIMEOUT_SECONDS):
+                    token_data = await authenticate(
+                        self.username,
+                        self.storage,
+                        on_otp_code=self._on_otp_code,
+                        force_login=True,
+                        auth_method="app",
+                    )
+                try:
+                    client = await create_client(token_data, token_storage=self.storage)
+                except Exception as e:  # noqa: BLE001
+                    # MitID worked and the tokens are stored; the client is
+                    # built lazily from them on the next call (_connect).
+                    _LOGGER.warning("Aula client setup after MitID failed, will retry lazily: %s", e)
+                    client = None
         except asyncio.CancelledError:
             raise
+        except TimeoutError:
+            _LOGGER.warning("MitID login timed out")
+            self._set("error", "MitID login timed out")
+            return
         except Exception as e:  # noqa: BLE001 - every failure ends in "error", no retry
             _LOGGER.warning("MitID login failed: %s", e)
             self._set("error", str(e) or type(e).__name__)
@@ -161,13 +197,33 @@ class SessionManager:
         old, self.client, self._profile = self.client, client, None
         if old and old is not client:
             await old.close()
+        self._logged_in()
+        _LOGGER.info("Aula login complete")
+
+    def _logged_in(self) -> None:
         self._loss_notified = False
         self._set("ok")
-        _LOGGER.info("Aula login complete")
+        for hook in list(self.logged_in_hooks):
+            try:
+                hook()
+            except Exception:  # noqa: BLE001
+                _LOGGER.exception("logged-in hook failed")
 
     # --- client access -------------------------------------------------------
 
-    async def _lost(self, reason: str) -> None:
+    async def _drop_client(self) -> None:
+        old, self.client, self._profile = self.client, None, None
+        if old:
+            try:
+                await old.close()
+            except Exception:  # noqa: BLE001
+                pass
+
+    async def _lost(self, reason: str, client: AulaApiClient | None = None) -> None:
+        """The session is gone. ``client``: the client that saw it; if that is no
+        longer the current one (a new login happened meanwhile), do nothing."""
+        if client is not None and client is not self.client:
+            return
         if self._loss_notified:
             return  # already lost; hooks fire once per loss
         self._loss_notified = True
@@ -221,20 +277,31 @@ class SessionManager:
             raise
         except Exception as e:
             if auth_error(e):
-                await self._probe(client, e)
+                await self._probe(client, e)  # always raises
             if isinstance(e, (HttpRequestError, httpx.HTTPError)):
                 raise Upstream(str(e) or type(e).__name__) from e
             raise
 
     async def _probe(self, client: AulaApiClient, original: Exception) -> None:
         """Confirm with one cheap read that the session is really gone."""
+        if client is not self.client:
+            self._stale(original)
         try:
             await client.get_profile()
         except Exception as e:  # noqa: BLE001
             if auth_error(e):
-                await self._lost("Aula session expired")
+                if client is not self.client:
+                    self._stale(original)
+                await self._lost("Aula session expired", client)
                 raise AuthRequired from e
             raise Upstream(f"{original} (and the session check failed: {e})") from original
+        raise Upstream(f"Aula refused the request: {original}") from original
+
+    def _stale(self, original: Exception) -> None:
+        """A failure from a client that is no longer current: not ours to judge.
+        If the session is already gone it is still a 503, otherwise a 502."""
+        if self.state != "ok":
+            raise AuthRequired from original
         raise Upstream(f"Aula refused the request: {original}") from original
 
     async def profile(self, client: AulaApiClient):

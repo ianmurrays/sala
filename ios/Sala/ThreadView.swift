@@ -312,10 +312,8 @@ struct MessageBubble: View {
                         .textSelection(.enabled)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                ForEach(message.attachments) { attachment in
-                    AttachmentRow(attachment: attachment, loading: downloading == attachment.id, disabled: downloading != nil) {
-                        open(attachment)
-                    }
+                ForEach(Array(message.attachments.enumerated()), id: \.offset) { _, attachment in
+                    AttachmentRow(attachment: attachment, downloading: downloading) { open(attachment) }
                 }
             }
             .padding(.horizontal, 14)

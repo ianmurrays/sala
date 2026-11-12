@@ -47,6 +47,11 @@ final class Store {
     // In-flight mutations
     var sickInFlight: Set<Int> = []
     var savingPosts: Set<Int> = []
+    /// Bumped by every local change to `today`. Each child or post id maps to the count at its last change,
+    /// so a `/today` load that started earlier keeps local state for just those ids.
+    private var mutations = 0
+    private var childChanges: [Int: Int] = [:]
+    private var postChanges: [Int: Int] = [:]
 
     nonisolated static let defaultServerURL = "http://localhost:8000"
 
@@ -79,9 +84,19 @@ final class Store {
         defer { isRefreshing = false }
         // Unstructured so a view-bound caller (login poll, .refreshable) going away can't cancel it.
         let c = client
+        let startedAt = mutations
         let result = await Task { try await c.today() }.result
         switch result {
-        case .success(let t):
+        case .success(var t):
+            // Keep newer local state for the children and posts changed while this load was in flight.
+            if let current = today {
+                t.children = t.children.map { c in
+                    childChanges[c.id, default: 0] > startedAt ? current.children.first { $0.id == c.id } ?? c : c
+                }
+                for i in t.posts.indices where postChanges[t.posts[i].id, default: 0] > startedAt {
+                    if let p = current.posts.first(where: { $0.id == t.posts[i].id }) { t.posts[i].saved = p.saved }
+                }
+            }
             today = t
             phase = .ready
             // Keeps the Messages tab badge current without holding up Today.
@@ -174,6 +189,8 @@ final class Store {
     // MARK: Mutations
 
     private func replace(_ child: Child) {
+        mutations += 1
+        childChanges[child.id] = mutations
         guard let i = today?.children.firstIndex(where: { $0.id == child.id }) else { return }
         today?.children[i] = child
     }
@@ -203,16 +220,24 @@ final class Store {
         }
     }
 
+    private func markPost(_ id: Int) {
+        mutations += 1
+        postChanges[id] = mutations
+    }
+
     func toggleSaved(_ post: Post) async {
         guard let i = today?.posts.firstIndex(where: { $0.id == post.id }), !savingPosts.contains(post.id) else { return }
         let old = post.saved
+        markPost(post.id)
         today?.posts[i].saved = !old
         savingPosts.insert(post.id)
         defer { savingPosts.remove(post.id) }
         do {
             let saved = try await client.setSaved(post: post.id, !old)
+            markPost(post.id)
             if let j = today?.posts.firstIndex(where: { $0.id == post.id }) { today?.posts[j].saved = saved }
         } catch {
+            markPost(post.id)
             if let j = today?.posts.firstIndex(where: { $0.id == post.id }) { today?.posts[j].saved = old }
             if let msg = handle(error) { banner = "Couldn't update the bookmark. \(msg)" }
         }
@@ -221,6 +246,23 @@ final class Store {
     func openThread(_ id: String?) {
         pendingThreadID = id
         selectedTab = .messages
+    }
+
+    /// `sala://thread/<id>` opens a thread, `sala://today` shows and refreshes Today (links from ntfy pushes).
+    func handleDeepLink(_ url: URL) {
+        guard url.scheme?.lowercased() == "sala" else { return }
+        switch url.host()?.lowercased() {
+        case "thread":
+            let id = url.pathComponents.filter { $0 != "/" }.first ?? ""
+            selectedTab = .messages
+            // MessagesView consumes this once it's on screen (not behind the login screen or Settings).
+            if !id.isEmpty { pendingThreadID = id }
+        case "today":
+            selectedTab = .today
+            if phase != .loading { Task { await load() } }
+        default:
+            break
+        }
     }
 }
 

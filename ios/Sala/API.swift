@@ -77,22 +77,31 @@ struct Post: Codable, Sendable, Equatable, Identifiable {
     var attachments: [Attachment]
 }
 
-struct Attachment: Codable, Sendable, Equatable, Identifiable {
-    var id: String
+struct Attachment: Codable, Sendable, Equatable {
+    /// Server id for `GET /attachments/{id}`; absent for links.
+    var id: String?
     var name: String
-    /// `file|image`
+    /// `file|image|link`
     var kind: String
+    /// Set for `link` attachments, which open in the browser instead of being downloaded.
+    var url: String?
 
-    enum CodingKeys: String, CodingKey { case id, name, kind }
+    var isLink: Bool { kind == "link" }
+    var linkURL: URL? { url.flatMap(URL.init(string:)) }
+
+    enum CodingKeys: String, CodingKey { case id, name, kind, url }
 
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
-        id = try c.decodeLenientString(.id) ?? ""
-        name = try c.decode(String.self, forKey: .name)
+        id = try c.decodeLenientString(.id)
+        url = try c.decodeIfPresent(String.self, forKey: .url)
         kind = try c.decodeIfPresent(String.self, forKey: .kind) ?? "file"
+        name = try c.decodeIfPresent(String.self, forKey: .name) ?? url ?? "Attachment"
     }
 
-    init(id: String, name: String, kind: String) { self.id = id; self.name = name; self.kind = kind }
+    init(id: String?, name: String, kind: String, url: String? = nil) {
+        self.id = id; self.name = name; self.kind = kind; self.url = url
+    }
 }
 
 struct PickupOptions: Codable, Sendable, Equatable {
@@ -235,6 +244,8 @@ enum APIError: LocalizedError, Sendable {
     case upstream(String?)
     case http(Int, String?)
     case notFound
+    /// 409: the change isn't allowed right now (for example a pickup on an absence day).
+    case conflict(String?)
     case badURL
     case transport(String)
     case decoding(String)
@@ -246,6 +257,7 @@ enum APIError: LocalizedError, Sendable {
         case .upstream(let m): "Aula didn't answer properly" + (m.map { ": \($0)" } ?? ".")
         case .http(let code, let m): m ?? "The server answered with HTTP \(code)."
         case .notFound: "Not found on the server. It may have been deleted."
+        case .conflict(let m): m ?? "That can't be changed right now."
         case .badURL: "The server URL is not valid. Check it in Settings."
         case .transport(let m): "Can't reach the server. \(m)"
         case .decoding(let m): "Unexpected answer from the server. \(m)"
@@ -288,7 +300,8 @@ struct APIClient: Sendable {
 
     /// Downloads an attachment into a fresh temp directory, named after `name`.
     func download(_ attachment: Attachment) async throws -> URL {
-        let request = try makeRequest("GET", "/attachments/\(attachment.id.urlPathEscaped)")
+        guard let id = attachment.id, !id.isEmpty else { throw APIError.notFound }
+        let request = try makeRequest("GET", "/attachments/\(id.urlPathEscaped)")
         let (tmp, response) = try await perform { try await Self.session.download(for: request) }
         try check(response, data: (try? Data(contentsOf: tmp)) ?? Data())
         let dir = FileManager.default.temporaryDirectory
@@ -360,6 +373,7 @@ struct APIClient: Sendable {
         case (401, _): throw APIError.unauthorized
         case (503, "auth_required"): throw APIError.authRequired
         case (404, _): throw APIError.notFound
+        case (409, _): throw APIError.conflict(env?.message)
         case (502, _): throw APIError.upstream(env?.message)
         default: throw APIError.http(http.statusCode, env?.message ?? env?.error)
         }

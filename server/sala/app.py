@@ -5,6 +5,7 @@ import mimetypes
 import os
 import secrets
 from contextlib import asynccontextmanager
+from datetime import time as dtime
 from pathlib import Path
 from typing import Literal
 from urllib.parse import quote
@@ -20,6 +21,7 @@ from aula.http import HttpRequestError
 
 from . import mapping as m
 from .aula_session import AuthRequired, SessionManager, Upstream
+from .push import Pusher
 from .store import Store
 
 _LOGGER = logging.getLogger(__name__)
@@ -37,8 +39,21 @@ def _err(status: int, error: str, message: str | None = None) -> JSONResponse:
     return JSONResponse(body, status_code=status)
 
 
+def _setup_logging() -> None:
+    """Show Sala's INFO logs (e.g. "push: seeded ...") under uvicorn, which
+    only configures its own loggers."""
+    log = logging.getLogger("sala")
+    if log.level == logging.NOTSET:
+        log.setLevel(logging.INFO)
+    if not log.handlers and not logging.getLogger().handlers:
+        handler = logging.StreamHandler()
+        handler.setFormatter(logging.Formatter("%(levelname)s:     %(name)s: %(message)s"))
+        log.addHandler(handler)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    _setup_logging()
     token = os.environ.get("SALA_TOKEN")
     if not token:
         raise RuntimeError("SALA_TOKEN must be set")
@@ -53,11 +68,29 @@ async def lifespan(app: FastAPI):
         fake=fake,
         fake_login_seconds=float(os.environ.get("SALA_FAKE_LOGIN_SECONDS", "3")),
     )
+    app.state.pusher = None
+    topic = os.environ.get("NTFY_TOPIC")
+    if topic:
+        app.state.pusher = Pusher(
+            app.state.session,
+            app.state.store,
+            topic=topic,
+            url=os.environ.get("NTFY_URL") or "https://ntfy.sh",
+            token=os.environ.get("NTFY_TOKEN") or None,
+            poll_seconds=float(os.environ.get("POLL_SECONDS", "300")),
+        )
+        # Before start(): a start with no stored session should notify too.
+        app.state.session.login_needed_hooks.append(app.state.pusher.on_login_needed)
+        app.state.session.logged_in_hooks.append(app.state.pusher.on_logged_in)
     await app.state.session.start()
-    _LOGGER.info("Sala started (fake=%s, data=%s)", fake, data_dir)
+    if app.state.pusher:
+        app.state.pusher.start()
+    _LOGGER.info("Sala started (fake=%s, data=%s, push=%s)", fake, data_dir, bool(topic))
     try:
         yield
     finally:
+        if app.state.pusher:
+            await app.state.pusher.stop()
         await app.state.session.stop()
         app.state.store.close()
 
@@ -102,6 +135,11 @@ async def _upstream_failure(request: Request, exc: m.UpstreamFailure):
 @app.exception_handler(m.BadRequest)
 async def _bad_request(request: Request, exc: m.BadRequest):
     return _err(400, "bad_request", str(exc))
+
+
+@app.exception_handler(m.Conflict)
+async def _conflict(request: Request, exc: m.Conflict):
+    return _err(409, "conflict", str(exc))
 
 
 @app.exception_handler(m.NotFound)
@@ -199,7 +237,12 @@ async def get_pickup(child_id: int, s: SessionManager = Depends(session)):
 
 @app.put("/children/{child_id}/pickup")
 async def put_pickup(child_id: int, body: PickupIn, s: SessionManager = Depends(session)):
-    if m.hhmm(body.time) != body.time:
+    try:
+        # fromisoformat alone accepts "24:00" (Python 3.14) and other ISO forms.
+        valid = len(body.time) == 5 and dtime.fromisoformat(body.time).strftime("%H:%M") == body.time
+    except ValueError:
+        valid = False
+    if not valid:
         raise ApiError(400, "bad_request", "time must be HH:mm")
 
     async def run(client):
@@ -253,10 +296,12 @@ async def attachment(att_id: str, s: SessionManager = Depends(session), st: Stor
     if found is None:
         raise ApiError(404, "not_found")
     url, name = found  # a URL Aula gave us, never one from the client
+    if not m.file_url_allowed(url):  # e.g. a link URL registered by older code
+        raise ApiError(404, "not_found")
 
     async def run(client):
         try:
-            return await client.download_file(url)
+            return await m.download_attachment(client, url, fake=s.fake)
         except (httpx.HTTPError, HttpRequestError) as e:
             raise Upstream(f"Could not download attachment: {e}") from e
 
@@ -310,17 +355,27 @@ async def reply(thread_id: str, body: ReplyIn, s: SessionManager = Depends(sessi
     return {"ok": True, "threadId": new_id}
 
 
-# --- push --------------------------------------------------------------------
+# --- fake-mode helpers (push testing) ---------------------------------------
 
 
-class DeviceIn(BaseModel):
-    token: str
+def fake_aula(request: Request):
+    """The fake Aula, or 404: these routes only exist with SALA_FAKE=1."""
+    fake = request.app.state.session.fake_aula
+    if fake is None:
+        raise ApiError(404, "not_found")
+    return fake
 
 
-@app.post("/devices")
-async def register_device(body: DeviceIn, st: Store = Depends(store)):
-    token = body.token.strip()
-    if not token or any(c not in "0123456789abcdefABCDEF" for c in token):
-        raise ApiError(400, "bad_request", "token must be the APNs device token in hex")
-    st.add_device(token.lower())
-    return {"ok": True}
+@app.post("/debug/fake/new-message")
+async def debug_new_message(fake=Depends(fake_aula)):
+    return {"ok": True, "threadId": str(fake.add_direct_message())}
+
+
+@app.post("/debug/fake/important-post")
+async def debug_important_post(fake=Depends(fake_aula)):
+    return {"ok": True, "postId": fake.add_important_post()}
+
+
+@app.post("/debug/fake/holiday-request")
+async def debug_holiday_request(fake=Depends(fake_aula)):
+    return {"ok": True, "id": fake.add_holiday_request()}

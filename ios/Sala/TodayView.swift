@@ -284,29 +284,43 @@ struct ChildCard: View {
             .background(Color.screen, in: .rect(cornerRadius: 18, style: .continuous))
             .accessibilityElement(children: .combine)
 
+            // One line per label, equal heights: drop the icons before stacking the buttons.
             ViewThatFits(in: .horizontal) {
-                HStack(spacing: 10) { buttons }
-                VStack(spacing: 10) { buttons }
+                HStack(spacing: 10) { buttons(icons: true) }.fixedSize(horizontal: false, vertical: true)
+                HStack(spacing: 10) { buttons(icons: false) }.fixedSize(horizontal: false, vertical: true)
+                VStack(spacing: 10) { buttons(icons: true) }.fixedSize(horizontal: false, vertical: true)
             }
         }
         .card()
         .sensoryFeedback(.success, trigger: child.status) { old, new in old != new && (old == "sick" || new == "sick") }
     }
 
-    @ViewBuilder private var buttons: some View {
-        Button(action: changePickup) {
-            Label("Change pickup", systemImage: "clock")
-                .frame(maxWidth: .infinity)
+    /// A pickup can't be set on an absence day (the server answers 409).
+    private var canChangePickup: Bool { child.status != "vacation" }
+
+    private func buttonLabel(_ title: String, _ icon: String, icons: Bool) -> some View {
+        Group {
+            if icons { Label(title, systemImage: icon) } else { Text(title) }
         }
-        .buttonStyle(.glassProminent)
-        .tint(.salaAccent)
+        .lineLimit(1)
+        .minimumScaleFactor(0.7)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    @ViewBuilder private func buttons(icons: Bool) -> some View {
+        if canChangePickup {
+            Button(action: changePickup) {
+                buttonLabel("Change pickup", "clock", icons: icons)
+            }
+            .buttonStyle(.glassProminent)
+            .tint(.salaAccent)
+        }
 
         if isSick {
             Button {
                 Task { await store.toggleSick(child) }
             } label: {
-                Label("Undo sick report", systemImage: "arrow.uturn.backward")
-                    .frame(maxWidth: .infinity)
+                buttonLabel("Undo sick report", "arrow.uturn.backward", icons: icons)
             }
             .buttonStyle(.glass)
             .foregroundStyle(Color.sickText)
@@ -315,8 +329,7 @@ struct ChildCard: View {
             Button {
                 Task { await store.toggleSick(child) }
             } label: {
-                Label("Report sick", systemImage: "cross.case")
-                    .frame(maxWidth: .infinity)
+                buttonLabel("Report sick", "cross.case", icons: icons)
             }
             .buttonStyle(.glassProminent)
             .tint(.sickButton)
@@ -469,26 +482,41 @@ struct PostCard: View {
                 }
             }
 
-            ForEach(post.attachments) { attachment in
-                AttachmentRow(attachment: attachment, loading: downloading == attachment.id, disabled: downloading != nil) {
-                    open(attachment)
-                }
+            ForEach(Array(post.attachments.enumerated()), id: \.offset) { _, attachment in
+                AttachmentRow(attachment: attachment, downloading: downloading) { open(attachment) }
             }
         }
         .card()
     }
 }
 
+/// One attachment in a post or message. Links open in the browser; files and images download into QuickLook.
 struct AttachmentRow: View {
+    @Environment(\.openURL) private var openURL
     let attachment: Attachment
-    let loading: Bool
-    let disabled: Bool
-    let action: () -> Void
+    /// The id of the attachment being downloaded, if any.
+    let downloading: String?
+    let download: () -> Void
+
+    private var loading: Bool { !attachment.isLink && attachment.id != nil && downloading == attachment.id }
+    private var icon: String {
+        switch attachment.kind {
+        case "image": "photo"
+        case "link": "link"
+        default: "doc.text"
+        }
+    }
 
     var body: some View {
-        Button(action: action) {
+        Button {
+            if attachment.isLink {
+                if let url = attachment.linkURL { openURL(url) }
+            } else {
+                download()
+            }
+        } label: {
             HStack(spacing: 12) {
-                Image(systemName: attachment.kind == "image" ? "photo" : "doc.text")
+                Image(systemName: icon)
                     .font(.title3)
                     .foregroundStyle(Color.salaAccent)
                     .frame(width: 28)
@@ -499,6 +527,11 @@ struct AttachmentRow: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 if loading {
                     ProgressView()
+                } else if attachment.isLink {
+                    Image(systemName: "arrow.up.right")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Color.salaAccent)
+                        .accessibilityHidden(true)
                 } else {
                     Text("Open")
                         .font(.subheadline.weight(.semibold))
@@ -510,8 +543,8 @@ struct AttachmentRow: View {
             .contentShape(.rect)
         }
         .buttonStyle(.plain)
-        .disabled(disabled)
-        .accessibilityLabel("Open attachment \(attachment.name)")
+        .disabled(attachment.isLink ? attachment.linkURL == nil : (downloading != nil || attachment.id == nil))
+        .accessibilityLabel(attachment.isLink ? "Open link \(attachment.name)" : "Open attachment \(attachment.name)")
     }
 }
 

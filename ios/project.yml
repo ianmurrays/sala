@@ -35,12 +35,10 @@ targets:
         UILaunchScreen: {}
         UIApplicationSupportsIndirectInputEvents: true
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
-        UIBackgroundModes: [remote-notification]
+        CFBundleURLTypes:
+          - CFBundleURLName: app.sala.ios
+            CFBundleURLSchemes: [sala]
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
           NSAllowsLocalNetworking: true
         NSLocalNetworkUsageDescription: Sala talks to your home server on the local network.
-    entitlements:
-      path: Sala/Sala.entitlements
-      properties:
-        aps-environment: development

@@ -23,11 +23,17 @@ struct MessagesView: View {
                 ThreadView(threadID: id)
             }
         }
-        .onChange(of: store.pendingThreadID, initial: true) { _, id in
-            guard let id else { return }
-            store.pendingThreadID = nil
-            if path != [id] { path = [id] }
-        }
+        .onChange(of: store.pendingThreadID, initial: true) { openPendingThread() }
+        .onChange(of: store.showSettings) { openPendingThread() }
+        .onChange(of: store.selectedTab) { openPendingThread() }
+    }
+
+    /// Pushes a thread requested from Today or a deep link, but only once Messages is actually visible,
+    /// so a link that arrives behind Settings isn't consumed unseen.
+    private func openPendingThread() {
+        guard let id = store.pendingThreadID, store.selectedTab == .messages, !store.showSettings else { return }
+        store.pendingThreadID = nil
+        if path != [id] { path = [id] }
     }
 
     private var header: some View {

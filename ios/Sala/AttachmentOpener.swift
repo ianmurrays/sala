@@ -9,8 +9,8 @@ final class AttachmentOpener {
     var previewURL: URL?
 
     func open(_ attachment: Attachment, store: Store, onError: @escaping @MainActor (String) -> Void) {
-        guard downloading == nil else { return }
-        downloading = attachment.id
+        guard downloading == nil, let id = attachment.id else { return }
+        downloading = id
         Task {
             defer { downloading = nil }
             do {

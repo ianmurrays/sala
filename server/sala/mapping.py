@@ -12,12 +12,15 @@ import hashlib
 import html
 import logging
 import mimetypes
+import os
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import date, datetime, time, timedelta
 from typing import Any
+from urllib.parse import urlsplit
 from zoneinfo import ZoneInfo
 
+import httpx
 from aula import AulaApiClient
 from aula.http import AulaAuthenticationError, AulaInvalidTokenError, AulaSessionExpiredError, HttpRequestError
 from aula.models import ActivityType, Child, PresenceModule, PresenceState, Profile
@@ -61,6 +64,10 @@ class NotFound(Exception):
 
 class UpstreamFailure(Exception):
     """Aula answered but did not do what was asked (-> 502)."""
+
+
+class Conflict(Exception):
+    """The write makes no sense in today's state, e.g. a pickup on a day off (-> 409)."""
 
 
 # --- small helpers -----------------------------------------------------------
@@ -149,19 +156,92 @@ def attachment_id(url: str) -> str:
     return hashlib.sha256(url.encode()).hexdigest()[:24]
 
 
+def _host_allowed(host: str, allowed: str) -> bool:
+    allowed = allowed.strip().lower()
+    if not allowed:
+        return False
+    if allowed.startswith("."):
+        return host.endswith(allowed) or host == allowed[1:]
+    return host == allowed
+
+
+def file_url_allowed(url: str | None) -> bool:
+    """Only https URLs on Aula's own hosts are ever fetched by the server.
+
+    Aula hands out file URLs on ``*.aula.dk``; the library and the portal
+    bundle name no other file host. ``SALA_EXTRA_FILE_HOSTS`` (comma list,
+    ``.example.com`` = that domain and its subdomains) can add one without a
+    code change if real files turn out to live elsewhere (e.g. an S3 bucket).
+    """
+    if not url:
+        return False
+    try:
+        parts = urlsplit(url)
+    except ValueError:
+        return False
+    host = (parts.hostname or "").lower()
+    if parts.scheme != "https" or not host:
+        return False
+    allowed = [".aula.dk", *os.environ.get("SALA_EXTRA_FILE_HOSTS", "").split(",")]
+    return any(_host_allowed(host, a) for a in allowed)
+
+
+def _is_web_link(url: str | None) -> bool:
+    return bool(url) and urlsplit(url).scheme in ("http", "https")
+
+
 def map_attachments(attachments: list[Attachment], register: Register) -> list[dict]:
     out = []
     for att in attachments:
-        url = att.url
-        if not url:  # secure documents have no downloadable URL
+        if att.file is None:
+            # A cloud-drive link (or a secure document, which has no URL): the
+            # app opens links in the browser; the server never fetches them.
+            link = att.link.url if att.link else None
+            if _is_web_link(link):
+                out.append({"id": None, "name": att.name or link, "kind": "link", "url": link})
             continue
-        name = att.name or (att.file.name if att.file else "") or "attachment"
+        url = att.file.url
+        if not file_url_allowed(url):
+            if url:
+                _LOGGER.warning("Skipping attachment on a non-Aula host: %s", urlsplit(url).hostname)
+            continue
+        name = att.name or att.file.name or "attachment"
         media_type = (att.media.media_type if att.media else "").lower()
         ext = "." + name.rsplit(".", 1)[-1].lower() if "." in name else ""
         mime = mimetypes.guess_type(name)[0] or ""
         is_image = media_type in ("image", "media") or ext in _IMAGE_EXT or mime.startswith("image/")
         out.append({"id": register(url, name), "name": name, "kind": "image" if is_image else "file"})
     return out
+
+
+async def download_attachment(client: AulaApiClient, url: str, max_redirects: int = 5, *, fake: bool = False) -> bytes:
+    """Fetch a registered Aula file, following redirects only onto allowed hosts.
+
+    The library's httpx client follows every redirect, so with a real client
+    we go to its inner ``httpx.AsyncClient`` (same cookies) with
+    ``follow_redirects=False`` and check each hop. The fake has no inner
+    client and serves fixture bytes; outside fake mode a missing inner client
+    is an error, never an unchecked download.
+    """
+    if not file_url_allowed(url):
+        raise UpstreamFailure("attachment is not on an Aula file host")
+    inner = getattr(client._client, "_client", None)
+    if not isinstance(inner, httpx.AsyncClient):
+        if fake:
+            return await client.download_file(url)
+        _LOGGER.error("Aula client has no inner httpx client; refusing an unchecked download")
+        raise UpstreamFailure("attachment download is not available")
+    for _ in range(max_redirects + 1):
+        resp = await inner.get(url, follow_redirects=False, timeout=httpx.Timeout(30.0, read=120.0))
+        if resp.is_redirect:
+            url = str(resp.url.join(resp.headers.get("location", "")))
+            if not file_url_allowed(url):
+                _LOGGER.warning("Attachment redirected off Aula to %s", urlsplit(url).hostname)
+                raise UpstreamFailure("attachment redirected to a non-Aula host")
+            continue
+        resp.raise_for_status()
+        return resp.content
+    raise UpstreamFailure("too many redirects downloading the attachment")
 
 
 # --- children ----------------------------------------------------------------
@@ -317,7 +397,7 @@ def child_out(day: ChildDay) -> dict:
     )
     return {
         "id": day.child.id,
-        "name": day.child.name,
+        "name": day.child.name or "",
         "institution": institution or "",
         "group": group or "",
         "status": _STATUS.get(state, "unknown") if state else "unknown",
@@ -369,11 +449,13 @@ async def set_pickup(client: AulaApiClient, child: Child, when: str, by: str, no
     Today's existing day template supplies the entry time and (unless the app
     sent a note) the comment. If that template repeats (weekly etc.) it is
     left alone: we write a single-day template for today with no id and
-    repeatPattern "never". That matches the portal's "edit today" drawer
+    repeatPattern "never". So does a template whose repeatPattern is missing.
+    That matches the portal's "edit today" drawer
     (app.*.js ``updateTemplate``: posts {institutionProfileId, byDate,
     presenceActivity, comment} and never an id; the week editor doesn't send an
     id either). Only a template that is already a one-off for today is updated
-    by id, as ``aula update-presence`` does (cli.py ~3770).
+    by id, as ``aula update-presence`` does (cli.py ~3770). A day the child
+    is registered absent (vacation) is refused (-> 409) rather than overwritten.
     """
     today = aula_today()
     # These reads decide what gets written, so a failure stops the write
@@ -387,14 +469,18 @@ async def set_pickup(client: AulaApiClient, child: Child, when: str, by: str, no
         raise UpstreamFailure(f"Could not read today's pickup before changing it: {e}") from e
     if by not in people:
         raise BadRequest("by must be one of people")
+    if t and t.is_on_vacation:
+        raise Conflict(f"{child.name} is registered absent today")
     ov = await _optional("daily overview", client.get_daily_overview(child.id))
     # No invented default: the portal sends entryTime null when drop-off time
     # isn't set (preparePresenceTemplateParams), so we pass None through.
     entry = hhmm((t.entry_time if t else None) or (ov.entry_time if ov else None))
     if note is None:
         note = (t.comment if t else None) or (ov.comment if ov else None) or ""
-    repeating = bool(t and (t.repeat_pattern or "never").lower() not in ("never", ""))
-    template_id = t.id if t and not repeating and (t.by_date or "")[:10] == today.isoformat() else None
+    # Only an explicit one-off ("never") is updated in place; a missing or
+    # unknown repeatPattern may be a series, so it gets a new day override.
+    one_off = bool(t and (t.repeat_pattern or "").lower() == "never")
+    template_id = t.id if one_off and (t.by_date or "")[:10] == today.isoformat() else None
     await client.update_presence_template(
         child.id,
         today,
@@ -409,7 +495,19 @@ async def set_pickup(client: AulaApiClient, child: Child, when: str, by: str, no
 
 
 async def set_sick(client: AulaApiClient, child: Child, sick: bool) -> None:
-    status = PresenceState.SICK if sick else PresenceState.NOT_PRESENT
+    """Report sick, or take it back. Undo restores PRESENT when the child was
+    checked in today and not yet checked out, otherwise NOT_PRESENT."""
+    if sick:
+        status = PresenceState.SICK
+    else:
+        try:
+            ov = await client.get_daily_overview(child.id)
+        except Exception as e:
+            if session_gone(e):
+                raise
+            raise UpstreamFailure(f"Could not read today's presence before undoing sick: {e}") from e
+        checked_in = bool(ov and ov.check_in_time and not ov.check_out_time)
+        status = PresenceState.PRESENT if checked_in else PresenceState.NOT_PRESENT
     if not await client.update_presence_status([child.id], status):
         raise UpstreamFailure("Aula did not accept the status change")
 
@@ -425,7 +523,7 @@ async def holiday_requests(client: AulaApiClient, child_ids: list[int]) -> list[
             continue
         start, end = _date(reg.start_date), _date(reg.end_date)
         deadline = _date(reg.response_deadline)
-        title = f"Holiday request: {date_range_label(start, end)}" if start else f"Holiday request: {reg.title}"
+        title = f"Holiday request: {date_range_label(start, end) if start else reg.title or 'no dates'}"
         out.append(
             {
                 "id": f"vacation-{reg.id}",
@@ -509,7 +607,7 @@ def post_out(post, register: Register) -> dict:
     author = " · ".join(p for p in (owner.full_name or owner.role, owner.institution_name) if p)
     return {
         "id": post.id,
-        "title": post.title,
+        "title": post.title or "",
         "author": author,
         "date": iso(post.timestamp),
         "body": plain(post.content_html),
@@ -521,7 +619,9 @@ def post_out(post, register: Register) -> dict:
 
 
 async def posts(client: AulaApiClient, profile: Profile, register: Register, limit: int = 10) -> list[dict]:
-    return [post_out(p, register) for p in await client.get_posts(profile.institution_profile_ids, limit=limit)]
+    # A post without a timestamp has no valid "date" for the app; skip it.
+    rows = await client.get_posts(profile.institution_profile_ids, limit=limit)
+    return [post_out(p, register) for p in rows if p.timestamp is not None]
 
 
 async def set_bookmark(client: AulaApiClient, post_id: int, saved: bool) -> None:
@@ -568,7 +668,9 @@ def thread_out(raw: dict) -> dict:
 
 
 async def threads(client: AulaApiClient) -> list[dict]:
-    return [thread_out(t._raw or {}) for t in await client.get_message_threads()]
+    # "date" is non-nullable in API.md; a row without any timestamp is skipped.
+    rows = [thread_out(t._raw or {}) for t in await client.get_message_threads()]
+    return [r for r in rows if r["date"]]
 
 
 def _from_me(message: dict, mine: set[int]) -> bool:
@@ -592,7 +694,10 @@ async def thread_detail(client: AulaApiClient, profile: Profile, thread_id: str,
     meta = await _thread_meta(client, thread_id)
     raw_messages = await client.get_all_messages_for_thread(thread_id)
     mine = guardian_profile_ids(profile)
-    shown = [m for m in raw_messages if isinstance(m, dict) and m.get("messageType") in _SHOWN_TYPES]
+    shown = [
+        m for m in raw_messages
+        if isinstance(m, dict) and m.get("messageType") in _SHOWN_TYPES and iso(m.get("sendDateTime"))
+    ]
     newest = shown[0]["id"] if shown else None
     messages = [
         {

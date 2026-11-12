@@ -1,12 +1,19 @@
 """API.md contract against fake mode. Writes are asserted on the payloads the
 fake Aula recorded, i.e. what the real library would have sent."""
 
+import asyncio
 import time
+from types import SimpleNamespace
 
+import httpx
+import pytest
 from aula.utils.dates import aula_today
 
 from conftest import AUTH
-from sala.fake import CHILD_ID, FAKE_OTP, GUARDIAN_IP, METTE
+from sala import aula_session
+from sala.aula_session import SessionManager
+from sala.fake import CHILD_ID, FAKE_OTP, FILES_BASE, GUARDIAN_IP, METTE
+from sala.mapping import UpstreamFailure, download_attachment
 
 CHILD_KEYS = {
     "id", "name", "institution", "group", "status", "statusLabel", "arrivedAt",
@@ -19,7 +26,7 @@ def test_auth_401_before_503(client):
     assert client.get("/today").json() == {"error": "unauthorized"}
     assert client.get("/today", headers={"Authorization": "Bearer nope"}).status_code == 401
     assert client.get("/auth/status").status_code == 401
-    assert client.post("/devices", json={"token": "ab"}).status_code == 401
+    assert client.post("/debug/fake/new-message").status_code == 401
 
     r = client.get("/today", headers=AUTH)
     assert (r.status_code, r.json()) == (503, {"error": "auth_required"})
@@ -109,23 +116,49 @@ def test_pickup_put_writes_single_day_override(api, fake):
     assert second["id"] > 7001 and second["comment"] == "Mor henter"
 
 
+def test_pickup_put_without_repeat_pattern_is_not_updated_by_id(api, fake):
+    fake.weekly_template["repeatPattern"] = None  # unknown: may be a series
+    r = api.put(f"/children/{CHILD_ID}/pickup", headers=AUTH, json={"time": "15:30", "by": "Jonas Hansen (Far)"})
+    assert r.status_code == 200, r.text
+    [payload] = fake.writes_for("presence.updatePresenceTemplate")
+    assert "id" not in payload and payload["repeatPattern"] == "never"
+
+
+def test_pickup_put_on_vacation_day_is_409(api, fake):
+    fake.weekly_template["isOnVacation"] = True
+    r = api.put(f"/children/{CHILD_ID}/pickup", headers=AUTH, json={"time": "15:30", "by": "Jonas Hansen (Far)"})
+    assert (r.status_code, r.json()) == (409, {"error": "conflict", "message": "Oskar is registered absent today"})
+    assert fake.writes_for("presence.updatePresenceTemplate") == []
+
+
 def test_pickup_put_rejects_unknown_person(api, fake):
     r = api.put(f"/children/{CHILD_ID}/pickup", headers=AUTH, json={"time": "15:30", "by": "Bob"})
     assert r.status_code == 400 and r.json()["error"] == "bad_request"
-    assert api.put(f"/children/{CHILD_ID}/pickup", headers=AUTH, json={"time": "3pm", "by": "x"}).status_code == 400
+    for bad in ("3pm", "99:99", "24:00", "T1615", "16:15:00"):
+        r = api.put(f"/children/{CHILD_ID}/pickup", headers=AUTH, json={"time": bad, "by": "Jonas Hansen (Far)"})
+        assert r.status_code == 400, bad
     assert api.put(f"/children/{CHILD_ID}/pickup", headers=AUTH, json={}).status_code == 400
     assert fake.writes_for("presence.updatePresenceTemplate") == []
 
 
-def test_sick_and_back(api, fake):
+def test_sick_and_back_when_checked_in(api, fake):
     r = api.post(f"/children/{CHILD_ID}/sick", headers=AUTH)
     assert r.status_code == 200 and r.json()["status"] == "sick"
-    r = api.delete(f"/children/{CHILD_ID}/sick", headers=AUTH)
-    assert r.status_code == 200 and r.json()["status"] == "not_arrived"
+    r = api.delete(f"/children/{CHILD_ID}/sick", headers=AUTH)  # checked in 07:40, not out
+    assert r.status_code == 200 and r.json()["status"] == "present"
     assert fake.writes_for("presence.updateStatusByInstitutionProfileIds") == [
         {"institutionProfileIds": [CHILD_ID], "status": 1},
-        {"institutionProfileIds": [CHILD_ID], "status": 0},
+        {"institutionProfileIds": [CHILD_ID], "status": 3},
     ]
+
+
+@pytest.mark.parametrize("check_in,check_out", [(None, None), ("07:40", "12:00")])
+def test_sick_undo_not_present_unless_checked_in(api, fake, check_in, check_out):
+    fake.check_in, fake.check_out = check_in, check_out
+    api.post(f"/children/{CHILD_ID}/sick", headers=AUTH)
+    r = api.delete(f"/children/{CHILD_ID}/sick", headers=AUTH)
+    assert r.json()["status"] == "not_arrived"
+    assert fake.writes_for("presence.updateStatusByInstitutionProfileIds")[-1]["status"] == 0
 
 
 def test_reply_everyone(api, fake):
@@ -211,10 +244,74 @@ def test_attachments_are_opaque_ids(api):
     assert api.get("/attachments/deadbeef", headers=AUTH).status_code == 404
 
 
-def test_devices(api):
-    assert api.post("/devices", headers=AUTH, json={"token": "AbCd0123"}).json() == {"ok": True}
-    assert api.post("/devices", headers=AUTH, json={"token": "not hex"}).status_code == 400
-    assert api.app.state.store.devices() == ["abcd0123"]
+def test_link_attachments_are_not_proxied(api, fake):
+    fake.messages[9104][0]["attachments"].append(
+        {"id": 9905, "file": {"id": 9905, "name": "meta.txt", "url": "http://169.254.169.254/latest/meta-data"}}
+    )
+    post = next(p for p in api.get("/today", headers=AUTH).json()["posts"] if p["id"] == 403)
+    assert post["attachments"] == [
+        {"id": None, "name": "Tøjliste", "kind": "link", "url": "https://onedrive.live.com/view?id=fake"}
+    ]
+    msg = api.get("/threads/9104", headers=AUTH).json()["messages"][0]
+    assert [a["name"] for a in msg["attachments"]] == ["Madordning.pdf"]  # off-host file dropped
+    # A link URL registered by older code is never fetched.
+    old = api.app.state.store.register_attachment("https://onedrive.live.com/view?id=fake", "x")
+    assert api.get(f"/attachments/{old}", headers=AUTH).status_code == 404
+
+
+def test_download_follows_redirects_only_on_aula_hosts():
+    def handler(request):
+        hops = {"/a": "https://evil.example/x", "/b": "https://other.aula.dk/c"}
+        if request.url.path in hops:
+            return httpx.Response(302, headers={"location": hops[request.url.path]})
+        return httpx.Response(200, content=b"ok")
+
+    async def run():
+        inner = httpx.AsyncClient(transport=httpx.MockTransport(handler))
+        client = SimpleNamespace(_client=SimpleNamespace(_client=inner))
+        assert await download_attachment(client, FILES_BASE.rstrip("/").rsplit("/", 1)[0] + "/b") == b"ok"
+        with pytest.raises(UpstreamFailure):
+            await download_attachment(client, "https://fake-files.aula.dk/a")
+        with pytest.raises(UpstreamFailure):
+            await download_attachment(client, "http://fake-files.aula.dk/b")  # not https
+        await inner.aclose()
+
+    asyncio.run(run())
+
+
+def test_posts_without_title_or_timestamp(api, fake):
+    fake.posts[403]["title"] = None
+    fake.posts[402]["timestamp"] = None
+    posts = api.get("/today", headers=AUTH).json()["posts"]
+    assert [p["id"] for p in posts] == [401, 403]
+    assert posts[1]["title"] == ""
+
+
+def test_client_setup_failure_after_mitid_is_ok_and_lazy(tmp_path, monkeypatch):
+    built = object()
+
+    async def authenticate(username, storage, **kw):
+        data = {"tokens": {"access_token": "a"}, "cookies": {}}
+        await storage.save(data)
+        return data
+
+    async def failing_create_client(token_data, **kw):
+        raise RuntimeError("Aula hiccup")
+
+    async def create_client(token_data, **kw):
+        return built
+
+    async def run():
+        monkeypatch.setattr(aula_session, "authenticate", authenticate)
+        monkeypatch.setattr(aula_session, "create_client", failing_create_client)
+        sm = SessionManager(tmp_path, "user")
+        assert (await sm.login())["state"] == "logging_in"
+        await sm._login_task
+        assert (sm.state, sm.client) == ("ok", None)
+        monkeypatch.setattr(aula_session, "create_client", create_client)
+        assert await sm._connect() is built
+
+    asyncio.run(run())
 
 
 def test_session_expiry_needs_login_and_fires_hook(api, fake):
@@ -245,3 +342,4 @@ def test_pickup_put_refuses_blind_write(api, fake):
     r = api.put(f"/children/{CHILD_ID}/pickup", headers=AUTH, json={"time": "15:30", "by": "Jonas Hansen (Far)"})
     assert r.status_code == 502 and r.json()["error"] == "upstream"
     assert fake.writes_for("presence.updatePresenceTemplate") == []
+

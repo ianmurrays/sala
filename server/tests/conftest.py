@@ -14,6 +14,8 @@ def client(tmp_path, monkeypatch):
     monkeypatch.setenv("SALA_TOKEN", TOKEN)
     monkeypatch.setenv("SALA_DATA_DIR", str(tmp_path))
     monkeypatch.setenv("SALA_FAKE_LOGIN_SECONDS", "0.2")
+    for var in ("NTFY_TOPIC", "NTFY_URL", "NTFY_TOKEN", "POLL_SECONDS"):
+        monkeypatch.delenv(var, raising=False)  # no real poller in tests
     from sala.app import app
 
     with TestClient(app) as c:
