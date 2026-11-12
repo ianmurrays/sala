@@ -1,0 +1,88 @@
+name: Sala
+options:
+  deploymentTarget:
+    iOS: "26.0"
+  createIntermediateGroups: true
+fileGroups:
+  - Config/Signing.xcconfig
+  - Config/Local.example.xcconfig
+configFiles:
+  Debug: Config/Signing.xcconfig
+  Release: Config/Signing.xcconfig
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+targets:
+  Sala:
+    type: application
+    platform: iOS
+    sources:
+      - path: Sala
+      - path: Shared
+    dependencies:
+      - target: SalaWidget
+    entitlements:
+      path: Sala/Sala.entitlements
+      properties:
+        keychain-access-groups: [$(AppIdentifierPrefix)$(SALA_BUNDLE_ID)]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: $(SALA_BUNDLE_ID).app
+        PRODUCT_NAME: Sala
+        TARGETED_DEVICE_FAMILY: "1"
+        CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_IDENTITY: Apple Development
+        SWIFT_STRICT_CONCURRENCY: complete
+        ENABLE_PREVIEWS: YES
+        GENERATE_INFOPLIST_FILE: NO
+    info:
+      path: Sala/Info.plist
+      properties:
+        CFBundleDisplayName: Sala
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        SalaKeychainGroup: $(AppIdentifierPrefix)$(SALA_BUNDLE_ID)
+        UILaunchScreen: {}
+        UIApplicationSupportsIndirectInputEvents: true
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        CFBundleURLTypes:
+          - CFBundleURLName: $(PRODUCT_BUNDLE_IDENTIFIER)
+            CFBundleURLSchemes: [sala]
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+          NSAllowsLocalNetworking: true
+        NSLocalNetworkUsageDescription: Sala talks to your home server on the local network.
+  SalaWidget:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: SalaWidget
+      - path: Shared
+    entitlements:
+      path: SalaWidget/SalaWidget.entitlements
+      properties:
+        keychain-access-groups: [$(AppIdentifierPrefix)$(SALA_BUNDLE_ID)]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: $(SALA_BUNDLE_ID).app.widget
+        PRODUCT_NAME: SalaWidget
+        TARGETED_DEVICE_FAMILY: "1"
+        CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_IDENTITY: Apple Development
+        SWIFT_STRICT_CONCURRENCY: complete
+        ENABLE_PREVIEWS: YES
+        GENERATE_INFOPLIST_FILE: NO
+    info:
+      path: SalaWidget/Info.plist
+      properties:
+        CFBundleDisplayName: Sala
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        SalaKeychainGroup: $(AppIdentifierPrefix)$(SALA_BUNDLE_ID)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+          NSAllowsLocalNetworking: true

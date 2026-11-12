@@ -1,0 +1,8 @@
+ios/build/
+server/data/
+.venv/
+__pycache__/
+*.xcuserstate
+xcuserdata/
+.DS_Store
+ios/Config/Local.xcconfig

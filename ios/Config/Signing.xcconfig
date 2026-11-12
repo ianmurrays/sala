@@ -1,0 +1,6 @@
+// Signing defaults. To build for a device, copy Local.example.xcconfig to Local.xcconfig (gitignored)
+// and set your team and a bundle ID prefix your team can register.
+DEVELOPMENT_TEAM =
+SALA_BUNDLE_ID = com.example.sala
+
+#include? "Local.xcconfig"
