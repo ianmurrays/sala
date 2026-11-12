@@ -1,0 +1,41 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  server:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv run pytest -q
+
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  ios:
+    runs-on: macos-26
+    defaults:
+      run:
+        working-directory: ios
+    steps:
+      - uses: actions/checkout@v4
+      - run: brew install xcodegen
+      - name: Sala.xcodeproj matches project.yml
+        run: |
+          xcodegen generate
+          git diff --exit-code -- Sala.xcodeproj || { echo "::error::Sala.xcodeproj is out of date: run xcodegen generate in ios/ and commit it"; exit 1; }
+      - name: Simulator build
+        run: xcodebuild -project Sala.xcodeproj -scheme Sala -destination 'generic/platform=iOS Simulator' -quiet build

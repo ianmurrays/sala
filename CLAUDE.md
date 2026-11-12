@@ -1,0 +1,3 @@
+- `ios/project.yml` (XcodeGen) is the source of truth for the iOS project: change it, run `xcodegen generate` in `ios/`, and commit the regenerated `Sala.xcodeproj`. CI fails when they drift.
+- Device signing (team, bundle ID prefix) lives in the gitignored `ios/Config/Local.xcconfig`. To build and install on a phone: `ios/scripts/install-device.sh "<device name>"`.
+- Server tests: `cd server && uv run pytest`. CI (`.github/workflows/ci.yml`) also runs gitleaks and an iOS simulator build.
