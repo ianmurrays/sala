@@ -134,10 +134,16 @@ struct TodayView: View {
         if !today.posts.isEmpty {
             VStack(alignment: .leading, spacing: 10) {
                 SectionHeader(postsTitle(today))
-                VStack(spacing: 12) {
+                // Lazy, so the last card appearing means it was scrolled to. Keyed on the epoch so a reload
+                // that keeps the last card on screen still asks for the next page.
+                LazyVStack(spacing: 12) {
                     ForEach(today.posts) { post in
                         PostCard(post: post, downloading: attachments.downloading, open: open)
+                            .task(id: store.morePosts.epoch) {
+                                if post.id == today.posts.last?.id { await store.loadMorePosts() }
+                            }
                     }
+                    LoadMoreRow(paging: store.morePosts) { await store.retryMorePosts() }
                 }
             }
         }
@@ -165,6 +171,31 @@ struct SectionHeader: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.bottom, 2)
             .accessibilityAddTraits(.isHeader)
+    }
+}
+
+/// Under a paged list: a spinner while the next page loads, or "Try again" after it failed.
+struct LoadMoreRow: View {
+    let paging: Paging
+    let retry: () async -> Void
+
+    var body: some View {
+        if paging.isLoading {
+            ProgressView()
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+        } else if let error = paging.error {
+            VStack(spacing: 8) {
+                Text(error)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                Button("Try again") { Task { await retry() } }
+                    .buttonStyle(.glass)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 12)
+        }
     }
 }
 

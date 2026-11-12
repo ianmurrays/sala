@@ -30,6 +30,7 @@ INSTITUTION_CODE = "999001"
 INSTITUTION_NAME = "Børnehuset"
 GROUP = {"id": 3001, "name": "Stue", "shortName": "Stue"}
 FAKE_OTP = "482915"
+THREADS_PAGE_SIZE = 20  # messaging.getThreads page size in the fake (Aula's isn't documented)
 
 
 def fake_qr_codes():
@@ -578,13 +579,31 @@ class FakeAula:
                 ],
             },
         ]
+        # Older, plain posts so the app can page through (/posts?page=N): 25 posts in all.
+        staff = [(ANNE, 1501), (METTE, 1502), (KASPER, 1503)]
+        topics = ["Ugeplan", "Nyt fra Stue", "Turdag", "Madpakker", "Sangdag", "Legetøjsdag", "Forældrekaffe"]
+        for i in range(22):
+            person, pid = staff[i % len(staff)]
+            posts.append(
+                {
+                    "id": 399 - i,
+                    "title": f"{topics[i % len(topics)]} (uge {i + 1})",
+                    "content": {"html": f"<p>Kort nyt fra Stue, opslag {i + 1}.</p>"},
+                    "timestamp": _ts(now - timedelta(days=4 + i * 1.5)),
+                    "ownerProfile": owner(person, pid),
+                    "isImportant": False,
+                    "isBookmarked": False,
+                    "attachments": [],
+                }
+            )
         for p in posts:
             p.update(allowComments=True, isPublished=True, commentCount=0, sharedWithGroups=[GROUP])
         return {p["id"]: p for p in posts}
 
     def _posts_getAllPosts(self, q, body):
         posts = sorted(self.posts.values(), key=lambda p: p["timestamp"] or "", reverse=True)
-        return _ok({"posts": posts})
+        index, limit = int(q.get("index", 0)), int(q.get("limit", 10))
+        return _ok({"posts": posts[index : index + limit]})
 
     def _posts_getById(self, q, body):
         return _ok(self.posts.get(int(q["id"])))
@@ -639,6 +658,13 @@ class FakeAula:
                 ("m9105-2", ME, "<p>Dejligt, tak for besked!</p>", h(22)),
             ]),
         ]
+        # Older, read threads so the app can page through (/threads?page=N): 45 threads in all.
+        staff = [ANNE, METTE, KASPER]
+        for i in range(40):
+            sender = staff[i % len(staff)]
+            spec.append((9060 - i, f"Info fra Stue nr. {40 - i}", [ME, MARIA, sender], True, False, False, [
+                (f"m{9060 - i}-1", sender, f"<p>Lidt praktisk info, besked {40 - i}.</p>", h(80 + i * 20)),
+            ]))
         threads: dict[int, dict] = {}
         messages: dict[int, list[dict]] = {}
         self.threads, self.messages = threads, messages
@@ -674,7 +700,9 @@ class FakeAula:
 
     def _messaging_getThreads(self, q, body):
         threads = sorted(self.threads.values(), key=lambda t: t["lastUpdatedDate"], reverse=True)
-        return _ok({"threads": threads, "moreMessagesExist": False})
+        page = int(q.get("page", 0))
+        rows = threads[page * THREADS_PAGE_SIZE : (page + 1) * THREADS_PAGE_SIZE]
+        return _ok({"threads": rows, "moreMessagesExist": (page + 1) * THREADS_PAGE_SIZE < len(threads)})
 
     def _messaging_getMessagesForThread(self, q, body):
         tid = int(q["threadId"])

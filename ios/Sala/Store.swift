@@ -39,6 +39,11 @@ final class Store {
     var threadsError: String?
     private(set) var isLoadingThreads = false
     var unreadThreadCount: Int { threads?.filter(\.unread).count ?? 0 }
+    /// Paging after the first `/threads` page.
+    private(set) var moreThreads = Paging(next: 1)
+
+    // More posts after the `/today` ones (`/posts?page=2`, …), appended to `today.posts`.
+    private(set) var morePosts = Paging(next: 2)
 
     // Navigation (the Messages tab pushes and clears `pendingThreadID`)
     var selectedTab: AppTab = .today
@@ -98,6 +103,7 @@ final class Store {
                 }
             }
             today = t
+            morePosts.reset(next: 2)
             phase = .ready
             // Keeps the Messages tab badge current without holding up Today.
             Task { await loadThreads() }
@@ -135,7 +141,9 @@ final class Store {
 
     // MARK: Messages
 
-    func loadThreads() async {
+    /// Loads the first page. `reset` (pull to refresh) drops the later pages; otherwise they stay after it,
+    /// so going back from a thread or refreshing Today keeps the inbox where it was.
+    func loadThreads(reset: Bool = false) async {
         guard !isLoadingThreads else { return }
         isLoadingThreads = true
         defer { isLoadingThreads = false }
@@ -143,11 +151,39 @@ final class Store {
         let result = await Task { try await c.threads() }.result
         switch result {
         case .success(let t):
-            threads = t
+            if reset || threads == nil {
+                threads = t
+                moreThreads.reset(next: 1)
+            } else {
+                let ids = Set(t.map(\.id))
+                threads = t + (threads ?? []).filter { !ids.contains($0.id) }
+            }
             threadsError = nil
         case .failure(let error):
             if let msg = handle(error) { threadsError = msg }
         }
+    }
+
+    /// The next `/threads` page, appended. The list calls this when its last row appears.
+    func loadMoreThreads() async {
+        guard threads != nil, let (page, epoch) = moreThreads.begin() else { return }
+        let c = client
+        let result = await Task { try await c.threads(page: page) }.result
+        guard moreThreads.epoch == epoch else { return }  // refreshed meanwhile
+        switch result {
+        case .success(let rows):
+            let ids = Set(threads?.map(\.id) ?? [])
+            let new = rows.filter { !ids.contains($0.id) }
+            threads?.append(contentsOf: new)
+            moreThreads.finish(page: page, added: new.count)
+        case .failure(let error):
+            moreThreads.fail(handle(error))
+        }
+    }
+
+    func retryMoreThreads() async {
+        moreThreads.error = nil
+        await loadMoreThreads()
     }
 
     /// The server marks a thread read when it's fetched; mirror that locally.
@@ -243,6 +279,29 @@ final class Store {
         }
     }
 
+    /// The next `/posts` page, appended to `today.posts` so saving and the stale-load guard cover it.
+    /// Today calls this when its last post appears.
+    func loadMorePosts() async {
+        guard today != nil, let (page, epoch) = morePosts.begin() else { return }
+        let c = client
+        let result = await Task { try await c.posts(page: page) }.result
+        guard morePosts.epoch == epoch, today != nil else { return }  // reloaded meanwhile
+        switch result {
+        case .success(let rows):
+            let ids = Set(today?.posts.map(\.id) ?? [])
+            let new = rows.filter { !ids.contains($0.id) }
+            today?.posts.append(contentsOf: new)
+            morePosts.finish(page: page, added: new.count)
+        case .failure(let error):
+            morePosts.fail(handle(error))
+        }
+    }
+
+    func retryMorePosts() async {
+        morePosts.error = nil
+        await loadMorePosts()
+    }
+
     func openThread(_ id: String?) {
         pendingThreadID = id
         selectedTab = .messages
@@ -263,6 +322,50 @@ final class Store {
         default:
             break
         }
+    }
+}
+
+// MARK: - Paging
+
+/// Infinite-scroll state for a list loaded page by page.
+struct Paging: Equatable {
+    /// The page to load next.
+    private(set) var next: Int
+    private(set) var isLoading = false
+    /// The server sent an empty page, or one with nothing new (Aula can repeat its last page).
+    private(set) var done = false
+    /// Set when the last page failed; the list shows "Try again" instead of loading again by itself.
+    var error: String?
+    /// Bumped by `reset`, so a page that was in flight across a reload is dropped.
+    private(set) var epoch = 0
+
+    init(next: Int) { self.next = next }
+
+    var canLoad: Bool { !isLoading && !done && error == nil }
+
+    mutating func reset(next: Int) {
+        let e = epoch + 1
+        self = Paging(next: next)
+        epoch = e
+    }
+
+    /// Marks a load as started; nil when one is in flight, the list ended, or the last one failed.
+    mutating func begin() -> (page: Int, epoch: Int)? {
+        guard canLoad else { return nil }
+        isLoading = true
+        return (next, epoch)
+    }
+
+    mutating func finish(page: Int, added: Int) {
+        isLoading = false
+        next = page + 1
+        done = added == 0
+    }
+
+    /// `message` is nil when the error was routed elsewhere (login screen, Settings): then just stop for now.
+    mutating func fail(_ message: String?) {
+        isLoading = false
+        error = message ?? "Couldn't load more."
     }
 }
 

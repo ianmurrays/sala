@@ -289,12 +289,15 @@ struct APIClient: Sendable {
     }
     func reportSick(child: Int) async throws -> Child { try await send("POST", "/children/\(child)/sick") }
     func undoSick(child: Int) async throws -> Child { try await send("DELETE", "/children/\(child)/sick") }
+    /// `page` is 1-based; page 1 is the posts in `/today`. Empty means no more.
+    func posts(page: Int) async throws -> [Post] { try await send("GET", "/posts?page=\(page)") }
     func setSaved(post: Int, _ saved: Bool) async throws -> Bool {
         let r: SavedResponse = try await send(saved ? "POST" : "DELETE", "/posts/\(post)/save")
         return r.saved
     }
 
-    func threads() async throws -> [ThreadSummary] { try await send("GET", "/threads") }
+    /// `page` is 0-based like Aula's. Empty means no more.
+    func threads(page: Int = 0) async throws -> [ThreadSummary] { try await send("GET", "/threads?page=\(page)") }
     func thread(_ id: String) async throws -> MessageThread { try await send("GET", "/threads/\(id.urlPathEscaped)") }
     func reply(thread id: String, _ request: ReplyRequest) async throws -> ReplyResponse {
         try await send("POST", "/threads/\(id.urlPathEscaped)/reply", body: request)

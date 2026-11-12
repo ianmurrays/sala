@@ -11,7 +11,7 @@ from typing import Literal
 from urllib.parse import quote
 
 import httpx
-from fastapi import Depends, FastAPI, Request
+from fastapi import Depends, FastAPI, Query, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
 from pydantic import BaseModel
@@ -289,6 +289,16 @@ async def unreport_sick(child_id: int, s: SessionManager = Depends(session)):
 # --- posts & attachments -----------------------------------------------------
 
 
+@app.get("/posts")
+async def list_posts(
+    page: int = Query(1, ge=1, le=100), s: SessionManager = Depends(session), st: Store = Depends(store)
+):
+    async def run(client):
+        return await m.posts(client, await s.profile(client), st.register_attachment, page=page)
+
+    return await s.call(run)
+
+
 async def _save(s: SessionManager, post_id: int, saved: bool) -> dict:
     await s.call(lambda client: m.set_bookmark(client, post_id, saved))
     return {"saved": saved}
@@ -330,8 +340,8 @@ async def attachment(att_id: str, s: SessionManager = Depends(session), st: Stor
 
 
 @app.get("/threads")
-async def list_threads(s: SessionManager = Depends(session)):
-    return await s.call(m.threads)
+async def list_threads(page: int = Query(0, ge=0, le=100), s: SessionManager = Depends(session)):
+    return await s.call(lambda client: m.threads(client, page))
 
 
 @app.get("/threads/{thread_id}")

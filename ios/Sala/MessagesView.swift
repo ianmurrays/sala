@@ -15,7 +15,7 @@ struct MessagesView: View {
                 .padding(.bottom, 24)
             }
             .background(Color.screen)
-            .refreshable { await store.loadThreads() }
+            .refreshable { await store.loadThreads(reset: true) }
             // On the root (not the stack) so it re-runs when popping back from a thread.
             .task { await store.loadThreads() }
             .toolbar(.hidden, for: .navigationBar)
@@ -56,17 +56,22 @@ struct MessagesView: View {
                 }
                 .padding(.top, 40)
             } else {
-                VStack(spacing: 0) {
+                // Lazy, so the last row appearing means it was scrolled to (keyed on the epoch, see TodayView).
+                LazyVStack(spacing: 0) {
                     ForEach(Array(threads.enumerated()), id: \.element.id) { i, thread in
                         if i > 0 { Divider().padding(.leading, 74) }
                         NavigationLink(value: thread.id) {
                             ThreadRow(thread: thread)
                         }
                         .buttonStyle(.plain)
+                        .task(id: store.moreThreads.epoch) {
+                            if i == threads.count - 1 { await store.loadMoreThreads() }
+                        }
                     }
                 }
                 .padding(.vertical, 4)
                 .background(Color.card, in: .rect(cornerRadius: 26, style: .continuous))
+                LoadMoreRow(paging: store.moreThreads) { await store.retryMoreThreads() }
             }
         } else if let error = store.threadsError {
             ContentUnavailableView {

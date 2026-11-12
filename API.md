@@ -79,6 +79,8 @@ Nullable here: `opensAt`, `closesAt`, `current.time`, `current.by`.
 
 ## Posts
 
+`GET /posts?page=N` → `[Post]`, newest first, 10 per page. `page` is 1-based (default 1, at most 100, else `400`); page 1 is the `posts` of `/today`. An empty list means there are no more posts.
+
 `POST /posts/{id}/save` / `DELETE /posts/{id}/save` → `{"saved": true|false}`.
 `GET /attachments/{id}` → the file bytes with its `Content-Type` and `Content-Disposition: inline; filename=...`. `id` is an opaque server-issued id from a Post or Message; the server never fetches a client-supplied URL, only Aula file URLs on Aula's own hosts (https, `*.aula.dk`), and follows redirects only onto those hosts.
 
@@ -88,6 +90,7 @@ Nullable here: `opensAt`, `closesAt`, `current.time`, `current.by`.
 ```json
 [{"id":"123","subject":"Forældremøde","from":"Leder","participants":57,"preview":"Parent meeting…","date":"timestamp","unread":true,"muted":false,"starred":false}]
 ```
+`GET /threads?page=N` → one page of threads, newest first. `page` is 0-based like Aula's (default 0, at most 100, else `400`). An empty list means there are no more threads. Page size is Aula's; the client should not assume it.
 `GET /threads/{id}` (also marks it read) →
 ```json
 {"id":"123","subject":"Forældremøde","canReply":true,

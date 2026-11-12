@@ -618,9 +618,9 @@ def post_out(post, register: Register) -> dict:
     }
 
 
-async def posts(client: AulaApiClient, profile: Profile, register: Register, limit: int = 10) -> list[dict]:
+async def posts(client: AulaApiClient, profile: Profile, register: Register, page: int = 1, limit: int = 10) -> list[dict]:
     # A post without a timestamp has no valid "date" for the app; skip it.
-    rows = await client.get_posts(profile.institution_profile_ids, limit=limit)
+    rows = await client.get_posts(profile.institution_profile_ids, page=page, limit=limit)
     return [post_out(p, register) for p in rows if p.timestamp is not None]
 
 
@@ -667,9 +667,19 @@ def thread_out(raw: dict) -> dict:
     }
 
 
-async def threads(client: AulaApiClient) -> list[dict]:
+async def threads(client: AulaApiClient, page: int = 0) -> list[dict]:
+    """One page of threads, newest first. Aula's pages are 0-based; past the end it returns none."""
+    if page == 0:
+        raws = [t._raw or {} for t in await client.get_message_threads()]
+    else:
+        # The library only reads page 0; same request as its get_all_message_threads_result.
+        resp = await client._request_with_version_retry(
+            "get", f"{client.api_url}?method=messaging.getThreads&sortOn=date&orderDirection=desc&page={page}"
+        )
+        resp.raise_for_status()
+        raws = [t for t in get_in(resp.json(), "data.threads", default=[]) or [] if isinstance(t, dict)]
     # "date" is non-nullable in API.md; a row without any timestamp is skipped.
-    rows = [thread_out(t._raw or {}) for t in await client.get_message_threads()]
+    rows = [thread_out(raw) for raw in raws]
     return [r for r in rows if r["date"]]
 
 

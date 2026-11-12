@@ -73,7 +73,7 @@ def test_today_shape(api):
     assert {a["threadId"] for a in messages} == {"9101", "9102"}
 
     assert body["upcoming"] and all(set(u) == {"date", "title", "subtitle"} for u in body["upcoming"])
-    assert [p["id"] for p in body["posts"]] == [401, 402, 403]
+    assert [p["id"] for p in body["posts"]][:3] == [401, 402, 403]
     important = body["posts"][0]
     assert important["important"] is True and "<" not in important["body"]
     assert important["attachments"][0]["kind"] == "file"
@@ -286,8 +286,36 @@ def test_posts_without_title_or_timestamp(api, fake):
     fake.posts[403]["title"] = None
     fake.posts[402]["timestamp"] = None
     posts = api.get("/today", headers=AUTH).json()["posts"]
-    assert [p["id"] for p in posts] == [401, 403]
+    assert [p["id"] for p in posts][:2] == [401, 403]
     assert posts[1]["title"] == ""
+
+
+def test_posts_pages(api):
+    first = api.get("/today", headers=AUTH).json()["posts"]
+    assert api.get("/posts", headers=AUTH).json() == first
+    pages = [api.get(f"/posts?page={n}", headers=AUTH).json() for n in (1, 2, 3, 4)]
+    assert pages[0] == first and [len(p) for p in pages] == [10, 10, 5, 0]
+    ids = [p["id"] for page in pages for p in page]
+    assert len(ids) == len(set(ids)) == 25
+    dates = [p["date"] for page in pages for p in page]
+    assert dates == sorted(dates, reverse=True)
+
+
+def test_threads_pages(api):
+    first = api.get("/threads", headers=AUTH).json()
+    assert api.get("/threads?page=0", headers=AUTH).json() == first
+    second = api.get("/threads?page=1", headers=AUTH).json()
+    assert len(first) == len(second) == 20
+    assert not {t["id"] for t in first} & {t["id"] for t in second}
+    assert len(api.get("/threads?page=2", headers=AUTH).json()) == 5
+    assert api.get("/threads?page=50", headers=AUTH).json() == []
+    assert api.get(f"/threads/{second[0]['id']}", headers=AUTH).status_code == 200
+
+
+@pytest.mark.parametrize("path", ["/posts?page=0", "/posts?page=101", "/posts?page=x", "/threads?page=-1", "/threads?page=101"])
+def test_bad_page_is_400(api, path):
+    r = api.get(path, headers=AUTH)
+    assert r.status_code == 400 and r.json()["error"] == "bad_request"
 
 
 def test_client_setup_failure_after_mitid_is_ok_and_lazy(tmp_path, monkeypatch):
