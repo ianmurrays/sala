@@ -234,15 +234,10 @@ def test_item_older_than_seeding_sends_nothing(push, fake):
     assert poll() == 0 and ntfy.posts == []
 
 
-def _strip_latest_sender(fake, tid: int) -> None:
-    fake.threads[tid]["latestMessage"].pop("sender")
-
-
 @pytest.mark.parametrize("error", [HttpRequestError("Forbidden", 403), AulaSessionExpiredError("expired", 401)])
 def test_failing_thread_read_affects_only_that_thread(push, fake, monkeypatch, error):
     ntfy, poll, _ = push
     fake.add_direct_message()
-    _strip_latest_sender(fake, 9105)
     group_mid = fake.add_message(9102, METTE, "<p>Hue</p>")
     fake.add_important_post()
     calls = []
@@ -262,7 +257,6 @@ def test_failing_thread_read_affects_only_that_thread(push, fake, monkeypatch, e
 def test_direct_message_with_unknown_sender_says_new_message(push, fake):
     ntfy, poll, _ = push
     fake.add_direct_message()
-    _strip_latest_sender(fake, 9105)
     fake.messages[9105][0]["sender"] = None
     assert poll() == 1
     assert [(p["title"], p["click"]) for p in ntfy.posts] == [("New message", "sala://thread/9105")]

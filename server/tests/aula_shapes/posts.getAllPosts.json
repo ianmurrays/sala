@@ -1,0 +1,108 @@
+{
+ "hasMorePosts": "bool",
+ "posts": [
+  {
+   "allowComments": "bool",
+   "attachments": [],
+   "canCurrentUserComment": "bool",
+   "canCurrentUserDelete": "bool",
+   "canCurrentUserReport": "bool",
+   "commentCount": "int",
+   "content": {
+    "html": "str"
+   },
+   "editedAt": "null",
+   "expireAt": "str",
+   "id": "int",
+   "importantFrom": "null",
+   "importantTo": "null",
+   "isBookmarked": "bool",
+   "isExpired": "bool",
+   "isImportant": "bool",
+   "isPublished": "bool",
+   "ownerProfile": {
+    "firstName": "str",
+    "fullName": "str",
+    "gender": "str",
+    "id": "int",
+    "institution": {
+     "administrativeAuthority": {
+      "id": "int",
+      "institutionCodes": [],
+      "name": "str"
+     },
+     "institutionCode": "str",
+     "institutionName": "str",
+     "municipalityCode": "str",
+     "municipalityName": "str",
+     "type": "str"
+    },
+    "lastName": "str",
+    "mailBoxId": "int",
+    "mainGroupName": "null",
+    "metadata": "str",
+    "profileId": "int",
+    "profilePicture": "null",
+    "role": "str",
+    "shortName": "str",
+    "uniPersonId": "int"
+   },
+   "pendingMedia": "bool",
+   "publishAt": "str",
+   "relatedProfiles": [
+    {
+     "firstName": "str",
+     "fullName": "str",
+     "gender": "str",
+     "id": "int",
+     "institution": {
+      "administrativeAuthority": {
+       "id": "int",
+       "institutionCodes": [],
+       "name": "str"
+      },
+      "institutionCode": "str",
+      "institutionName": "str",
+      "municipalityCode": "str",
+      "municipalityName": "str",
+      "type": "str"
+     },
+     "lastName": "str",
+     "mailBoxId": "int",
+     "mainGroupName": "str",
+     "metadata": "str",
+     "profileId": "int",
+     "profilePicture": {
+      "bucket": "str",
+      "id": "int",
+      "isImageScalingPending": "bool",
+      "key": "str",
+      "scanningStatus": "str",
+      "url": "str"
+     },
+     "role": "str",
+     "shortName": "str",
+     "uniPersonId": "int"
+    }
+   ],
+   "sharedWithGroups": [
+    {
+     "allowMembersToBeShown": "bool",
+     "id": "int",
+     "institutionCode": "str",
+     "institutionName": "str",
+     "isDeactivated": "bool",
+     "mainGroup": "bool",
+     "name": "str",
+     "portalRoles": [
+      "str"
+     ],
+     "shortName": "str"
+    }
+   ],
+   "timestamp": "str",
+   "title": "str"
+  }
+ ],
+ "profileLastSeenPostDate": "str"
+}

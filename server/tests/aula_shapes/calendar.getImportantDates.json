@@ -1,0 +1,40 @@
+[
+ {
+  "addedToInstitutionCalendar": "bool",
+  "additionalResourceText": "null",
+  "additionalResources": [],
+  "allDay": "bool",
+  "belongsToProfiles": [
+   "int"
+  ],
+  "belongsToResources": [],
+  "createdDateTime": "str",
+  "creatorInstProfileId": "int",
+  "creatorName": "str",
+  "creatorProfileId": "int",
+  "directlyRelated": "bool",
+  "endDateTime": "str",
+  "hasAttachments": "bool",
+  "id": "int",
+  "institutionCode": "str",
+  "institutionName": "str",
+  "invitedGroups": [],
+  "lesson": "null",
+  "oldAllDay": "bool",
+  "oldEndDateTime": "null",
+  "oldStartDateTime": "null",
+  "primaryResource": "null",
+  "primaryResourceText": "null",
+  "private": "bool",
+  "repeating": "null",
+  "requiresNewAnswer": "bool",
+  "responseDeadline": "null",
+  "responseRequired": "bool",
+  "responseStatus": "null",
+  "startDateTime": "str",
+  "timeSlot": "null",
+  "title": "str",
+  "type": "str",
+  "vacationChildrenCountByDates": "null"
+ }
+]

@@ -1,0 +1,17 @@
+{
+ "openingHoursOverviewDto": [
+  {
+   "institutionCode": "str",
+   "openingHoursDto": [
+    {
+     "closeTime": "str",
+     "date": "str",
+     "institutionCode": "str",
+     "name": "null",
+     "openTime": "str",
+     "type": "str"
+    }
+   ]
+  }
+ ]
+}

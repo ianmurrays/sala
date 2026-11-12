@@ -1,0 +1,56 @@
+[
+ {
+  "presenceConfiguration": {
+   "dashboardModuleSettings": [
+    {
+     "presenceDashboardContext": "str",
+     "presenceModules": [
+      {
+       "moduleType": "str",
+       "permission": "str"
+      }
+     ]
+    }
+   ],
+   "departments": [
+    {
+     "filteringGroups": [
+      {
+       "allowMembersToBeShown": "bool",
+       "id": "int",
+       "institutionCode": "str",
+       "institutionName": "str",
+       "isDeactivated": "bool",
+       "mainGroup": "bool",
+       "name": "str",
+       "shortName": "str",
+       "uniGroupType": "str"
+      }
+     ],
+     "id": "int",
+     "isDeactivated": "bool",
+     "mainGroup": {
+      "allowMembersToBeShown": "bool",
+      "id": "int",
+      "institutionCode": "str",
+      "institutionName": "str",
+      "isDeactivated": "bool",
+      "mainGroup": "bool",
+      "name": "str",
+      "shortName": "str",
+      "uniGroupType": "str"
+     }
+    }
+   ],
+   "goHomeWith": "bool",
+   "institution": {
+    "institutionCode": "str",
+    "name": "str"
+   },
+   "pickup": "bool",
+   "selfDecider": "bool",
+   "sendHome": "bool"
+  },
+  "uniStudentId": "int"
+ }
+]

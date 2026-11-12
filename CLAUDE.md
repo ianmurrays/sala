@@ -1,3 +1,5 @@
 - `ios/project.yml` (XcodeGen) is the source of truth for the iOS project: change it, run `xcodegen generate` in `ios/`, and commit the regenerated `Sala.xcodeproj`. CI fails when they drift.
-- Device signing (team, bundle ID prefix) lives in the gitignored `ios/Config/Local.xcconfig`. To build and install on a phone: `ios/scripts/install-device.sh "<device name>"`.
+- Signing (team, bundle ID prefix) lives in the gitignored `ios/Config/Local.xcconfig`. Simulator builds need it too: unsigned, the app has no Keychain access and silently drops its settings. To build and install on a phone: `ios/scripts/install-device.sh "<device name>"`.
+- Running a worktree's server locally: `scripts/run-worktree.sh` (`stop` to undo). It copies the gitignored `server/.env` and `ios/Config/Local.xcconfig` from the main checkout, then swaps the main checkout's server out for this one on port 8000, on the same volume: one server per Aula session, since two refresh each other's tokens away.
+- Where fields sit in Aula's responses: `server/tests/aula_shapes/`, checked against the fake by `server/tests/test_aula_shapes.py` (its docstring says how to refresh them).
 - Server tests: `cd server && uv run pytest`. CI (`.github/workflows/ci.yml`) also runs gitleaks and an iOS simulator build.

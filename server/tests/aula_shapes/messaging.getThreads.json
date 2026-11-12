@@ -1,0 +1,92 @@
+{
+ "moreMessagesExist": "bool",
+ "page": "int",
+ "threads": [
+  {
+   "creator": {
+    "answerDirectlyName": "str",
+    "fullName": "str",
+    "mailBoxOwner": {
+     "id": "int",
+     "isDeactivated": "bool",
+     "mailBoxOwnerType": "str",
+     "portalRole": "str",
+     "profileId": "int"
+    },
+    "metadata": "str"
+   },
+   "extraRecipientsCount": "int",
+   "folderId": "null",
+   "folderType": "str",
+   "id": "int",
+   "institutionCode": "str",
+   "isArchived": "bool",
+   "isThreadOrSubscriptionDeleted": "bool",
+   "lastReadMessageId": "str",
+   "latestMessage": {
+    "id": "str",
+    "sendDateTime": "str",
+    "text": {
+     "html": "str"
+    }
+   },
+   "leaveTime": "null",
+   "mailBoxOwner": {
+    "id": "int",
+    "isDeactivated": "bool",
+    "mailBoxOwnerType": "str",
+    "portalRole": "str",
+    "profileId": "int"
+   },
+   "marked": "bool",
+   "muted": "bool",
+   "numberOfBundleItems": "null",
+   "primarySubscriptionId": "null",
+   "read": "bool",
+   "recipients": [
+    {
+     "answerDirectlyName": "str",
+     "deletedAt": "null",
+     "fullName": "str",
+     "lastReadMessageId": "str",
+     "lastReadTimestamp": "str",
+     "leaveTime": "null",
+     "mailBoxOwner": {
+      "id": "int",
+      "isDeactivated": "bool",
+      "mailBoxOwnerType": "str",
+      "portalRole": "str",
+      "profileId": "int"
+     },
+     "metadata": "str",
+     "profilePicture": "null",
+     "shortName": "str"
+    }
+   ],
+   "regardingChildren": [
+    {
+     "displayName": "str",
+     "profileId": "int",
+     "profilePicture": {
+      "bucket": "str",
+      "id": "int",
+      "isImageScalingPending": "bool",
+      "key": "str",
+      "scanningStatus": "str",
+      "url": "str"
+     },
+     "shortName": "str"
+    }
+   ],
+   "sensitive": "bool",
+   "startedTime": "str",
+   "subject": "str",
+   "subscriptionId": "int",
+   "subscriptionType": "str",
+   "threadEntityLinkDto": {
+    "entityId": "null",
+    "threadType": "str"
+   }
+  }
+ ]
+}
