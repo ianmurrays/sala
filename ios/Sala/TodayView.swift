@@ -348,6 +348,7 @@ struct ChildCard: View {
 
     private var isSick: Bool { child.status == "sick" }
     private var busy: Bool { store.sickInFlight.contains(child.id) }
+    @State private var confirmSick = false
 
     private var pickupHeader: String {
         child.closesAt.map { "Pickup today · closes \($0)" } ?? "Pickup today"
@@ -396,6 +397,12 @@ struct ChildCard: View {
         }
         .card()
         .sensoryFeedback(.success, trigger: child.status) { old, new in old != new && (old == "sick" || new == "sick") }
+        // On the card, not the button: ViewThatFits builds the buttons up to three times.
+        .confirmationDialog("Report \(child.name) sick today?", isPresented: $confirmSick, titleVisibility: .visible) {
+            Button("Report sick") { Task { await store.toggleSick(child) } }
+        } message: {
+            Text("\(child.institution.isEmpty ? "The staff" : child.institution) will see it in Aula. You can undo it from here.")
+        }
     }
 
     /// A pickup can't be set on an absence day (the server answers 409).
@@ -429,13 +436,13 @@ struct ChildCard: View {
             .foregroundStyle(Color.sickText)
             .disabled(busy)
         } else {
+            // Secondary, not red: Change pickup is the everyday action, and the dialog guards this one.
             Button {
-                Task { await store.toggleSick(child) }
+                confirmSick = true
             } label: {
-                buttonLabel("Report sick", "cross.case", icons: icons)
+                buttonLabel("Report sick…", "cross.case", icons: icons)
             }
-            .buttonStyle(.glassProminent)
-            .tint(.sickButton)
+            .buttonStyle(.glass)
             .disabled(busy || !child.canReportSick)
         }
     }
