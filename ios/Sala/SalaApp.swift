@@ -42,6 +42,9 @@ struct RootView: View {
                     Tab("Contacts", systemImage: "person.2", value: AppTab.contacts) {
                         ContactsView()
                     }
+                    Tab(value: AppTab.search, role: .search) {
+                        SearchView()
+                    }
                 }
             }
         }

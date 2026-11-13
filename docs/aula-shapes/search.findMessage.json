@@ -1,0 +1,103 @@
+{
+ "from": "int",
+ "mediaResults": "null",
+ "query": "str",
+ "results": [
+  {
+   "creator": {
+    "answerDirectlyName": "str",
+    "fullName": "str",
+    "mailBoxOwner": {
+     "id": "int",
+     "isDeactivated": "bool",
+     "mailBoxOwnerType": "str",
+     "portalRole": "str",
+     "profileId": "int"
+    },
+    "metadata": "str"
+   },
+   "deleted": "bool",
+   "docId": "str",
+   "docType": "str",
+   "extraRecipientsCount": "int",
+   "folderId": "null",
+   "folderName": "null",
+   "folderType": "str",
+   "institutionCode": "str",
+   "leaveTime": "null",
+   "mailBoxOwner": {
+    "id": "int",
+    "isDeactivated": "bool",
+    "mailBoxOwnerType": "str",
+    "portalRole": "str",
+    "profileId": "int"
+   },
+   "marked": "bool",
+   "muted": "bool",
+   "read": "bool",
+   "recipients": [
+    {
+     "fullName": "str",
+     "leaveTime": "null",
+     "mailBoxOwner": {
+      "id": "int",
+      "isDeactivated": "bool",
+      "mailBoxOwnerType": "str",
+      "portalRole": "str",
+      "profileId": "int"
+     },
+     "metadata": "str",
+     "profilePicture": {
+      "bucket": "str",
+      "id": "int",
+      "isImageScalingPending": "bool",
+      "key": "str",
+      "scanningStatus": "str",
+      "url": "str"
+     },
+     "shortName": "str"
+    }
+   ],
+   "regardingChildren": [
+    {
+     "displayName": "str",
+     "profileId": "int",
+     "profilePicture": {
+      "bucket": "str",
+      "id": "int",
+      "isImageScalingPending": "bool",
+      "key": "str",
+      "scanningStatus": "str",
+      "url": "str"
+     },
+     "shortName": "str"
+    }
+   ],
+   "score": "int",
+   "searchMessage": {
+    "id": "str",
+    "messageType": "str",
+    "sendDateTime": "str",
+    "senderDisplayName": "null",
+    "senderEmail": "null",
+    "text": {
+     "html": "str"
+    },
+    "unread": "bool"
+   },
+   "sensitivityLevel": "int",
+   "stepUpRequired": "bool",
+   "subscriptionId": "int",
+   "thread": {
+    "id": "str",
+    "isForwarded": "bool",
+    "sensitivityLevel": "int",
+    "subject": "str",
+    "threadType": "str"
+   },
+   "threadId": "int"
+  }
+ ],
+ "size": "int",
+ "totalSize": "int"
+}

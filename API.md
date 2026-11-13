@@ -134,6 +134,22 @@ Nullable here: `opensAt`, `closesAt`, `current.time`, `current.by`.
 - A photo's `date` is when it was uploaded.
 - Aula's image URLs are signed and expire; listing the album again refreshes the ones Sala fetches.
 
+## Search
+
+`GET /search?q=<text>&type=messages|posts|photos&page=N` → Aula's global search (the portal's search box), one type per call, 20 per page:
+```json
+{"counts": {"messages": 17, "posts": 16, "photos": 74},
+ "messages": [{"id": "m9", "threadId": "123", "subject": "Forældremøde", "from": "Leder", "preview": "Parent meeting…", "date": "timestamp"}],
+ "posts": [Post],
+ "photos": [Photo]}
+```
+- `counts` is how many hits Aula has for `q` of each type, whatever `type` asks for; the client shows a type only when its count is above 0. Only the list for `type` is filled, the other two are empty.
+- `q` is trimmed; empty → `400`. `type` defaults to `messages`; anything else → `400`. `page` is 1-based (default 1, at most 100, else `400`). An empty list means there are no more. Order is Aula's.
+- `messages`: `id` is the matching message, `threadId` its thread (open it with `GET /threads/{id}`), `date` when that message was sent (Aula names it `latestMessageSendTime`; live it matched the message `findMessage` returns for the thread). A result's thread may not be in `/threads`, so `PATCH /threads/{id}` can answer `409` for it.
+- `posts`: the `Post` shape of `/posts`, except `saved` is always `false` (Aula's search doesn't say); saving isn't offered from search.
+- `photos`: the `Photo` shape of the gallery; videos are left out, as in albums.
+- Calendar events, people, groups and files are not searched: Aula's search found no events in the searches tried, and people are in Contacts.
+
 ## Contacts
 
 Aula's contact book (Kontaktbog). Other families' personal data: the app keeps it only while the screen is open, and never logs or caches it.

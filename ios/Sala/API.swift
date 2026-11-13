@@ -130,6 +130,29 @@ struct Photo: Decodable, Sendable, Equatable, Identifiable {
     var date: String?
 }
 
+/// `GET /search` (API.md "Search"): hit counts per type, and one page of the asked type.
+struct SearchResults: Decodable, Sendable {
+    struct Counts: Decodable, Sendable, Equatable {
+        var messages: Int
+        var posts: Int
+        var photos: Int
+    }
+    var counts: Counts
+    var messages: [SearchMessage]
+    var posts: [Post]
+    var photos: [Photo]
+}
+
+struct SearchMessage: Decodable, Sendable, Equatable, Identifiable {
+    var id: String
+    var threadId: String
+    var subject: String
+    var from: String
+    var preview: String
+    /// ISO 8601 timestamp with offset.
+    var date: String
+}
+
 struct Attachment: Codable, Sendable, Equatable {
     /// Server id for `GET /attachments/{id}`; absent for links.
     var id: String?
@@ -432,6 +455,13 @@ struct APIClient: Sendable {
     /// `page` is 1-based. Empty means no more.
     func albums(page: Int) async throws -> [Album] { try await send("GET", "/albums?page=\(page)") }
     func photos(album: Int, page: Int) async throws -> [Photo] { try await send("GET", "/albums/\(album)/photos?page=\(page)") }
+
+    /// `type` is `messages`, `posts` or `photos`; `page` is 1-based. Empty lists mean no more.
+    func search(_ text: String, type: String, page: Int) async throws -> SearchResults {
+        // Alphanumerics only: `&`, `=` and `+` would split or change the query.
+        let q = text.addingPercentEncoding(withAllowedCharacters: .alphanumerics) ?? ""
+        return try await send("GET", "/search?q=\(q)&type=\(type)&page=\(page)")
+    }
 
     /// `page` is 0-based like Aula's. Empty means no more.
     /// `folder` nil is the inbox.

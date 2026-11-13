@@ -89,8 +89,9 @@ private struct AlbumCard: View {
     }
 }
 
-private struct AlbumView: View {
-    let album: Album
+/// A photo grid with the viewer and Save to Photos: an album, or the photos of a search.
+struct AlbumView: View {
+    let title: String
     @Environment(Store.self) private var store
     @State private var photos: Paged<Photo>
     @State private var current = 0
@@ -103,8 +104,12 @@ private struct AlbumView: View {
     @Environment(\.scenePhase) private var scenePhase
 
     init(album: Album) {
-        self.album = album
-        _photos = State(initialValue: Paged { client, page in try await client.photos(album: album.id, page: page) })
+        self.init(title: album.title, photos: Paged { client, page in try await client.photos(album: album.id, page: page) })
+    }
+
+    init(title: String, photos: Paged<Photo>) {
+        self.title = title
+        _photos = State(initialValue: photos)
     }
 
     var body: some View {
@@ -129,7 +134,7 @@ private struct AlbumView: View {
             .onChange(of: viewing) { if !viewing { proxy.scrollTo(current) } }
         }
         .background(Color.screen)
-        .navigationTitle(album.title)
+        .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar { toolbar }
         .toolbarVisibility(selection == nil ? .automatic : .hidden, for: .tabBar)
@@ -137,7 +142,7 @@ private struct AlbumView: View {
         .task { if photos.items == nil { await photos.load(store, reset: true) } }
         .onChange(of: scenePhase) { if scenePhase == .active { Task { await photos.refreshURLs(store) } } }
         .fullScreenCover(isPresented: $viewing) {
-            PhotoViewer(photos: photos, title: album.title, current: $current)
+            PhotoViewer(photos: photos, title: title, current: $current)
                 .navigationTransition(.zoom(sourceID: current, in: zoom))
         }
         .toast($message)

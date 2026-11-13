@@ -533,6 +533,8 @@ struct PostCard: View {
     let post: Post
     let downloading: String?
     let open: (Attachment) -> Void
+    /// Off for search results: saving works on Today's posts (`Store.toggleSaved`), and search doesn't say what's saved.
+    var canSave = true
     @State private var expanded = false
 
     private var translationID: String { "post-\(post.id)" }
@@ -553,18 +555,20 @@ struct PostCard: View {
                     Text(dateText).font(.footnote).foregroundStyle(.secondary)
                 }
                 Spacer(minLength: 0)
-                Button {
-                    Task { await store.toggleSaved(post) }
-                } label: {
-                    Image(systemName: post.saved ? "bookmark.fill" : "bookmark")
-                        .font(.body.weight(.semibold))
-                        .frame(width: 24, height: 24)
-                        .contentTransition(.symbolEffect(.replace))
+                if canSave {
+                    Button {
+                        Task { await store.toggleSaved(post) }
+                    } label: {
+                        Image(systemName: post.saved ? "bookmark.fill" : "bookmark")
+                            .font(.body.weight(.semibold))
+                            .frame(width: 24, height: 24)
+                            .contentTransition(.symbolEffect(.replace))
+                    }
+                    .buttonStyle(.glass)
+                    .buttonBorderShape(.circle)
+                    .accessibilityLabel(post.saved ? "Remove bookmark" : "Save post")
+                    .sensoryFeedback(.selection, trigger: post.saved)
                 }
-                .buttonStyle(.glass)
-                .buttonBorderShape(.circle)
-                .accessibilityLabel(post.saved ? "Remove bookmark" : "Save post")
-                .sensoryFeedback(.selection, trigger: post.saved)
             }
 
             if post.important {

@@ -51,6 +51,7 @@
 		C28A03DD2EA8C0879ADD256E /* HTMLEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F54721032189D28F2ECDD8D /* HTMLEntities.swift */; };
 		C6931429278AC39200B6AEC1 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7E6AB823A3C5EB7D36DDA80 /* Theme.swift */; };
 		C800C72A1D83C8901E63FA8F /* AulaClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80889885B76F5717A9DECCF3 /* AulaClient.swift */; };
+		E39CA54108D4CCA7DDB101A5 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CB0076E020A5A87CD637FD /* SearchView.swift */; };
 		E657D7775BAD8D02259880F0 /* HTMLEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F54721032189D28F2ECDD8D /* HTMLEntities.swift */; };
 		E8AF275F830BEFC95BA2294C /* SalaShared.swift in Sources */ = {isa = PBXBuildFile; fileRef = B052EF3B3E1998CE1C0471B2 /* SalaShared.swift */; };
 		EDD0C87726785D39C5AE9BE9 /* BackgroundRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = F41459AD15C74E8246176098 /* BackgroundRefresh.swift */; };
@@ -117,6 +118,7 @@
 		B052EF3B3E1998CE1C0471B2 /* SalaShared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalaShared.swift; sourceTree = "<group>"; };
 		B6F700FF859455055509BB54 /* AttachmentOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentOpener.swift; sourceTree = "<group>"; };
 		B9DCDEC490BACA3926522E1C /* GalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryView.swift; sourceTree = "<group>"; };
+		C0CB0076E020A5A87CD637FD /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		C61D4DFB892FB869F494631E /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		CBDA4ACCCAD7122465646C4E /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayView.swift; sourceTree = "<group>"; };
 		D0474C37C635EB4FEE0B2FA3 /* AulaRoutes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AulaRoutes.swift; sourceTree = "<group>"; };
@@ -227,6 +229,7 @@
 				996EC5D2487693CC0C6083BE /* PickupSheet.swift */,
 				FD2E145876A2ECFC2DB2AAD5 /* Sala.entitlements */,
 				3A62848569FE547E44876C3B /* SalaApp.swift */,
+				C0CB0076E020A5A87CD637FD /* SearchView.swift */,
 				7306B89AB0399C4EF4F98F6C /* SettingsView.swift */,
 				18E6F59015D2651602B6C5CF /* StillSick.swift */,
 				EA44F3816DF767D0B3A780A5 /* Store.swift */,
@@ -379,6 +382,7 @@
 				6E75E7B5960FC1B9B3ED9B82 /* PickupSheet.swift in Sources */,
 				9E7EB7F36848F154EB071342 /* SalaApp.swift in Sources */,
 				B3D4FF9E850FCCDB4798F518 /* SalaShared.swift in Sources */,
+				E39CA54108D4CCA7DDB101A5 /* SearchView.swift in Sources */,
 				63AB0B45C45C47BCADC5E654 /* SettingsView.swift in Sources */,
 				3593FECD2B5F90E892AE593A /* StillSick.swift in Sources */,
 				5DCACF8FA249D802DAA947DD /* Store.swift in Sources */,

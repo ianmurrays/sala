@@ -1026,21 +1026,83 @@ extension Aula {
             ("index", String((page - 1) * limit)), ("limit", String(limit)), ("sortOn", "uploadedAt"),
             ("orderDirection", "desc"), ("filterBy", "all"),
         ] + Self.ids("filterInstProfileIds[]", profile.institutionProfileIds))
-        var out: [JSONObject] = []
-        for p in J.list(J.getIn(data, "results")) ?? [] {
-            // ponytail: videos are left out; show them when someone misses them
-            guard J.dict(p) != nil, let id = J.int(J.get(p, "id", default: nil)),
-                  J.get(p, "mediaType", default: nil) as? String == "image",
-                  let image = pictureId(J.getIn(p, "file.url"), register: true) else { continue }
-            // Live sizes (one photo): large 900x1200, medium 600x800, small 300x400 (~55 kB), extraSmall 150x200.
-            // Small fills a third of a phone's width at 3x.
-            let thumb = J.or(J.get(p, "smallThumbnailUrl", default: nil), J.get(p, "thumbnailUrl", default: nil))
-            out.append([
-                "id": id,
-                "thumbnail": pictureId(thumb, register: true) ?? image,
-                "image": image,
-                "date": J.out(AulaTime.iso(J.getIn(p, "file.created"))),
-            ])
+        return (J.list(J.getIn(data, "results")) ?? []).compactMap(photoOut)
+    }
+
+    /// One gallery.getMedia result (also a search.findGeneric Media result) as a Photo; nil for videos.
+    func photoOut(_ p: Any) -> JSONObject? {
+        // ponytail: videos are left out; show them when someone misses them
+        guard J.dict(p) != nil, let id = J.int(J.get(p, "id", default: nil)),
+              J.get(p, "mediaType", default: nil) as? String == "image",
+              let image = pictureId(J.getIn(p, "file.url"), register: true) else { return nil }
+        // Live sizes (one photo): large 900x1200, medium 600x800, small 300x400 (~55 kB), extraSmall 150x200.
+        // Small fills a third of a phone's width at 3x.
+        let thumb = J.or(J.get(p, "smallThumbnailUrl", default: nil), J.get(p, "thumbnailUrl", default: nil))
+        return [
+            "id": id,
+            "thumbnail": pictureId(thumb, register: true) ?? image,
+            "image": image,
+            "date": J.out(AulaTime.iso(J.getIn(p, "file.created"))),
+        ]
+    }
+
+    // MARK: search
+
+    static let searchTypes = ["messages": "ThreadMessage", "posts": "Post", "photos": "Media"]
+
+    /// Aula's global search, one docType per call. Params from the portal bundle (app.*.js globalSearch
+    /// store: limit, offset, institutionProfileIds = the user's own (activeInstitutionProfiles),
+    /// activeChildrenInstitutionProfileIds, text, docType, docTypeCount; Media adds sortOn/orderDirection).
+    /// Result fields from live answers (docs/aula-shapes/search.findGeneric.json): a Post result is a
+    /// post with `creator` for getAllPosts' `ownerProfile` and `content` as the HTML string, no isBookmarked.
+    func search(_ profile: AulaProfile, _ text: String, type: String, page: Int, limit: Int = 20, skips: Int = 0) async throws -> JSONObject {
+        guard let docType = Self.searchTypes[type] else { throw MapError.badRequest("type must be messages, posts or photos") }
+        var params = [("text", text), ("docType", docType), ("docTypeCount", "true"),
+                      ("limit", String(limit)), ("offset", String((page - 1) * limit))]
+            + Self.ids("institutionProfileIds[]", profile.guardianIds.sorted())
+            + Self.ids("activeChildrenInstitutionProfileIds[]", profile.children.map(\.id))
+        if docType == "Media" { params += [("sortOn", "datetime"), ("orderDirection", "desc")] }
+        let data = J.get(try await get("search.findGeneric", params), "data", default: nil)
+        var counts: JSONObject = ["messages": 0, "posts": 0, "photos": 0]
+        for c in J.list(J.get(data, "docTypeCount", default: nil)) ?? [] {
+            if let key = Self.searchTypes.first(where: { J.eq(J.get(c, "key"), $0.value) })?.key {
+                counts[key] = J.int(J.get(c, "count")) ?? 0
+            }
+        }
+        let results = J.list(J.get(data, "results", default: nil)) ?? []
+        var out: JSONObject = ["counts": counts, "messages": [Any](), "posts": [Any](), "photos": [Any]()]
+        switch type {
+        case "messages":
+            out["messages"] = results.compactMap { r -> JSONObject? in
+                guard J.eq(J.get(r, "docType"), "ThreadMessage"), let thread = J.get(r, "threadId"), !J.isNone(thread),
+                      let date = AulaTime.iso(J.get(r, "latestMessageSendTime")) else { return nil }
+                return [
+                    "id": J.pyStr(J.or(J.get(r, "messageId"), J.get(r, "id"))),
+                    "threadId": J.pyStr(thread),
+                    "subject": J.or(J.get(r, "title"), "") ?? "",
+                    "from": J.or(J.get(r, "author"), "") ?? "",
+                    "preview": Self.preview(J.str(J.get(r, "message")) ?? ""),
+                    "date": date,
+                ]
+            }
+        case "posts":
+            out["posts"] = results.compactMap { r -> JSONObject? in
+                guard var d = J.dict(r), J.eq(d["docType"], "Post") else { return nil }
+                if let id = J.str(d["id"]).flatMap({ Int($0) }) { d["id"] = id }
+                d["ownerProfile"] = d["creator"]
+                if let html = J.str(d["content"]) { d["content"] = ["html": html] as JSONObject }
+                guard let post = try? AulaPost(d), post.timestamp != nil else { return nil }
+                return postOut(post)
+            }
+        default:
+            out["photos"] = (J.list(J.get(data, "mediaResults", default: nil)) ?? []).compactMap(photoOut)
+        }
+        // An Aula page whose hits were all left out (videos, threadless messages) would read as the end
+        // to the client, so answer the next Aula page instead; the client drops the repeats by id.
+        // ponytail: at most 5 pages skipped in one call; a longer run of left-out hits still ends the list.
+        let raw = (J.list(J.get(data, "mediaResults", default: nil)) ?? []).count + results.count
+        if (out[type] as? [Any])?.isEmpty == true, raw > 0, skips < 5, page < 100 {
+            return try await search(profile, text, type: type, page: page + 1, limit: limit, skips: skips + 1)
         }
         return out
     }
@@ -1067,14 +1129,19 @@ extension Aula {
         return J.or(J.getIn(sender, "profilePicture"), owner != nil ? J.getIn(match, "profilePicture") : nil)
     }
 
+    /// A message's HTML as one line of at most 140 characters.
+    static func preview(_ html: String) -> String {
+        let text = Py.split(plain(html)).joined(separator: " ")
+        return Py.len(text) > 140 ? Py.rstrip(Py.prefix(text, 139)) + "…" : text
+    }
+
     /// One row of messaging.getThreads. Field names (read, muted, marked, recipients[].leaveTime,
     /// latestMessage.text.html / sendDateTime, creator) are the ones the portal reads;
     /// latestMessage.sender is a guess with creator as fallback.
     func threadOut(_ raw: JSONObject, register: Bool) -> JSONObject {
         let latest = J.dict(J.or(raw["latestMessage"], nil)) ?? [:]
         let recipients = (J.list(J.or(raw["recipients"], nil)) ?? []).filter { ($0 is JSONObject) && J.get($0, "leaveTime") == nil }
-        var preview = Py.split(Self.plain(J.str(J.or(J.getIn(latest, "text.html"), "")) ?? "")).joined(separator: " ")
-        if Py.len(preview) > 140 { preview = Py.rstrip(Py.prefix(preview, 139)) + "…" }
+        let preview = Self.preview(J.str(J.or(J.getIn(latest, "text.html"), "")) ?? "")
         let sender = J.truthy(Self.senderName(J.get(latest, "sender"))) ? J.get(latest, "sender") : J.get(raw, "creator")
         let participants = recipients.count > 0 ? recipients.count : (J.list(J.or(raw["participants"], nil)) ?? []).count
         return [

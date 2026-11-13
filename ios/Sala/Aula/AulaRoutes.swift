@@ -57,7 +57,7 @@ extension Aula {
 
     private enum Route {
         case today, features, translate, pickup(String), sick(String), holiday(String), absences, posts, save(String)
-        case albums, photos(String), calendar, contactGroups, contactGroup(String)
+        case albums, photos(String), search, calendar, contactGroups, contactGroup(String)
         case attachment(String), threads, thread(String), reply(String), folders, folder(String)
     }
 
@@ -71,6 +71,7 @@ extension Aula {
             case "absences": return (.absences, ["POST"])
             case "posts": return (.posts, ["GET"])
             case "albums": return (.albums, ["GET"])
+            case "search": return (.search, ["GET"])
             case "calendar": return (.calendar, ["GET"])
             case "threads": return (.threads, ["GET"])
             case "folders": return (.folders, ["GET", "POST"])
@@ -208,6 +209,13 @@ extension Aula {
             let albumId = try Input.pathInt(id, "album_id")
             let page = try input.queryInt("page", default: 1, min: 1, max: 100)
             return try await albumPhotos(try await profile(), albumId, page: page)
+
+        case (.search, _):
+            let text = Py.strip(input.query.last(where: { $0.0 == "q" })?.1 ?? "")
+            if text.isEmpty { throw APIError.http(400, "q is empty") }
+            let type = input.query.last(where: { $0.0 == "type" })?.1 ?? "messages"
+            let page = try input.queryInt("page", default: 1, min: 1, max: 100)
+            return try await search(try await profile(), text, type: type, page: page)
 
         case (.contactGroups, _):
             return try await contactGroups(try await profile())

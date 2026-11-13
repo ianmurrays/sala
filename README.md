@@ -22,6 +22,7 @@
 - **Calendar**: Aula's calendar, optionally synced to the iOS Calendar.
 - **Messages**: threads, replies (to everyone or only the sender), and your own folders.
 - **Gallery**: albums and photos.
+- **Search**: Aula's search across messages, posts and photos, from the search button in the tab bar.
 - **Contacts**: Aula's contact book for each child's groups, with call, text, e-mail and Add to Contacts.
 - **Widget**: status, pickup time and closing time on the Home Screen.
 
