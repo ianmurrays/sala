@@ -344,14 +344,32 @@ final class URLSessionTransport: AulaTransport, @unchecked Sendable {
     }
 
     func send(_ request: URLRequest, redirectsAllowed: (@Sendable (URL?) -> Bool)?) async throws -> (Data, HTTPURLResponse) {
-        do {
-            let (data, resp) = try await session.data(for: request, delegate: redirectsAllowed.map(RedirectGuard.init))
-            guard let http = resp as? HTTPURLResponse else { throw Aula.Failure.transport("No HTTP response") }
-            return (data, http)
-        } catch let e as URLError where e.code == .cancelled {
-            throw CancellationError()
-        } catch let e as URLError {
-            throw Aula.Failure.transport(e.localizedDescription)
+        var retried = false
+        while true {
+            do {
+                let (data, resp) = try await session.data(for: request, delegate: redirectsAllowed.map(RedirectGuard.init))
+                guard let http = resp as? HTTPURLResponse else { throw Aula.Failure.transport("No HTTP response") }
+                return (data, http)
+            } catch let e as URLError where e.code == .cancelled {
+                throw CancellationError()
+            } catch let e as URLError {
+                // Returning to the foreground, the network is often not back yet: one retry a second later.
+                guard !retried, Self.shouldRetry(e.code, method: request.httpMethod) else {
+                    throw Aula.Failure.transport(e.localizedDescription)
+                }
+                retried = true
+                try await Task.sleep(for: .seconds(1))
+            }
+        }
+    }
+
+    /// Whether a request that failed with `code` is worth one more try. Never `.timedOut` (another 30 s).
+    /// Writes only when the request can't have reached Aula, so a sick report or token refresh never runs twice.
+    static func shouldRetry(_ code: URLError.Code, method: String?) -> Bool {
+        switch code {
+        case .notConnectedToInternet, .cannotFindHost, .dnsLookupFailed, .cannotConnectToHost: true
+        case .networkConnectionLost: (method ?? "GET") == "GET"
+        default: false
         }
     }
 

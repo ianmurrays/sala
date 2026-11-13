@@ -13,6 +13,7 @@ struct TodayView: View {
                 VStack(alignment: .leading, spacing: 28) {
                     header
                     if let banner = store.banner { BannerView(text: banner) { store.banner = nil } }
+                    if let error = store.loadError { BannerView(text: error) { store.loadError = nil } }
                     content
                 }
                 .padding(.horizontal, 16)
