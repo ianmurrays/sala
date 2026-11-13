@@ -274,8 +274,8 @@ extension Aula {
         var attention = try await opt("holiday requests") { try await holidayRequests(childIds) } ?? []
         let threadRows = try await opt("threads") { try await threads() } ?? []
         attention += Self.unreadThreadsAttention(threadRows)
-        let upcoming = try await opt("upcoming") { try await upcoming(profile.children) } ?? []
-        let posts = try await opt("posts") { try await posts(profile) } ?? []
+        let upcoming = try await opt("upcoming") { try await self.upcoming(profile.children) } ?? []
+        let posts = try await opt("posts") { try await self.posts(profile) } ?? []
         return [
             "date": AulaTime.today().iso,
             "children": children,
