@@ -146,7 +146,7 @@ Open one with `GET /holiday-requests/{id}`; `POST` changes the answer until the 
 ```
 - `page` is 1-based (default 1, at most 100, else `400`). An empty list means there are no more.
 - `cover`, `thumbnail` and `image` are ids for `GET /attachments/{id}`, stable across loads like profile pictures, so the client can cache them. `thumbnail` is Aula's small size (300×400 for a 1200×1600 photo, about 55 kB); `image` is the original, for the viewer and for saving. `thumbnail` is the same id as `image` when Aula has no thumbnail.
-- A video has `video`, the id of its mp4 (`GET /attachments/{id}`); its `image` is a still from it (Aula's large thumbnail), and `thumbnail` and `image` are `null` when Aula has no still. Videos Aula is still converting or failed to convert (`conversionStatus` `processing` or `failed`) are left out, so a page can hold fewer than 60.
+- A video has `video`, the id of its mp4 (`GET /attachments/{id}`); its `image` is a still from it (Aula's large thumbnail), and `thumbnail` and `image` are absent when Aula has no still. Videos Aula is still converting or failed to convert (`conversionStatus` `processing` or `failed`) are left out, so a page can hold fewer than 60. A page of nothing but such videos comes back empty, and the client stops there (rare enough to accept).
 - Page 1 starts with Aula's album of photos the child is tagged in: `"tagged": true`, `id` 0 (Aula gives it none), title from Aula. `GET /albums/0/photos` lists it.
 - A photo's `date` is when it was uploaded.
 - Aula's image URLs are signed and expire; listing the album again refreshes the ones Sala fetches.
