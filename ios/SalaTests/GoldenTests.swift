@@ -201,6 +201,13 @@ final class GoldenTests: XCTestCase {
         XCTAssertTrue(ok, "\(label): Swift threw \(error), the server said \(status) \(expected ?? "")", file: file, line: line)
     }
 
+    func testRetryOnlyWhenSafe() {
+        XCTAssertTrue(URLSessionTransport.shouldRetry(.notConnectedToInternet, method: "POST"))
+        XCTAssertTrue(URLSessionTransport.shouldRetry(.networkConnectionLost, method: "GET"))
+        XCTAssertFalse(URLSessionTransport.shouldRetry(.networkConnectionLost, method: "POST"))
+        XCTAssertFalse(URLSessionTransport.shouldRetry(.timedOut, method: "GET"))
+    }
+
     func testToday() async throws { try await run("today") }
     func testTodayPartial() async throws { try await run("today_partial") }
     func testSessionGone() async throws { try await run("session_gone") }

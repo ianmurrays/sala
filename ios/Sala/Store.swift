@@ -20,6 +20,9 @@ final class Store {
     var today: Today?
     /// Transient, non-fatal error shown as a banner on Today (failed save, sick report, …).
     var banner: String?
+    /// The last `/today` refresh failed while data was on screen; also a banner, cleared by the next good load.
+    /// Kept apart from `banner` so a good refresh never hides an action's error before it's read.
+    var loadError: String?
     var isRefreshing = false
     var showSettings = false
 
@@ -67,6 +70,8 @@ final class Store {
     private var mutations = 0
     private var childChanges: [Int: Int] = [:]
     private var postChanges: [Int: Int] = [:]
+    /// Bumped by each `load()`; only the newest one's result is applied, so a slower older load can't undo it.
+    private var loadGeneration = 0
 
 
     init() {
@@ -82,6 +87,8 @@ final class Store {
         Config.clearWidgets()
         today = nil
         threads = nil
+        banner = nil
+        loadError = nil
         phase = .needsLogin
     }
 
@@ -96,7 +103,10 @@ final class Store {
         // Unstructured so a view-bound caller (login poll, .refreshable) going away can't cancel it.
         let c = client
         let startedAt = mutations
+        loadGeneration += 1
+        let generation = loadGeneration
         let result = await Task { try await c.today() }.result
+        guard generation == loadGeneration else { return }  // a newer load started; it decides
         switch result {
         case .success(var t):
             // Keep newer local state for the children and posts changed while this load was in flight.
@@ -109,6 +119,7 @@ final class Store {
                 }
             }
             today = t
+            loadError = nil
             syncWidgets()
             morePosts.reset(next: 2)
             phase = .ready
@@ -139,7 +150,7 @@ final class Store {
         default:
             let msg = error.localizedDescription
             if fatalIfNoData {
-                if today == nil { phase = .failed(msg) } else { banner = msg }
+                if today == nil { phase = .failed(msg) } else { loadError = msg }
             }
             return msg
         }
