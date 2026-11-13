@@ -148,6 +148,9 @@ struct AISettingsView: View {
     @State private var anthropicKey = AI.anthropicKey
     @State private var translatePrompt = AI.customPrompt(.translate)
     @State private var summarizePrompt = AI.customPrompt(.summarize)
+    /// The provider's models, loaded when its endpoint or key is set; nil until loaded.
+    @State private var models: [String]?
+    @State private var modelsError: String?
 
     var body: some View {
         Form {
@@ -167,19 +170,15 @@ struct AISettingsView: View {
                         .keyboardType(.URL)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
-                    TextField("Model", text: $openAIModel)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
                     SecureField("API key (optional)", text: $openAIKey)
                 }
+                modelSection($openAIModel, placeholder: "Model")
             }
             if provider == .anthropic {
                 Section("Anthropic") {
                     SecureField("API key", text: $anthropicKey)
-                    TextField("Model (default \(AI.defaultAnthropicModel))", text: $anthropicModel)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
                 }
+                modelSection($anthropicModel, placeholder: "Default: \(AI.defaultAnthropicModel)")
             }
 
             if provider != .off {
@@ -201,6 +200,16 @@ struct AISettingsView: View {
         .onDisappear(perform: save)
         .onChange(of: provider) { save() }
         .onChange(of: [endpoint, openAIModel, openAIKey, anthropicModel, anthropicKey, translatePrompt, summarizePrompt]) { save() }
+        // Reloads when what the list depends on changes; the short sleep skips a request per keystroke.
+        .task(id: [provider.rawValue, endpoint, openAIKey, anthropicKey]) {
+            models = nil
+            modelsError = nil
+            let ready = provider == .openAI ? URL(string: endpoint)?.host != nil : provider == .anthropic && !anthropicKey.isEmpty
+            guard ready else { return }
+            try? await Task.sleep(for: .milliseconds(600))
+            guard !Task.isCancelled else { return }
+            do { models = try await AI.models(provider) } catch { if !Task.isCancelled { modelsError = error.localizedDescription } }
+        }
     }
 
     private var footer: String {
@@ -209,6 +218,26 @@ struct AISettingsView: View {
         case .device: "Apple's model on this iPhone. Nothing leaves your phone. Needs Apple Intelligence."
         case .pcc: "Apple's larger model on Apple's servers. The text leaves your phone: Apple says it's used only for your request and never stored, Apple staff can't access it, the servers run software independent researchers can inspect, and your iPhone only sends to servers that prove they run that software."
         case .openAI, .anthropic: "The text of the message or post you tap is sent to this provider, and its terms and data policies apply. It may store it. Only use one you trust with your children's school messages."
+        }
+    }
+
+    private func modelSection(_ model: Binding<String>, placeholder: String) -> some View {
+        Section {
+            if let models, !models.isEmpty {
+                Picker("Model", selection: model) {
+                    if !models.contains(model.wrappedValue) { Text(model.wrappedValue.isEmpty ? placeholder : model.wrappedValue).tag(model.wrappedValue) }
+                    ForEach(models, id: \.self) { Text($0).tag($0) }
+                }
+                .pickerStyle(.navigationLink)
+            }
+            TextField(placeholder, text: model)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+        } header: {
+            Text("Model")
+        } footer: {
+            if let modelsError { Text("Couldn't load the models: \(modelsError) You can still type a model's name.") }
+            else if models == nil { Text("Loads the provider's models once the endpoint or key is set. Or type a model's name.") }
         }
     }
 

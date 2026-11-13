@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 import Observation
 import WidgetKit
@@ -51,11 +52,13 @@ final class Store {
     private(set) var morePosts = Paging(next: 2)
 
     // AI (AI.swift): translate or summarize one message or post on a tap. Results are cached per action,
-    // option, prompt and text; `aiShowing` says what each id ("post-9", "message-12") shows.
+    // option, prompt and text, in memory and in `aiCacheFile`; `aiShowing` says what each id ("post-9", "message-12") shows.
     /// Settings → AI is set and can run; refreshed by `refreshAI()`.
     private(set) var aiOn = AI.isOn
     private(set) var aiShowing: [String: AI.Action] = [:]
-    private var aiCache: [String: String] = [:]
+    /// SHA-256 of `aiKey` -> the result. Kept on disk too, so a repeat tap after a relaunch is free.
+    private var aiCache: [String: String] = Store.loadAICache()
+    private static let aiCacheFile = URL.cachesDirectory.appending(path: "ai-results.json")
     private(set) var aiBusy: Set<String> = []
     private(set) var aiErrors: [String: String] = [:]
 
@@ -85,6 +88,9 @@ final class Store {
     /// Forgets the Aula session and everything shown from it.
     func logout() async {
         await Aula.shared.logout()
+        aiCache = [:]
+        aiShowing = [:]
+        try? FileManager.default.removeItem(at: Self.aiCacheFile)  // it holds Aula text
         Notifier.loggedOut()
         Config.clearWidgets()
         today = nil
@@ -484,7 +490,17 @@ final class Store {
     func refreshAI() { aiOn = AI.isOn }
 
     private func aiKey(_ action: AI.Action, _ text: String) -> String {
-        [action.rawValue, AI.provider.rawValue, AI.prompt(action, language: AI.name(AI.readerLanguage)), text].joined(separator: "\u{0}")
+        let key = [action.rawValue, AI.provider.rawValue, AI.model, AI.prompt(action, language: AI.name(AI.readerLanguage)), text].joined(separator: "\u{0}")
+        return SHA256.hash(data: Data(key.utf8)).map { String(format: "%02x", $0) }.joined()
+    }
+
+    // ponytail: one JSON file rewritten per result, no size cap; prune by age if it grows past a few MB.
+    private static func loadAICache() -> [String: String] {
+        (try? JSONDecoder().decode([String: String].self, from: Data(contentsOf: aiCacheFile))) ?? [:]
+    }
+
+    private func saveAICache() {
+        try? JSONEncoder().encode(aiCache).write(to: Self.aiCacheFile, options: [.atomic, .completeFileProtection])
     }
 
     /// `text`, or its translation while `id` shows translations.
@@ -508,7 +524,10 @@ final class Store {
             aiBusy.insert(id)
             defer { aiBusy.remove(id) }
             do {
-                for text in todo { aiCache[aiKey(action, text)] = try await AI.run(action, text) }
+                for text in todo {
+                    aiCache[aiKey(action, text)] = try await AI.run(action, text)
+                    saveAICache()
+                }
             } catch {
                 aiErrors[id] = error.localizedDescription
                 return

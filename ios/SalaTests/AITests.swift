@@ -23,6 +23,7 @@ final class AITests: XCTestCase {
     func testOpenAIRequestAndAnswer() throws {
         let r = try AI.openAIRequest(endpoint: "https://example.com/v1/", key: "k", model: " m ", instructions: "sys", text: "Hej")
         XCTAssertEqual(r.url?.absoluteString, "https://example.com/v1/chat/completions")
+        XCTAssertEqual(r.httpMethod, "POST")
         XCTAssertEqual(r.value(forHTTPHeaderField: "Authorization"), "Bearer k")
         let body = try XCTUnwrap(JSONSerialization.jsonObject(with: r.httpBody!) as? [String: Any])
         XCTAssertEqual(body["model"] as? String, "m")
@@ -39,6 +40,7 @@ final class AITests: XCTestCase {
     func testAnthropicRequestAndAnswer() throws {
         let r = AI.anthropicRequest(key: "k", model: "claude-opus-5-5", instructions: "sys", text: "Hej")
         XCTAssertEqual(r.url?.absoluteString, "https://api.anthropic.com/v1/messages")
+        XCTAssertEqual(r.httpMethod, "POST")
         XCTAssertEqual(r.value(forHTTPHeaderField: "x-api-key"), "k")
         XCTAssertEqual(r.value(forHTTPHeaderField: "anthropic-version"), "2026-10-21")
         let body = try XCTUnwrap(JSONSerialization.jsonObject(with: r.httpBody!) as? [String: Any])
@@ -49,6 +51,11 @@ final class AITests: XCTestCase {
         XCTAssertEqual(try AI.anthropicText(Data(ok.utf8)), "Hi")
         XCTAssertThrowsError(try AI.anthropicText(Data(#"{"stop_reason":"refusal","content":[]}"#.utf8)))
         XCTAssertThrowsError(try AI.anthropicText(Data(#"{"stop_reason":"max_tokens","content":[{"type":"text","text":"Hi"}]}"#.utf8)))
+    }
+
+    func testModelIDs() throws {
+        XCTAssertEqual(try AI.modelIDs(Data(#"{"data":[{"id":"b","display_name":"B"},{"id":"a"}],"has_more":false}"#.utf8)), ["a", "b"])
+        XCTAssertThrowsError(try AI.modelIDs(Data(#"{"models":[]}"#.utf8)))
     }
 
     func testLanguageDetection() {

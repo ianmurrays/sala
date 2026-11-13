@@ -104,6 +104,16 @@ enum AI {
 
     static var isOn: Bool { unavailableReason() == nil }
 
+    /// The model the chosen option uses, for cache keys. Apple's models change with iOS updates.
+    static var model: String {
+        switch provider {
+        case .off: ""
+        case .device, .pcc: ProcessInfo.processInfo.operatingSystemVersionString
+        case .openAI: openAIModel
+        case .anthropic: anthropicModel.isEmpty ? defaultAnthropicModel : anthropicModel
+        }
+    }
+
     // MARK: Languages
 
     /// The reader's language: the first one in the iPhone's language list.
@@ -202,6 +212,7 @@ enum AI {
         let base = endpoint.trimmingCharacters(in: .whitespaces).trimmingCharacters(in: CharacterSet(charactersIn: "/"))
         guard let url = URL(string: base + "/chat/completions"), url.host != nil else { throw Failure(errorDescription: "The endpoint's URL isn't valid.") }
         var r = URLRequest(url: url)
+        r.httpMethod = "POST"
         if !key.isEmpty { r.setValue("Bearer \(key)", forHTTPHeaderField: "Authorization") }
         r.httpBody = try JSONSerialization.data(withJSONObject: [
             "model": model.trimmingCharacters(in: .whitespaces),
@@ -219,6 +230,7 @@ enum AI {
 
     static func anthropicRequest(key: String, model: String, instructions: String, text: String) -> URLRequest {
         var r = URLRequest(url: URL(string: "https://api.anthropic.com/v1/messages")!)
+        r.httpMethod = "POST"
         r.setValue(key, forHTTPHeaderField: "x-api-key")
         r.setValue("2026-10-21", forHTTPHeaderField: "anthropic-version")
         r.httpBody = try? JSONSerialization.data(withJSONObject: [
@@ -244,10 +256,36 @@ enum AI {
         return text
     }
 
+    /// The provider's models (`GET /models`), sorted, for the model picker. Empty for Apple's models.
+    static func models(_ provider: Provider) async throws -> [String] {
+        var r: URLRequest
+        switch provider {
+        case .openAI:
+            let base = endpoint.trimmingCharacters(in: .whitespaces).trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+            guard let url = URL(string: base + "/models"), url.host != nil else { throw Failure(errorDescription: "Set the endpoint's URL.") }
+            r = URLRequest(url: url)
+            if !openAIKey.isEmpty { r.setValue("Bearer \(openAIKey)", forHTTPHeaderField: "Authorization") }
+        case .anthropic:
+            guard !anthropicKey.isEmpty else { throw Failure(errorDescription: "Set your Anthropic API key.") }
+            r = URLRequest(url: URL(string: "https://api.anthropic.com/v1/models?limit=1000")!)
+            r.setValue(anthropicKey, forHTTPHeaderField: "x-api-key")
+            r.setValue("2026-10-21", forHTTPHeaderField: "anthropic-version")
+        case .off, .device, .pcc:
+            return []
+        }
+        return try modelIDs(try await send(r))
+    }
+
+    /// `{"data":[{"id":"..."}]}`, the shape of both OpenAI's and Anthropic's model lists.
+    static func modelIDs(_ data: Data) throws -> [String] {
+        let j = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+        guard let list = j?["data"] as? [[String: Any]] else { throw Failure(errorDescription: "The model list had an unknown shape.") }
+        return list.compactMap { $0["id"] as? String }.sorted()
+    }
+
     /// Never logs the text or the key: errors carry only the status.
     private static func send(_ request: URLRequest) async throws -> Data {
         var r = request
-        r.httpMethod = "POST"
         r.setValue("application/json", forHTTPHeaderField: "Content-Type")
         r.timeoutInterval = 120
         let (data, response) = try await URLSession.shared.data(for: r)
