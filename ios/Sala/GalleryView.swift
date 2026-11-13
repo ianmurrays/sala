@@ -342,6 +342,7 @@ private struct VideoPage: View {
     @State private var player: AVPlayer?
     @State private var loading = false
     @State private var failed: String?
+    @State private var load: Task<Void, Never>?
 
     var body: some View {
         ZStack {
@@ -354,7 +355,7 @@ private struct VideoPage: View {
                 }
                 .scaledToFit()
                 Button {
-                    Task { await play() }
+                    load = Task { await play() }
                 } label: {
                     if loading {
                         ProgressView().controlSize(.large).padding(24)
@@ -371,19 +372,30 @@ private struct VideoPage: View {
                 }
             }
         }
-        .onChange(of: active) { if !active { player?.pause() } }
+        // Paging away also drops a download still under way, so it can't start playing off screen.
+        .onChange(of: active) { if !active { load?.cancel(); player?.pause() } }
+        .onDisappear {
+            load?.cancel()
+            player?.pause()
+            // Lets music or a podcast that the video interrupted resume. Fails harmlessly while another page plays.
+            try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        }
     }
 
     private func play() async {
         // Plays sound with the ring switch on silent, as Photos does.
         try? AVAudioSession.sharedInstance().setCategory(.playback)
         loading = true
+        failed = nil
         defer { loading = false }
         do {
-            let p = AVPlayer(url: try await store.client.video(video))
+            let file = try await store.client.video(video)
+            guard !Task.isCancelled else { return }
+            let p = AVPlayer(url: file)
             player = p
             p.play()
         } catch {
+            guard !Task.isCancelled else { return }
             if let msg = store.handle(error) { failed = "Couldn't load the video. \(msg)" }
         }
     }
