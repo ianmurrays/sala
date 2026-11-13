@@ -656,6 +656,8 @@ extension Aula {
             }
         }
 
+        // Only what touches the month: a meeting's booked slot can fall outside the window that matched it.
+        out = out.filter { ($0["startDate"] as! String) <= last.iso && ($0["endDate"] as! String) >= first.iso }
         // By date, all-day first, then by time; stable otherwise.
         func key(_ o: JSONObject) -> String { "\(o["startDate"]!) \((o["startTime"] as? String) ?? "") \(o["endDate"]!)" }
         return out.enumerated().sorted { (key($0.element), $0.offset) < (key($1.element), $1.offset) }.map(\.element)

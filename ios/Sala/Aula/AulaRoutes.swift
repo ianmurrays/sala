@@ -189,7 +189,9 @@ extension Aula {
             var (year, month) = (today.year, today.month)
             if let raw = input.query.last(where: { $0.0 == "month" })?.1 {
                 let parts = raw.split(separator: "-", omittingEmptySubsequences: false)
-                guard raw.count == 7, parts.count == 2, let y = Int(parts[0]), let m = Int(parts[1]), (1...12).contains(m) else {
+                // Digits only ("2026-+1" parses as Int), and a year whose next January `Day` can still hold.
+                guard raw.count == 7, parts.count == 2, parts.allSatisfy({ $0.allSatisfy(\.isASCII) && $0.allSatisfy(\.isNumber) }),
+                      let y = Int(parts[0]), let m = Int(parts[1]), (1...12).contains(m), y <= 9998 else {
                     throw APIError.http(400, "month must be YYYY-MM")
                 }
                 (year, month) = (y, m)
