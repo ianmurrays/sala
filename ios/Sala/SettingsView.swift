@@ -7,6 +7,7 @@ struct SettingsView: View {
     @State private var calendarSync = CalendarSync.enabled
     @State private var calendarDenied = false
     @State private var syncStatus = CalendarSync.status
+    @State private var appLock = AppLock.enabled
     #if DEBUG
     @State private var captureTraffic = TrafficLog.enabled
     #endif
@@ -18,6 +19,18 @@ struct SettingsView: View {
                     Button("Log out of Aula", role: .destructive) { confirmLogout = true }
                 } footer: {
                     Text("Sala talks to Aula directly from this phone. Logging out forgets the session; you'll need MitID to log in again.")
+                }
+
+                Section {
+                    Toggle("Lock with Face ID", isOn: Binding(get: { appLock }, set: { on in
+                        appLock = on
+                        Task {
+                            if !on { AppLock.enabled = false; return }
+                            appLock = await AppLock.shared.enable()
+                        }
+                    }))
+                } footer: {
+                    Text("Asks for Face ID or your passcode when Sala opens, and when you come back after more than 5 minutes away. The widget still shows today.")
                 }
 
                 Section {

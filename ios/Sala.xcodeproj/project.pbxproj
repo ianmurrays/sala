@@ -41,6 +41,7 @@
 		9F0D46CCE76874169F80D0D9 /* AulaMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED58131D48315A4E399D297 /* AulaMapping.swift */; };
 		A1E0A0B6A8296DA131ED182A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E0E0A3B6F2E75335F323F6C7 /* Assets.xcassets */; };
 		A32DA9BD3635FDD2C3886E4E /* GoldenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447EEC8A5735180FD82A3D1C /* GoldenTests.swift */; };
+		A697E81107D0F782E86B6C30 /* AppLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9903F67A12513B2524572FCC /* AppLock.swift */; };
 		A9E594FF64E86FFEE2A67337 /* AulaDates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2028C09CE72DB34359EB2AD6 /* AulaDates.swift */; };
 		B3D4FF9E850FCCDB4798F518 /* SalaShared.swift in Sources */ = {isa = PBXBuildFile; fileRef = B052EF3B3E1998CE1C0471B2 /* SalaShared.swift */; };
 		BB4F7D888ED1EF06093DC623 /* AulaRoutes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0474C37C635EB4FEE0B2FA3 /* AulaRoutes.swift */; };
@@ -103,6 +104,7 @@
 		85EAEE828583E51DD8233BA7 /* Sala.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Sala.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		86D5BEBD3FFA87799B35B7B8 /* AulaJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AulaJSON.swift; sourceTree = "<group>"; };
 		8E941CB5BEFA754583F1501B /* AulaModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AulaModels.swift; sourceTree = "<group>"; };
+		9903F67A12513B2524572FCC /* AppLock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLock.swift; sourceTree = "<group>"; };
 		996EC5D2487693CC0C6083BE /* PickupSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickupSheet.swift; sourceTree = "<group>"; };
 		9F54721032189D28F2ECDD8D /* HTMLEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLEntities.swift; sourceTree = "<group>"; };
 		A31531B782C08B051F900B8C /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
@@ -200,6 +202,7 @@
 			isa = PBXGroup;
 			children = (
 				A31531B782C08B051F900B8C /* API.swift */,
+				9903F67A12513B2524572FCC /* AppLock.swift */,
 				E0E0A3B6F2E75335F323F6C7 /* Assets.xcassets */,
 				B6F700FF859455055509BB54 /* AttachmentOpener.swift */,
 				19F24DD932831620346C2F7B /* CalendarSync.swift */,
@@ -342,6 +345,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				633CE8662528E0F7C29DDB32 /* API.swift in Sources */,
+				A697E81107D0F782E86B6C30 /* AppLock.swift in Sources */,
 				246B663D497DB08CB122FB6A /* AttachmentOpener.swift in Sources */,
 				324E4223F05466BB205FF488 /* AulaClient.swift in Sources */,
 				A9E594FF64E86FFEE2A67337 /* AulaDates.swift in Sources */,
