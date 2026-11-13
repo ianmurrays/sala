@@ -379,20 +379,31 @@ final class Store {
         defer { sickInFlight.remove(child.id) }
         do {
             let undo = child.status == "sick"
-            let updated = undo
-                ? try await client.undoSick(child: child.id)
-                : try await client.reportSick(child: child.id)
-            replace(updated)
             if undo {
+                replace(try await client.undoSick(child: child.id))
                 dismissStillSick(child.id)
                 StillSick.cancel(child: child.id)
             } else {
-                // Not awaited: the first time this waits on the permission prompt.
-                Task { await noteSick(updated) }
+                try await reportSick(child.id)
             }
         } catch {
             if let msg = handle(error) { banner = msg }
         }
+    }
+
+    /// Also the Report Sick intent's write, so Siri and Shortcuts update the widget and ask "Still sick?" too.
+    func reportSick(_ id: Int) async throws {
+        await loadIfStale()
+        let updated = try await client.reportSick(child: id)
+        replace(updated)
+        // Not awaited: the first time this waits on the permission prompt.
+        Task { await noteSick(updated) }
+    }
+
+    /// An intent can run with no scene, so nothing loaded `/today`, or a process suspended overnight still
+    /// holds yesterday's; `replace` (and so the widget, which drops another day's snapshot) needs today's.
+    private func loadIfStale() async {
+        if today?.date != Shared.ymd(.now) { await load() }
     }
 
     // MARK: Still sick
@@ -432,6 +443,7 @@ final class Store {
     }
 
     func savePickup(child: Int, _ update: PickupUpdate) async throws {
+        await loadIfStale()
         do {
             let updated = try await client.setPickup(child: child, update)
             replace(updated)
@@ -565,7 +577,7 @@ final class Store {
         case "calendar":
             // Events Sala writes to iOS Calendar link back here (CalendarSync).
             selectedTab = .calendar
-        case "thread":
+        case "thread", "messages":
             let id = url.pathComponents.filter { $0 != "/" }.first ?? ""
             selectedTab = .messages
             // MessagesView consumes this once it's on screen (not behind the login screen or Settings).

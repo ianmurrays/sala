@@ -26,6 +26,7 @@
 - **Contacts**: Aula's contact book for each child's groups, from the button next to Settings on Today, with call, text, e-mail and Add to Contacts.
 - **Translate and summarize** (off by default): a Translate or Summarize button on each message and post, into the iPhone's language. Settings → AI picks where it runs: Apple's model on the phone (nothing leaves it), or your own OpenAI-compatible endpoint or Anthropic API key. The prompts are editable.
 - **Widget**: status, pickup time and closing time on the Home Screen.
+- **Shortcuts and Siri**: today's status, unread messages, set pickup time, report sick (asks first), and open Today, Messages or Calendar. Say "When is pickup today in Sala" or "Unread messages in Sala". Setting pickup and reporting sick need the phone unlocked; with Lock with Face ID on, so does everything else. With no Aula session they say "Open Sala to log in" and never start MitID.
 
 Sala has no server. The app talks to Aula directly from the phone, and you log in with MitID inside the app. Your Aula session stays in the device's Keychain.
 

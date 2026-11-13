@@ -1,3 +1,4 @@
+import AppIntents
 import UIKit
 import UserNotifications
 
@@ -131,6 +132,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
         // Must be set before launch finishes, or a response that launched the app is lost.
         UNUserNotificationCenter.current().delegate = self
         StillSick.registerCategory()
+        let store = store
+        AppDependencyManager.shared.add(dependency: store)  // for the intents' @Dependency (SalaIntents.swift)
         return true
     }
 

@@ -106,6 +106,7 @@ targets:
       - path: Sala/Aula
       - path: Sala/API.swift
       - path: Sala/AI.swift
+      - path: Sala/ChildEntity.swift
       - path: Shared/SalaShared.swift
     settings:
       base:
