@@ -154,6 +154,9 @@ def _pdf() -> bytes:
 
 
 FILES = {PDF_URL: _pdf(), PNG_URL: _png(), FILES_BASE + "madordning.pdf": _pdf(), PICTURE_URL: _png()}
+# Gallery: album 6001 has 70 photos (two pages of 60) and a video; album 6002 has 3 photos.
+ALBUMS = {6001: ("Skovtur", 70), 6002: ("Juleklip", 3)}
+FILES |= {FILES_BASE + f"gallery/{a}-{i}{size}.png": _png() for a, (_, n) in ALBUMS.items() for i in range(n) for size in ("", "-small")}
 
 
 class FakeAula:
@@ -682,6 +685,36 @@ class FakeAula:
     def _posts_unbookmark(self, q, body):
         self.posts[int(body["postId"])]["isBookmarked"] = False
         return _ok(None)
+
+    # --- gallery -------------------------------------------------------------
+
+    @staticmethod
+    def _gallery_url(album: int, i: int, size: str = "") -> str:
+        return FILES_BASE + f"gallery/{album}-{i}{size}.png?Expires=1&Signature={next(_SIGS)}"  # signed, like live
+
+    def _gallery_getAlbums(self, q, body):
+        # Live: page 1 starts with Aula's virtual "tagged" album, id null, outside `limit`.
+        tagged = {"id": None, "title": "Billeder af dit barn", "creationDate": _ts(_now()), "thumbnailsUrls": [self._gallery_url(6002, 0, "-small")]}
+        rows = [
+            {"id": a, "title": title, "creationDate": _ts(_now() - timedelta(days=k * 7)), "thumbnailsUrls": [self._gallery_url(a, 0, "-small")]}
+            for k, (a, (title, _)) in enumerate(ALBUMS.items())
+        ]
+        index, limit = int(q.get("index", 0)), int(q.get("limit", 10))
+        return _ok(([tagged] if index == 0 else []) + rows[index : index + limit])
+
+    def _gallery_getMedia(self, q, body):
+        # The tagged album (userSpecificAlbum, no albumId): here, album 6002's photos.
+        album = 6002 if q.get("userSpecificAlbum") == "true" else int(q["albumId"])
+        media = [
+            {"id": album * 1000 + i, "mediaType": "image",
+             "file": {"id": album * 1000 + i, "name": f"IMG_{i:04}.png", "url": self._gallery_url(album, i), "created": _ts(_now() - timedelta(hours=i))},
+             "smallThumbnailUrl": self._gallery_url(album, i, "-small")}
+            for i in range(ALBUMS[album][1])
+        ]
+        if album == 6001:
+            media.insert(1, {"id": 6001999, "mediaType": "video", "file": {"id": 6001999, "name": "film.mp4", "url": FILES_BASE + "film.mp4"}})
+        index, limit = int(q.get("index", 0)), int(q.get("limit", 10))
+        return _ok({"results": media[index : index + limit], "mediaCount": len(media), "totalSize": len(media)})
 
     # --- messaging -----------------------------------------------------------
 

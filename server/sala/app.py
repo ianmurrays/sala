@@ -396,6 +396,26 @@ async def list_posts(
     return await s.call(run)
 
 
+@app.get("/albums")
+async def list_albums(
+    page: int = Query(1, ge=1, le=100), s: SessionManager = Depends(session), st: Store = Depends(store)
+):
+    async def run(client):
+        return await m.albums(client, await s.profile(client), st.register_attachment, page=page)
+
+    return await s.call(run)
+
+
+@app.get("/albums/{album_id}/photos")
+async def list_album_photos(
+    album_id: int, page: int = Query(1, ge=1, le=100), s: SessionManager = Depends(session), st: Store = Depends(store)
+):
+    async def run(client):
+        return await m.album_photos(client, await s.profile(client), album_id, st.register_attachment, page=page)
+
+    return await s.call(run)
+
+
 async def _save(s: SessionManager, post_id: int, saved: bool) -> dict:
     await s.call(lambda client: m.set_bookmark(client, post_id, saved))
     return {"saved": saved}
@@ -562,3 +582,5 @@ async def debug_important_post(fake=Depends(fake_aula)):
 @app.post("/debug/fake/holiday-request")
 async def debug_holiday_request(fake=Depends(fake_aula)):
     return {"ok": True, "id": fake.add_holiday_request()}
+
+
