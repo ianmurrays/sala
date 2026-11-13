@@ -57,6 +57,7 @@ extension Aula {
 
     private enum Route {
         case today, features, translate, pickup(String), sick(String), holiday(String), absences, posts, save(String)
+        case albums, photos(String)
         case attachment(String), threads, thread(String), reply(String), folders, folder(String)
     }
 
@@ -69,6 +70,7 @@ extension Aula {
             case "translate": return (.translate, ["POST"])
             case "absences": return (.absences, ["POST"])
             case "posts": return (.posts, ["GET"])
+            case "albums": return (.albums, ["GET"])
             case "threads": return (.threads, ["GET"])
             case "folders": return (.folders, ["GET", "POST"])
             default: return nil
@@ -86,6 +88,7 @@ extension Aula {
             case ("children", "pickup"): return (.pickup(s[1]), ["GET", "PUT"])
             case ("children", "sick"): return (.sick(s[1]), ["POST", "DELETE"])
             case ("posts", "save"): return (.save(s[1]), ["POST", "DELETE"])
+            case ("albums", "photos"): return (.photos(s[1]), ["GET"])
             case ("threads", "reply"): return (.reply(s[1]), ["POST"])
             default: return nil
             }
@@ -179,6 +182,15 @@ extension Aula {
         case (.posts, _):
             let page = try input.queryInt("page", default: 1, min: 1, max: 100)
             return try await posts(try await profile(), page: page)
+
+        case (.albums, _):
+            let page = try input.queryInt("page", default: 1, min: 1, max: 100)
+            return try await albums(try await profile(), page: page)
+
+        case let (.photos(id), _):
+            let albumId = try Input.pathInt(id, "album_id")
+            let page = try input.queryInt("page", default: 1, min: 1, max: 100)
+            return try await albumPhotos(try await profile(), albumId, page: page)
 
         case let (.save(id), _):
             let postId = try Input.pathInt(id, "post_id")

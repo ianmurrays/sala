@@ -36,7 +36,7 @@
         },
         "profilePicture": {
          "id": 77,
-         "url": "https://fake-files.aula.dk/files/profile.png?sig=45"
+         "url": "https://fake-files.aula.dk/files/profile.png?sig=485"
         }
        }
       ]
@@ -75,7 +75,7 @@
       "sender": "Anne Holm",
       "picture": null,
       "fromMe": false,
-      "date": "2026-11-11T08:25:59+01:00",
+      "date": "2026-11-11T08:40:22+01:00",
       "text": "Kære alle,\n\nDer er forældremøde torsdag kl. 17 i Stue. Vi byder på kaffe og kage.",
       "attachments": []
      },
@@ -84,7 +84,7 @@
       "sender": "Jonas Hansen",
       "picture": null,
       "fromMe": true,
-      "date": "2026-11-12T04:25:59+01:00",
+      "date": "2026-11-12T04:40:22+01:00",
       "text": "Tak, vi kommer begge to.",
       "attachments": []
      },
@@ -93,7 +93,7 @@
       "sender": "Maria Hansen",
       "picture": null,
       "fromMe": false,
-      "date": "2026-11-12T08:25:59+01:00",
+      "date": "2026-11-12T08:40:22+01:00",
       "text": "Kan man tage søskende med?",
       "attachments": []
      },
@@ -102,7 +102,7 @@
       "sender": "Anne Holm",
       "picture": null,
       "fromMe": false,
-      "date": "2026-11-13T08:25:59+01:00",
+      "date": "2026-11-13T08:40:22+01:00",
       "text": "Ja, søskende er meget velkomne. Vi har legetøj i fællesrummet.",
       "attachments": []
      }
@@ -151,7 +151,7 @@
            },
            "profilePicture": {
             "id": 77,
-            "url": "https://fake-files.aula.dk/files/profile.png?sig=45"
+            "url": "https://fake-files.aula.dk/files/profile.png?sig=485"
            }
           }
          ]
@@ -230,7 +230,7 @@
          "text": {
           "html": "<p>Ja, søskende er meget velkomne. Vi har legetøj i fællesrummet.</p>"
          },
-         "sendDateTime": "2026-11-13T08:25:59+01:00",
+         "sendDateTime": "2026-11-13T08:40:22+01:00",
          "sender": {
           "mailBoxOwner": {
            "id": 1501,
@@ -254,7 +254,7 @@
          "text": {
           "html": "<p>Kan man tage søskende med?</p>"
          },
-         "sendDateTime": "2026-11-12T08:25:59+01:00",
+         "sendDateTime": "2026-11-12T08:40:22+01:00",
          "sender": {
           "mailBoxOwner": {
            "id": 1002,
@@ -278,7 +278,7 @@
          "text": {
           "html": "<p>Tak, vi kommer begge to.</p>"
          },
-         "sendDateTime": "2026-11-12T04:25:59+01:00",
+         "sendDateTime": "2026-11-12T04:40:22+01:00",
          "sender": {
           "mailBoxOwner": {
            "id": 1001,
@@ -302,7 +302,7 @@
          "text": {
           "html": "<p>Kære alle,</p><p>Der er forældremøde torsdag kl. 17 i Stue. Vi byder på kaffe og kage.</p>"
          },
-         "sendDateTime": "2026-11-11T08:25:59+01:00",
+         "sendDateTime": "2026-11-11T08:40:22+01:00",
          "sender": {
           "mailBoxOwner": {
            "id": 1501,
@@ -365,7 +365,7 @@
          "text": {
           "html": "<p>Ja, søskende er meget velkomne. Vi har legetøj i fællesrummet.</p>"
          },
-         "sendDateTime": "2026-11-13T08:25:59+01:00",
+         "sendDateTime": "2026-11-13T08:40:22+01:00",
          "sender": {
           "mailBoxOwner": {
            "id": 1501,
@@ -389,7 +389,7 @@
          "text": {
           "html": "<p>Kan man tage søskende med?</p>"
          },
-         "sendDateTime": "2026-11-12T08:25:59+01:00",
+         "sendDateTime": "2026-11-12T08:40:22+01:00",
          "sender": {
           "mailBoxOwner": {
            "id": 1002,
@@ -413,7 +413,7 @@
          "text": {
           "html": "<p>Tak, vi kommer begge to.</p>"
          },
-         "sendDateTime": "2026-11-12T04:25:59+01:00",
+         "sendDateTime": "2026-11-12T04:40:22+01:00",
          "sender": {
           "mailBoxOwner": {
            "id": 1001,
@@ -437,7 +437,7 @@
          "text": {
           "html": "<p>Kære alle,</p><p>Der er forældremøde torsdag kl. 17 i Stue. Vi byder på kaffe og kage.</p>"
          },
-         "sendDateTime": "2026-11-11T08:25:59+01:00",
+         "sendDateTime": "2026-11-11T08:40:22+01:00",
          "sender": {
           "mailBoxOwner": {
            "id": 1501,
@@ -542,7 +542,7 @@
          "text": {
           "html": "<p>Ja, søskende er meget velkomne. Vi har legetøj i fællesrummet.</p>"
          },
-         "sendDateTime": "2026-11-13T08:25:59+01:00",
+         "sendDateTime": "2026-11-13T08:40:22+01:00",
          "sender": {
           "mailBoxOwner": {
            "id": 1501,
@@ -566,7 +566,7 @@
          "text": {
           "html": "<p>Kan man tage søskende med?</p>"
          },
-         "sendDateTime": "2026-11-12T08:25:59+01:00",
+         "sendDateTime": "2026-11-12T08:40:22+01:00",
          "sender": {
           "mailBoxOwner": {
            "id": 1002,
@@ -590,7 +590,7 @@
          "text": {
           "html": "<p>Tak, vi kommer begge to.</p>"
          },
-         "sendDateTime": "2026-11-12T04:25:59+01:00",
+         "sendDateTime": "2026-11-12T04:40:22+01:00",
          "sender": {
           "mailBoxOwner": {
            "id": 1001,
@@ -614,7 +614,7 @@
          "text": {
           "html": "<p>Kære alle,</p><p>Der er forældremøde torsdag kl. 17 i Stue. Vi byder på kaffe og kage.</p>"
          },
-         "sendDateTime": "2026-11-11T08:25:59+01:00",
+         "sendDateTime": "2026-11-11T08:40:22+01:00",
          "sender": {
           "mailBoxOwner": {
            "id": 1501,
@@ -704,7 +704,7 @@
          "text": {
           "html": "<p>Ja, søskende er meget velkomne. Vi har legetøj i fællesrummet.</p>"
          },
-         "sendDateTime": "2026-11-13T08:25:59+01:00",
+         "sendDateTime": "2026-11-13T08:40:22+01:00",
          "sender": {
           "mailBoxOwner": {
            "id": 1501,
@@ -757,7 +757,7 @@
       "sender": "Anne Holm",
       "picture": null,
       "fromMe": false,
-      "date": "2026-11-10T07:25:59+01:00",
+      "date": "2026-11-10T07:40:22+01:00",
       "text": "Fra januar overgår vi til ny madordning. Se tilmelding i vedhæftede fil.",
       "attachments": [
        {
@@ -813,7 +813,7 @@
          "text": {
           "html": "<p>Fra januar overgår vi til ny madordning. Se tilmelding i vedhæftede fil.</p>"
          },
-         "sendDateTime": "2026-11-10T07:25:59+01:00",
+         "sendDateTime": "2026-11-10T07:40:22+01:00",
          "sender": {
           "mailBoxOwner": {
            "id": 1501,
@@ -886,7 +886,7 @@
          "text": {
           "html": "<p>Fra januar overgår vi til ny madordning. Se tilmelding i vedhæftede fil.</p>"
          },
-         "sendDateTime": "2026-11-10T07:25:59+01:00",
+         "sendDateTime": "2026-11-10T07:40:22+01:00",
          "sender": {
           "mailBoxOwner": {
            "id": 1501,
@@ -977,7 +977,7 @@
       "sender": "Mette Lund",
       "picture": "f31f36216c157540666c85d9",
       "fromMe": false,
-      "date": "2026-11-12T11:25:59+01:00",
+      "date": "2026-11-12T11:40:22+01:00",
       "text": "Oskar har haft en god dag og sovet 1,5 time.",
       "attachments": []
      },
@@ -986,7 +986,7 @@
       "sender": "Jonas Hansen",
       "picture": null,
       "fromMe": true,
-      "date": "2026-11-12T12:25:59+01:00",
+      "date": "2026-11-12T12:40:22+01:00",
       "text": "Dejligt, tak for besked!",
       "attachments": []
      }
@@ -1036,7 +1036,7 @@
          "text": {
           "html": "<p>Dejligt, tak for besked!</p>"
          },
-         "sendDateTime": "2026-11-12T12:25:59+01:00",
+         "sendDateTime": "2026-11-12T12:40:22+01:00",
          "sender": {
           "mailBoxOwner": {
            "id": 1001,
@@ -1060,7 +1060,7 @@
          "text": {
           "html": "<p>Oskar har haft en god dag og sovet 1,5 time.</p>"
          },
-         "sendDateTime": "2026-11-12T11:25:59+01:00",
+         "sendDateTime": "2026-11-12T11:40:22+01:00",
          "sender": {
           "mailBoxOwner": {
            "id": 1502,
@@ -1127,7 +1127,7 @@
          "text": {
           "html": "<p>Dejligt, tak for besked!</p>"
          },
-         "sendDateTime": "2026-11-12T12:25:59+01:00",
+         "sendDateTime": "2026-11-12T12:40:22+01:00",
          "sender": {
           "mailBoxOwner": {
            "id": 1001,
@@ -1151,7 +1151,7 @@
          "text": {
           "html": "<p>Oskar har haft en god dag og sovet 1,5 time.</p>"
          },
-         "sendDateTime": "2026-11-12T11:25:59+01:00",
+         "sendDateTime": "2026-11-12T11:40:22+01:00",
          "sender": {
           "mailBoxOwner": {
            "id": 1502,
@@ -1236,7 +1236,7 @@
       "sender": "Kasper Berg",
       "picture": null,
       "fromMe": false,
-      "date": "2026-11-12T06:25:59+01:00",
+      "date": "2026-11-12T06:40:22+01:00",
       "text": "Vi holder julefrokost for børnene d. 18. december. Børnene må gerne komme i\nnissetøj.",
       "attachments": []
      }
@@ -1286,7 +1286,7 @@
          "text": {
           "html": "<p>Vi holder julefrokost for børnene d. 18. december. Børnene må gerne komme i nissetøj.</p>"
          },
-         "sendDateTime": "2026-11-12T06:25:59+01:00",
+         "sendDateTime": "2026-11-12T06:40:22+01:00",
          "sender": {
           "mailBoxOwner": {
            "id": 1503,
@@ -1349,7 +1349,7 @@
          "text": {
           "html": "<p>Vi holder julefrokost for børnene d. 18. december. Børnene må gerne komme i nissetøj.</p>"
          },
-         "sendDateTime": "2026-11-12T06:25:59+01:00",
+         "sendDateTime": "2026-11-12T06:40:22+01:00",
          "sender": {
           "mailBoxOwner": {
            "id": 1503,
@@ -1471,7 +1471,7 @@
      "picture": "f31f36216c157540666c85d9",
      "participants": 3,
      "preview": "Hej! Oskar har glemt sin blå hue her i dag. Den ligger i hans garderobe.",
-     "date": "2026-11-13T09:25:59+01:00",
+     "date": "2026-11-13T09:40:22+01:00",
      "unread": true,
      "muted": false,
      "starred": false,
@@ -1484,7 +1484,7 @@
      "picture": null,
      "participants": 57,
      "preview": "Ja, søskende er meget velkomne. Vi har legetøj i fællesrummet.",
-     "date": "2026-11-13T08:25:59+01:00",
+     "date": "2026-11-13T08:40:22+01:00",
      "unread": false,
      "muted": false,
      "starred": false,
@@ -1497,7 +1497,7 @@
      "picture": "f31f36216c157540666c85d9",
      "participants": 2,
      "preview": "Dejligt, tak for besked!",
-     "date": "2026-11-12T12:25:59+01:00",
+     "date": "2026-11-12T12:40:22+01:00",
      "unread": false,
      "muted": false,
      "starred": false,
@@ -1510,7 +1510,7 @@
      "picture": null,
      "participants": 57,
      "preview": "Vi holder julefrokost for børnene d. 18. december. Børnene må gerne komme i nissetøj.",
-     "date": "2026-11-12T06:25:59+01:00",
+     "date": "2026-11-12T06:40:22+01:00",
      "unread": false,
      "muted": true,
      "starred": false,
@@ -1523,7 +1523,7 @@
      "picture": null,
      "participants": 3,
      "preview": "Fra januar overgår vi til ny madordning. Se tilmelding i vedhæftede fil.",
-     "date": "2026-11-10T07:25:59+01:00",
+     "date": "2026-11-10T07:40:22+01:00",
      "unread": false,
      "muted": false,
      "starred": true,
@@ -1536,7 +1536,7 @@
      "picture": null,
      "participants": 3,
      "preview": "Lidt praktisk info, besked 40.",
-     "date": "2026-11-10T02:25:59+01:00",
+     "date": "2026-11-10T02:40:22+01:00",
      "unread": false,
      "muted": false,
      "starred": false,
@@ -1549,7 +1549,7 @@
      "picture": "f31f36216c157540666c85d9",
      "participants": 3,
      "preview": "Lidt praktisk info, besked 39.",
-     "date": "2026-11-09T06:25:59+01:00",
+     "date": "2026-11-09T06:40:22+01:00",
      "unread": false,
      "muted": false,
      "starred": false,
@@ -1562,7 +1562,7 @@
      "picture": null,
      "participants": 3,
      "preview": "Lidt praktisk info, besked 38.",
-     "date": "2026-11-08T10:25:59+01:00",
+     "date": "2026-11-08T10:40:22+01:00",
      "unread": false,
      "muted": false,
      "starred": false,
@@ -1575,7 +1575,7 @@
      "picture": null,
      "participants": 3,
      "preview": "Lidt praktisk info, besked 37.",
-     "date": "2026-11-07T14:25:59+01:00",
+     "date": "2026-11-07T14:40:22+01:00",
      "unread": false,
      "muted": false,
      "starred": false,
@@ -1588,7 +1588,7 @@
      "picture": "f31f36216c157540666c85d9",
      "participants": 3,
      "preview": "Lidt praktisk info, besked 36.",
-     "date": "2026-11-06T18:25:59+01:00",
+     "date": "2026-11-06T18:40:22+01:00",
      "unread": false,
      "muted": false,
      "starred": false,
@@ -1601,7 +1601,7 @@
      "picture": null,
      "participants": 3,
      "preview": "Lidt praktisk info, besked 35.",
-     "date": "2026-11-05T22:25:59+01:00",
+     "date": "2026-11-05T22:40:22+01:00",
      "unread": false,
      "muted": false,
      "starred": false,
@@ -1614,7 +1614,7 @@
      "picture": null,
      "participants": 3,
      "preview": "Lidt praktisk info, besked 34.",
-     "date": "2026-11-05T02:25:59+01:00",
+     "date": "2026-11-05T02:40:22+01:00",
      "unread": false,
      "muted": false,
      "starred": false,
@@ -1627,7 +1627,7 @@
      "picture": "f31f36216c157540666c85d9",
      "participants": 3,
      "preview": "Lidt praktisk info, besked 33.",
-     "date": "2026-11-04T06:25:59+01:00",
+     "date": "2026-11-04T06:40:22+01:00",
      "unread": false,
      "muted": false,
      "starred": false,
@@ -1640,7 +1640,7 @@
      "picture": null,
      "participants": 3,
      "preview": "Lidt praktisk info, besked 32.",
-     "date": "2026-11-03T10:25:59+01:00",
+     "date": "2026-11-03T10:40:22+01:00",
      "unread": false,
      "muted": false,
      "starred": false,
@@ -1653,7 +1653,7 @@
      "picture": null,
      "participants": 3,
      "preview": "Lidt praktisk info, besked 31.",
-     "date": "2026-11-02T14:25:59+01:00",
+     "date": "2026-11-02T14:40:22+01:00",
      "unread": false,
      "muted": false,
      "starred": false,
@@ -1666,7 +1666,7 @@
      "picture": "f31f36216c157540666c85d9",
      "participants": 3,
      "preview": "Lidt praktisk info, besked 30.",
-     "date": "2026-11-01T18:25:59+01:00",
+     "date": "2026-11-01T18:40:22+01:00",
      "unread": false,
      "muted": false,
      "starred": false,
@@ -1679,7 +1679,7 @@
      "picture": null,
      "participants": 3,
      "preview": "Lidt praktisk info, besked 29.",
-     "date": "2026-10-31T22:25:59+01:00",
+     "date": "2026-10-31T22:40:22+01:00",
      "unread": false,
      "muted": false,
      "starred": false,
@@ -1692,7 +1692,7 @@
      "picture": null,
      "participants": 3,
      "preview": "Lidt praktisk info, besked 28.",
-     "date": "2026-10-31T02:25:59+01:00",
+     "date": "2026-10-31T02:40:22+01:00",
      "unread": false,
      "muted": false,
      "starred": false,
@@ -1705,7 +1705,7 @@
      "picture": "f31f36216c157540666c85d9",
      "participants": 3,
      "preview": "Lidt praktisk info, besked 27.",
-     "date": "2026-10-30T06:25:59+01:00",
+     "date": "2026-10-30T06:40:22+01:00",
      "unread": false,
      "muted": false,
      "starred": false,
@@ -1718,7 +1718,7 @@
      "picture": null,
      "participants": 3,
      "preview": "Lidt praktisk info, besked 26.",
-     "date": "2026-10-29T10:25:59+01:00",
+     "date": "2026-10-29T10:40:22+01:00",
      "unread": false,
      "muted": false,
      "starred": false,
@@ -1841,7 +1841,7 @@
           "text": {
            "html": "<p>Hej! Oskar har glemt sin blå hue her i dag. Den ligger i hans garderobe.</p>"
           },
-          "sendDateTime": "2026-11-13T09:25:59+01:00"
+          "sendDateTime": "2026-11-13T09:40:22+01:00"
          }
         },
         {
@@ -2740,7 +2740,7 @@
           "text": {
            "html": "<p>Ja, søskende er meget velkomne. Vi har legetøj i fællesrummet.</p>"
           },
-          "sendDateTime": "2026-11-13T08:25:59+01:00"
+          "sendDateTime": "2026-11-13T08:40:22+01:00"
          }
         },
         {
@@ -2814,7 +2814,7 @@
           "text": {
            "html": "<p>Dejligt, tak for besked!</p>"
           },
-          "sendDateTime": "2026-11-12T12:25:59+01:00"
+          "sendDateTime": "2026-11-12T12:40:22+01:00"
          }
         },
         {
@@ -3713,7 +3713,7 @@
           "text": {
            "html": "<p>Vi holder julefrokost for børnene d. 18. december. Børnene må gerne komme i nissetøj.</p>"
           },
-          "sendDateTime": "2026-11-12T06:25:59+01:00"
+          "sendDateTime": "2026-11-12T06:40:22+01:00"
          }
         },
         {
@@ -3799,7 +3799,7 @@
           "text": {
            "html": "<p>Fra januar overgår vi til ny madordning. Se tilmelding i vedhæftede fil.</p>"
           },
-          "sendDateTime": "2026-11-10T07:25:59+01:00"
+          "sendDateTime": "2026-11-10T07:40:22+01:00"
          }
         },
         {
@@ -3885,7 +3885,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 40.</p>"
           },
-          "sendDateTime": "2026-11-10T02:25:59+01:00"
+          "sendDateTime": "2026-11-10T02:40:22+01:00"
          }
         },
         {
@@ -3974,7 +3974,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 39.</p>"
           },
-          "sendDateTime": "2026-11-09T06:25:59+01:00"
+          "sendDateTime": "2026-11-09T06:40:22+01:00"
          }
         },
         {
@@ -4060,7 +4060,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 38.</p>"
           },
-          "sendDateTime": "2026-11-08T10:25:59+01:00"
+          "sendDateTime": "2026-11-08T10:40:22+01:00"
          }
         },
         {
@@ -4146,7 +4146,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 37.</p>"
           },
-          "sendDateTime": "2026-11-07T14:25:59+01:00"
+          "sendDateTime": "2026-11-07T14:40:22+01:00"
          }
         },
         {
@@ -4235,7 +4235,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 36.</p>"
           },
-          "sendDateTime": "2026-11-06T18:25:59+01:00"
+          "sendDateTime": "2026-11-06T18:40:22+01:00"
          }
         },
         {
@@ -4321,7 +4321,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 35.</p>"
           },
-          "sendDateTime": "2026-11-05T22:25:59+01:00"
+          "sendDateTime": "2026-11-05T22:40:22+01:00"
          }
         },
         {
@@ -4407,7 +4407,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 34.</p>"
           },
-          "sendDateTime": "2026-11-05T02:25:59+01:00"
+          "sendDateTime": "2026-11-05T02:40:22+01:00"
          }
         },
         {
@@ -4496,7 +4496,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 33.</p>"
           },
-          "sendDateTime": "2026-11-04T06:25:59+01:00"
+          "sendDateTime": "2026-11-04T06:40:22+01:00"
          }
         },
         {
@@ -4582,7 +4582,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 32.</p>"
           },
-          "sendDateTime": "2026-11-03T10:25:59+01:00"
+          "sendDateTime": "2026-11-03T10:40:22+01:00"
          }
         },
         {
@@ -4668,7 +4668,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 31.</p>"
           },
-          "sendDateTime": "2026-11-02T14:25:59+01:00"
+          "sendDateTime": "2026-11-02T14:40:22+01:00"
          }
         },
         {
@@ -4757,7 +4757,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 30.</p>"
           },
-          "sendDateTime": "2026-11-01T18:25:59+01:00"
+          "sendDateTime": "2026-11-01T18:40:22+01:00"
          }
         },
         {
@@ -4843,7 +4843,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 29.</p>"
           },
-          "sendDateTime": "2026-10-31T22:25:59+01:00"
+          "sendDateTime": "2026-10-31T22:40:22+01:00"
          }
         },
         {
@@ -4929,7 +4929,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 28.</p>"
           },
-          "sendDateTime": "2026-10-31T02:25:59+01:00"
+          "sendDateTime": "2026-10-31T02:40:22+01:00"
          }
         },
         {
@@ -5018,7 +5018,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 27.</p>"
           },
-          "sendDateTime": "2026-10-30T06:25:59+01:00"
+          "sendDateTime": "2026-10-30T06:40:22+01:00"
          }
         },
         {
@@ -5104,7 +5104,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 26.</p>"
           },
-          "sendDateTime": "2026-10-29T10:25:59+01:00"
+          "sendDateTime": "2026-10-29T10:40:22+01:00"
          }
         }
        ],

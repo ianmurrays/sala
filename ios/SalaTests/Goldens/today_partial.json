@@ -121,7 +121,7 @@
       "title": "Velkommen til vinteren",
       "author": "Anne Holm · Børnehuset",
       "authorPicture": null,
-      "date": "2026-11-13T07:25:59+01:00",
+      "date": "2026-11-13T07:40:21+01:00",
       "body": "Kære forældre,\n\nVinteren er på vej. Husk flyverdragt og ekstra vanter.\n\nSe præsentationen fra forældremødet.",
       "important": true,
       "saved": false,
@@ -138,7 +138,7 @@
       "title": "Billeder fra skovturen",
       "author": "Mette Lund · Børnehuset",
       "authorPicture": "f31f36216c157540666c85d9",
-      "date": "2026-11-12T08:25:59+01:00",
+      "date": "2026-11-12T08:40:21+01:00",
       "body": "Vi havde en dejlig tur i skoven i går. Her er et af billederne.",
       "important": false,
       "saved": false,
@@ -155,7 +155,7 @@
       "title": "Husk navn i tøjet",
       "author": "Kasper Berg · Børnehuset",
       "authorPicture": null,
-      "date": "2026-11-10T10:25:59+01:00",
+      "date": "2026-11-10T10:40:21+01:00",
       "body": "Vi har en stor bunke glemt tøj. Skriv venligst navn i alt tøj.",
       "important": false,
       "saved": true,
@@ -173,7 +173,7 @@
       "title": "Ugeplan (uge 1)",
       "author": "Anne Holm · Børnehuset",
       "authorPicture": null,
-      "date": "2026-11-09T10:25:59+01:00",
+      "date": "2026-11-09T10:40:21+01:00",
       "body": "Kort nyt fra Stue, opslag 1.",
       "important": false,
       "saved": false,
@@ -184,7 +184,7 @@
       "title": "Nyt fra Stue (uge 2)",
       "author": "Mette Lund · Børnehuset",
       "authorPicture": "f31f36216c157540666c85d9",
-      "date": "2026-11-07T22:25:59+01:00",
+      "date": "2026-11-07T22:40:21+01:00",
       "body": "Kort nyt fra Stue, opslag 2.",
       "important": false,
       "saved": false,
@@ -195,7 +195,7 @@
       "title": "Turdag (uge 3)",
       "author": "Kasper Berg · Børnehuset",
       "authorPicture": null,
-      "date": "2026-11-06T10:25:59+01:00",
+      "date": "2026-11-06T10:40:21+01:00",
       "body": "Kort nyt fra Stue, opslag 3.",
       "important": false,
       "saved": false,
@@ -206,7 +206,7 @@
       "title": "Madpakker (uge 4)",
       "author": "Anne Holm · Børnehuset",
       "authorPicture": null,
-      "date": "2026-11-04T22:25:59+01:00",
+      "date": "2026-11-04T22:40:21+01:00",
       "body": "Kort nyt fra Stue, opslag 4.",
       "important": false,
       "saved": false,
@@ -217,7 +217,7 @@
       "title": "Sangdag (uge 5)",
       "author": "Mette Lund · Børnehuset",
       "authorPicture": "f31f36216c157540666c85d9",
-      "date": "2026-11-03T10:25:59+01:00",
+      "date": "2026-11-03T10:40:21+01:00",
       "body": "Kort nyt fra Stue, opslag 5.",
       "important": false,
       "saved": false,
@@ -228,7 +228,7 @@
       "title": "Legetøjsdag (uge 6)",
       "author": "Kasper Berg · Børnehuset",
       "authorPicture": null,
-      "date": "2026-11-01T22:25:59+01:00",
+      "date": "2026-11-01T22:40:21+01:00",
       "body": "Kort nyt fra Stue, opslag 6.",
       "important": false,
       "saved": false,
@@ -239,7 +239,7 @@
       "title": "Forældrekaffe (uge 7)",
       "author": "Anne Holm · Børnehuset",
       "authorPicture": null,
-      "date": "2026-10-31T10:25:59+01:00",
+      "date": "2026-10-31T10:40:21+01:00",
       "body": "Kort nyt fra Stue, opslag 7.",
       "important": false,
       "saved": false,
@@ -703,7 +703,7 @@
          "content": {
           "html": "<p>Kære forældre,</p><p>Vinteren er på vej. Husk <b>flyverdragt</b> og ekstra vanter.</p><p>Se præsentationen fra forældremødet.</p>"
          },
-         "timestamp": "2026-11-13T07:25:59+01:00",
+         "timestamp": "2026-11-13T07:40:21+01:00",
          "ownerProfile": {
           "id": 1501,
           "profileId": 11501,
@@ -719,8 +719,8 @@
           }
          },
          "isImportant": true,
-         "importantFrom": "2026-11-12T10:25:59+01:00",
-         "importantTo": "2026-11-20T10:25:59+01:00",
+         "importantFrom": "2026-11-12T10:40:21+01:00",
+         "importantTo": "2026-11-20T10:40:21+01:00",
          "isBookmarked": false,
          "attachments": [
           {
@@ -751,7 +751,7 @@
          "content": {
           "html": "<p>Vi havde en dejlig tur i skoven i går. Her er et af billederne.</p>"
          },
-         "timestamp": "2026-11-12T08:25:59+01:00",
+         "timestamp": "2026-11-12T08:40:21+01:00",
          "ownerProfile": {
           "id": 1502,
           "profileId": 11502,
@@ -804,7 +804,7 @@
          "content": {
           "html": "<p>Vi har en stor bunke glemt tøj. Skriv venligst navn i alt tøj.</p>"
          },
-         "timestamp": "2026-11-10T10:25:59+01:00",
+         "timestamp": "2026-11-10T10:40:21+01:00",
          "ownerProfile": {
           "id": 1503,
           "profileId": 11503,
@@ -849,7 +849,7 @@
          "content": {
           "html": "<p>Kort nyt fra Stue, opslag 1.</p>"
          },
-         "timestamp": "2026-11-09T10:25:59+01:00",
+         "timestamp": "2026-11-09T10:40:21+01:00",
          "ownerProfile": {
           "id": 1501,
           "profileId": 11501,
@@ -884,7 +884,7 @@
          "content": {
           "html": "<p>Kort nyt fra Stue, opslag 2.</p>"
          },
-         "timestamp": "2026-11-07T22:25:59+01:00",
+         "timestamp": "2026-11-07T22:40:21+01:00",
          "ownerProfile": {
           "id": 1502,
           "profileId": 11502,
@@ -922,7 +922,7 @@
          "content": {
           "html": "<p>Kort nyt fra Stue, opslag 3.</p>"
          },
-         "timestamp": "2026-11-06T10:25:59+01:00",
+         "timestamp": "2026-11-06T10:40:21+01:00",
          "ownerProfile": {
           "id": 1503,
           "profileId": 11503,
@@ -957,7 +957,7 @@
          "content": {
           "html": "<p>Kort nyt fra Stue, opslag 4.</p>"
          },
-         "timestamp": "2026-11-04T22:25:59+01:00",
+         "timestamp": "2026-11-04T22:40:21+01:00",
          "ownerProfile": {
           "id": 1501,
           "profileId": 11501,
@@ -992,7 +992,7 @@
          "content": {
           "html": "<p>Kort nyt fra Stue, opslag 5.</p>"
          },
-         "timestamp": "2026-11-03T10:25:59+01:00",
+         "timestamp": "2026-11-03T10:40:21+01:00",
          "ownerProfile": {
           "id": 1502,
           "profileId": 11502,
@@ -1030,7 +1030,7 @@
          "content": {
           "html": "<p>Kort nyt fra Stue, opslag 6.</p>"
          },
-         "timestamp": "2026-11-01T22:25:59+01:00",
+         "timestamp": "2026-11-01T22:40:21+01:00",
          "ownerProfile": {
           "id": 1503,
           "profileId": 11503,
@@ -1065,7 +1065,7 @@
          "content": {
           "html": "<p>Kort nyt fra Stue, opslag 7.</p>"
          },
-         "timestamp": "2026-10-31T10:25:59+01:00",
+         "timestamp": "2026-10-31T10:40:21+01:00",
          "ownerProfile": {
           "id": 1501,
           "profileId": 11501,

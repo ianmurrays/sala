@@ -281,6 +281,14 @@ def scenarios() -> None:
         s.call("GET", "/posts?page=0", note="below 1")
         s.call("GET", "/posts?page=101", note="above 100")
 
+    with Scenario("gallery") as s:
+        for page in (1, 2):
+            s.call("GET", f"/albums?page={page}")
+        for album, page in ((6001, 1), (6001, 2), (6001, 3), (6002, 1), (0, 1)):
+            s.call("GET", f"/albums/{album}/photos?page={page}")
+        s.call("GET", "/albums?page=0", note="below 1")
+        s.call("GET", "/albums/x/photos", note="not an int")
+
     with Scenario("save") as s:
         s.call("POST", "/posts/401/save")
         s.call("DELETE", "/posts/403/save")

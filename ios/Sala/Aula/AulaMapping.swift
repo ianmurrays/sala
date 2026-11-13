@@ -278,7 +278,7 @@ extension Aula {
         let url = picture is JSONObject ? J.getIn(picture, "url") : J.val(picture)
         guard shouldRegister, J.truthy(url), let url = url as? String else { return nil }
         guard Self.fileURLAllowed(url) else {
-            aulaLog.warning("Skipping profile picture on a non-Aula host: \(URLParts(url).hostname ?? "?", privacy: .private)")
+            aulaLog.warning("Skipping picture on a non-Aula host: \(URLParts(url).hostname ?? "?", privacy: .private)")
             return nil
         }
         let parts = URLParts(url)
@@ -834,6 +834,64 @@ extension Aula {
     func posts(_ profile: AulaProfile, page: Int = 1, limit: Int = 10) async throws -> [JSONObject] {
         // A post without a timestamp has no valid "date" for the app; skip it.
         try await getPosts(profile.institutionProfileIds, page: page, limit: limit).filter { $0.timestamp != nil }.map(postOut)
+    }
+
+    // MARK: gallery
+
+    static let taggedAlbum = 0
+
+    private func galleryGet(_ method: String, _ params: [(String, String)]) async throws -> Any? {
+        J.get(try await get(method, params), "data", default: nil)
+    }
+
+    func albums(_ profile: AulaProfile, page: Int = 1, limit: Int = 20) async throws -> [JSONObject] {
+        let data = try await galleryGet("gallery.getAlbums", [
+            ("index", String((page - 1) * limit)), ("limit", String(limit)), ("sortOn", "createdAt"),
+            ("orderDirection", "desc"), ("filterBy", "all"),
+        ] + Self.ids("filterInstProfileIds[]", profile.institutionProfileIds))
+        var out: [JSONObject] = []
+        for a in J.list(data) ?? [] {
+            let id = J.get(a, "id", default: nil)
+            guard J.dict(a) != nil, J.int(id) != nil || (id == nil && page == 1) else { continue }
+            // Live: on page 1 a row with id null comes first, Aula's virtual album of photos the child is
+            // tagged in. It doesn't count towards `limit`; it's served as album 0 (see albumPhotos).
+            let thumbs = (J.list(J.get(a, "thumbnailsUrls", default: nil)) ?? []).compactMap { $0 as? String }
+            out.append([
+                "id": J.int(id) ?? Self.taggedAlbum,
+                "title": J.or(J.get(a, "title", default: nil), "") ?? "",
+                "date": J.out(AulaTime.iso(J.get(a, "creationDate", default: nil))),
+                "cover": J.out(thumbs.first.flatMap { pictureId($0, register: true) }),
+                "tagged": id == nil,
+            ])
+        }
+        return out
+    }
+
+    func albumPhotos(_ profile: AulaProfile, _ albumId: Int, page: Int = 1, limit: Int = 60) async throws -> [JSONObject] {
+        // The tagged album has no id: Aula asks for it as userSpecificAlbum without albumId.
+        let album: [(String, String)] = albumId == Self.taggedAlbum
+            ? [("userSpecificAlbum", "true")] : [("albumId", String(albumId)), ("userSpecificAlbum", "false")]
+        let data = try await galleryGet("gallery.getMedia", album + [
+            ("index", String((page - 1) * limit)), ("limit", String(limit)), ("sortOn", "uploadedAt"),
+            ("orderDirection", "desc"), ("filterBy", "all"),
+        ] + Self.ids("filterInstProfileIds[]", profile.institutionProfileIds))
+        var out: [JSONObject] = []
+        for p in J.list(J.getIn(data, "results")) ?? [] {
+            // ponytail: videos are left out; show them when someone misses them
+            guard J.dict(p) != nil, let id = J.int(J.get(p, "id", default: nil)),
+                  J.get(p, "mediaType", default: nil) as? String == "image",
+                  let image = pictureId(J.getIn(p, "file.url"), register: true) else { continue }
+            // Live sizes (one photo): large 900x1200, medium 600x800, small 300x400 (~55 kB), extraSmall 150x200.
+            // Small fills a third of a phone's width at 3x.
+            let thumb = J.or(J.get(p, "smallThumbnailUrl", default: nil), J.get(p, "thumbnailUrl", default: nil))
+            out.append([
+                "id": id,
+                "thumbnail": pictureId(thumb, register: true) ?? image,
+                "image": image,
+                "date": J.out(AulaTime.iso(J.getIn(p, "file.created"))),
+            ])
+        }
+        return out
     }
 
     /// Endpoints from the portal bundle (10.*.js): POST ?method=posts.bookmark / posts.unbookmark

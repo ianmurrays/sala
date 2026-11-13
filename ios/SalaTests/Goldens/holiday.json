@@ -3806,7 +3806,7 @@
       "title": "Velkommen til vinteren",
       "author": "Anne Holm · Børnehuset",
       "authorPicture": null,
-      "date": "2026-11-13T07:25:59+01:00",
+      "date": "2026-11-13T07:40:22+01:00",
       "body": "Kære forældre,\n\nVinteren er på vej. Husk flyverdragt og ekstra vanter.\n\nSe præsentationen fra forældremødet.",
       "important": true,
       "saved": false,
@@ -3823,7 +3823,7 @@
       "title": "Billeder fra skovturen",
       "author": "Mette Lund · Børnehuset",
       "authorPicture": "f31f36216c157540666c85d9",
-      "date": "2026-11-12T08:25:59+01:00",
+      "date": "2026-11-12T08:40:22+01:00",
       "body": "Vi havde en dejlig tur i skoven i går. Her er et af billederne.",
       "important": false,
       "saved": false,
@@ -3840,7 +3840,7 @@
       "title": "Husk navn i tøjet",
       "author": "Kasper Berg · Børnehuset",
       "authorPicture": null,
-      "date": "2026-11-10T10:25:59+01:00",
+      "date": "2026-11-10T10:40:22+01:00",
       "body": "Vi har en stor bunke glemt tøj. Skriv venligst navn i alt tøj.",
       "important": false,
       "saved": true,
@@ -3858,7 +3858,7 @@
       "title": "Ugeplan (uge 1)",
       "author": "Anne Holm · Børnehuset",
       "authorPicture": null,
-      "date": "2026-11-09T10:25:59+01:00",
+      "date": "2026-11-09T10:40:22+01:00",
       "body": "Kort nyt fra Stue, opslag 1.",
       "important": false,
       "saved": false,
@@ -3869,7 +3869,7 @@
       "title": "Nyt fra Stue (uge 2)",
       "author": "Mette Lund · Børnehuset",
       "authorPicture": "f31f36216c157540666c85d9",
-      "date": "2026-11-07T22:25:59+01:00",
+      "date": "2026-11-07T22:40:22+01:00",
       "body": "Kort nyt fra Stue, opslag 2.",
       "important": false,
       "saved": false,
@@ -3880,7 +3880,7 @@
       "title": "Turdag (uge 3)",
       "author": "Kasper Berg · Børnehuset",
       "authorPicture": null,
-      "date": "2026-11-06T10:25:59+01:00",
+      "date": "2026-11-06T10:40:22+01:00",
       "body": "Kort nyt fra Stue, opslag 3.",
       "important": false,
       "saved": false,
@@ -3891,7 +3891,7 @@
       "title": "Madpakker (uge 4)",
       "author": "Anne Holm · Børnehuset",
       "authorPicture": null,
-      "date": "2026-11-04T22:25:59+01:00",
+      "date": "2026-11-04T22:40:22+01:00",
       "body": "Kort nyt fra Stue, opslag 4.",
       "important": false,
       "saved": false,
@@ -3902,7 +3902,7 @@
       "title": "Sangdag (uge 5)",
       "author": "Mette Lund · Børnehuset",
       "authorPicture": "f31f36216c157540666c85d9",
-      "date": "2026-11-03T10:25:59+01:00",
+      "date": "2026-11-03T10:40:22+01:00",
       "body": "Kort nyt fra Stue, opslag 5.",
       "important": false,
       "saved": false,
@@ -3913,7 +3913,7 @@
       "title": "Legetøjsdag (uge 6)",
       "author": "Kasper Berg · Børnehuset",
       "authorPicture": null,
-      "date": "2026-11-01T22:25:59+01:00",
+      "date": "2026-11-01T22:40:22+01:00",
       "body": "Kort nyt fra Stue, opslag 6.",
       "important": false,
       "saved": false,
@@ -3924,7 +3924,7 @@
       "title": "Forældrekaffe (uge 7)",
       "author": "Anne Holm · Børnehuset",
       "authorPicture": null,
-      "date": "2026-10-31T10:25:59+01:00",
+      "date": "2026-10-31T10:40:22+01:00",
       "body": "Kort nyt fra Stue, opslag 7.",
       "important": false,
       "saved": false,
@@ -4328,7 +4328,7 @@
           "text": {
            "html": "<p>Hej! Oskar har glemt sin blå hue her i dag. Den ligger i hans garderobe.</p>"
           },
-          "sendDateTime": "2026-11-13T09:25:59+01:00"
+          "sendDateTime": "2026-11-13T09:40:22+01:00"
          }
         },
         {
@@ -5227,7 +5227,7 @@
           "text": {
            "html": "<p>Ja, søskende er meget velkomne. Vi har legetøj i fællesrummet.</p>"
           },
-          "sendDateTime": "2026-11-13T08:25:59+01:00"
+          "sendDateTime": "2026-11-13T08:40:22+01:00"
          }
         },
         {
@@ -5301,7 +5301,7 @@
           "text": {
            "html": "<p>Dejligt, tak for besked!</p>"
           },
-          "sendDateTime": "2026-11-12T12:25:59+01:00"
+          "sendDateTime": "2026-11-12T12:40:22+01:00"
          }
         },
         {
@@ -6200,7 +6200,7 @@
           "text": {
            "html": "<p>Vi holder julefrokost for børnene d. 18. december. Børnene må gerne komme i nissetøj.</p>"
           },
-          "sendDateTime": "2026-11-12T06:25:59+01:00"
+          "sendDateTime": "2026-11-12T06:40:22+01:00"
          }
         },
         {
@@ -6286,7 +6286,7 @@
           "text": {
            "html": "<p>Fra januar overgår vi til ny madordning. Se tilmelding i vedhæftede fil.</p>"
           },
-          "sendDateTime": "2026-11-10T07:25:59+01:00"
+          "sendDateTime": "2026-11-10T07:40:22+01:00"
          }
         },
         {
@@ -6372,7 +6372,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 40.</p>"
           },
-          "sendDateTime": "2026-11-10T02:25:59+01:00"
+          "sendDateTime": "2026-11-10T02:40:22+01:00"
          }
         },
         {
@@ -6461,7 +6461,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 39.</p>"
           },
-          "sendDateTime": "2026-11-09T06:25:59+01:00"
+          "sendDateTime": "2026-11-09T06:40:22+01:00"
          }
         },
         {
@@ -6547,7 +6547,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 38.</p>"
           },
-          "sendDateTime": "2026-11-08T10:25:59+01:00"
+          "sendDateTime": "2026-11-08T10:40:22+01:00"
          }
         },
         {
@@ -6633,7 +6633,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 37.</p>"
           },
-          "sendDateTime": "2026-11-07T14:25:59+01:00"
+          "sendDateTime": "2026-11-07T14:40:22+01:00"
          }
         },
         {
@@ -6722,7 +6722,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 36.</p>"
           },
-          "sendDateTime": "2026-11-06T18:25:59+01:00"
+          "sendDateTime": "2026-11-06T18:40:22+01:00"
          }
         },
         {
@@ -6808,7 +6808,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 35.</p>"
           },
-          "sendDateTime": "2026-11-05T22:25:59+01:00"
+          "sendDateTime": "2026-11-05T22:40:22+01:00"
          }
         },
         {
@@ -6894,7 +6894,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 34.</p>"
           },
-          "sendDateTime": "2026-11-05T02:25:59+01:00"
+          "sendDateTime": "2026-11-05T02:40:22+01:00"
          }
         },
         {
@@ -6983,7 +6983,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 33.</p>"
           },
-          "sendDateTime": "2026-11-04T06:25:59+01:00"
+          "sendDateTime": "2026-11-04T06:40:22+01:00"
          }
         },
         {
@@ -7069,7 +7069,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 32.</p>"
           },
-          "sendDateTime": "2026-11-03T10:25:59+01:00"
+          "sendDateTime": "2026-11-03T10:40:22+01:00"
          }
         },
         {
@@ -7155,7 +7155,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 31.</p>"
           },
-          "sendDateTime": "2026-11-02T14:25:59+01:00"
+          "sendDateTime": "2026-11-02T14:40:22+01:00"
          }
         },
         {
@@ -7244,7 +7244,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 30.</p>"
           },
-          "sendDateTime": "2026-11-01T18:25:59+01:00"
+          "sendDateTime": "2026-11-01T18:40:22+01:00"
          }
         },
         {
@@ -7330,7 +7330,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 29.</p>"
           },
-          "sendDateTime": "2026-10-31T22:25:59+01:00"
+          "sendDateTime": "2026-10-31T22:40:22+01:00"
          }
         },
         {
@@ -7416,7 +7416,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 28.</p>"
           },
-          "sendDateTime": "2026-10-31T02:25:59+01:00"
+          "sendDateTime": "2026-10-31T02:40:22+01:00"
          }
         },
         {
@@ -7505,7 +7505,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 27.</p>"
           },
-          "sendDateTime": "2026-10-30T06:25:59+01:00"
+          "sendDateTime": "2026-10-30T06:40:22+01:00"
          }
         },
         {
@@ -7591,7 +7591,7 @@
           "text": {
            "html": "<p>Lidt praktisk info, besked 26.</p>"
           },
-          "sendDateTime": "2026-10-29T10:25:59+01:00"
+          "sendDateTime": "2026-10-29T10:40:22+01:00"
          }
         }
        ],
@@ -7723,7 +7723,7 @@
          "content": {
           "html": "<p>Kære forældre,</p><p>Vinteren er på vej. Husk <b>flyverdragt</b> og ekstra vanter.</p><p>Se præsentationen fra forældremødet.</p>"
          },
-         "timestamp": "2026-11-13T07:25:59+01:00",
+         "timestamp": "2026-11-13T07:40:22+01:00",
          "ownerProfile": {
           "id": 1501,
           "profileId": 11501,
@@ -7739,8 +7739,8 @@
           }
          },
          "isImportant": true,
-         "importantFrom": "2026-11-12T10:25:59+01:00",
-         "importantTo": "2026-11-20T10:25:59+01:00",
+         "importantFrom": "2026-11-12T10:40:22+01:00",
+         "importantTo": "2026-11-20T10:40:22+01:00",
          "isBookmarked": false,
          "attachments": [
           {
@@ -7771,7 +7771,7 @@
          "content": {
           "html": "<p>Vi havde en dejlig tur i skoven i går. Her er et af billederne.</p>"
          },
-         "timestamp": "2026-11-12T08:25:59+01:00",
+         "timestamp": "2026-11-12T08:40:22+01:00",
          "ownerProfile": {
           "id": 1502,
           "profileId": 11502,
@@ -7824,7 +7824,7 @@
          "content": {
           "html": "<p>Vi har en stor bunke glemt tøj. Skriv venligst navn i alt tøj.</p>"
          },
-         "timestamp": "2026-11-10T10:25:59+01:00",
+         "timestamp": "2026-11-10T10:40:22+01:00",
          "ownerProfile": {
           "id": 1503,
           "profileId": 11503,
@@ -7869,7 +7869,7 @@
          "content": {
           "html": "<p>Kort nyt fra Stue, opslag 1.</p>"
          },
-         "timestamp": "2026-11-09T10:25:59+01:00",
+         "timestamp": "2026-11-09T10:40:22+01:00",
          "ownerProfile": {
           "id": 1501,
           "profileId": 11501,
@@ -7904,7 +7904,7 @@
          "content": {
           "html": "<p>Kort nyt fra Stue, opslag 2.</p>"
          },
-         "timestamp": "2026-11-07T22:25:59+01:00",
+         "timestamp": "2026-11-07T22:40:22+01:00",
          "ownerProfile": {
           "id": 1502,
           "profileId": 11502,
@@ -7942,7 +7942,7 @@
          "content": {
           "html": "<p>Kort nyt fra Stue, opslag 3.</p>"
          },
-         "timestamp": "2026-11-06T10:25:59+01:00",
+         "timestamp": "2026-11-06T10:40:22+01:00",
          "ownerProfile": {
           "id": 1503,
           "profileId": 11503,
@@ -7977,7 +7977,7 @@
          "content": {
           "html": "<p>Kort nyt fra Stue, opslag 4.</p>"
          },
-         "timestamp": "2026-11-04T22:25:59+01:00",
+         "timestamp": "2026-11-04T22:40:22+01:00",
          "ownerProfile": {
           "id": 1501,
           "profileId": 11501,
@@ -8012,7 +8012,7 @@
          "content": {
           "html": "<p>Kort nyt fra Stue, opslag 5.</p>"
          },
-         "timestamp": "2026-11-03T10:25:59+01:00",
+         "timestamp": "2026-11-03T10:40:22+01:00",
          "ownerProfile": {
           "id": 1502,
           "profileId": 11502,
@@ -8050,7 +8050,7 @@
          "content": {
           "html": "<p>Kort nyt fra Stue, opslag 6.</p>"
          },
-         "timestamp": "2026-11-01T22:25:59+01:00",
+         "timestamp": "2026-11-01T22:40:22+01:00",
          "ownerProfile": {
           "id": 1503,
           "profileId": 11503,
@@ -8085,7 +8085,7 @@
          "content": {
           "html": "<p>Kort nyt fra Stue, opslag 7.</p>"
          },
-         "timestamp": "2026-10-31T10:25:59+01:00",
+         "timestamp": "2026-10-31T10:40:22+01:00",
          "ownerProfile": {
           "id": 1501,
           "profileId": 11501,
