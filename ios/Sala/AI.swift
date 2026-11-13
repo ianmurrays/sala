@@ -5,7 +5,7 @@ import NaturalLanguage
 /// Translate and summarize one message or post, where the user chose (Settings → AI).
 /// Off by default. Never runs on its own: only on a tap. Never falls back to another option.
 enum AI {
-    enum Provider: String, CaseIterable, Identifiable, Sendable {
+    enum Provider: String, Identifiable, Sendable {
         // ponytail: no Private Cloud Compute: it needs Apple's managed entitlement
         // com.apple.developer.private-cloud-compute and crashes without it (while reporting itself available).
         case off, device, openAI, anthropic

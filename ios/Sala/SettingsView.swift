@@ -151,17 +151,23 @@ struct AISettingsView: View {
     /// The provider's models, loaded when its endpoint or key is set; nil until loaded.
     @State private var models: [String]?
     @State private var modelsError: String?
+    @State private var advanced = AI.provider == .openAI || AI.provider == .anthropic
 
     var body: some View {
         Form {
             Section {
-                Picker("Where AI runs", selection: $provider) {
-                    ForEach(AI.Provider.allCases) { Text($0.title).tag($0) }
-                }
-                .pickerStyle(.inline)
-                .labelsHidden()
+                ForEach([AI.Provider.off, .device]) { option($0) }
             } footer: {
-                Text(footer)
+                if provider == .off || provider == .device { Text(footer) }
+            }
+
+            // Providers that send the text off the phone, folded away so they're a deliberate choice.
+            Section {
+                DisclosureGroup("Advanced", isExpanded: $advanced) {
+                    ForEach([AI.Provider.openAI, .anthropic]) { option($0) }
+                }
+            } footer: {
+                if provider == .openAI || provider == .anthropic { Text(footer) }
             }
 
             if provider == .openAI {
@@ -218,6 +224,18 @@ struct AISettingsView: View {
         case .device: "Apple's model on this iPhone. Nothing leaves your phone. Needs Apple Intelligence."
         case .openAI, .anthropic: "The text of the message or post you tap is sent to this provider, and its terms and data policies apply. It may store it. Only use one you trust with your children's school messages."
         }
+    }
+
+    /// A row that picks `p`, with a checkmark when it's the choice.
+    private func option(_ p: AI.Provider) -> some View {
+        Button { provider = p } label: {
+            HStack {
+                Text(p.title).foregroundStyle(Color.primary)
+                Spacer()
+                if provider == p { Image(systemName: "checkmark").foregroundStyle(Color.accentColor).fontWeight(.semibold) }
+            }
+        }
+        .accessibilityAddTraits(provider == p ? .isSelected : [])
     }
 
     private func modelSection(_ model: Binding<String>, placeholder: String) -> some View {
