@@ -50,7 +50,7 @@ struct CalendarView: View {
             HStack {
                 Button("Previous month", systemImage: "chevron.left") { step(-1) }
                 Spacer()
-                Text(Fmt.format(month, "MMMMyyyy")).font(.headline)
+                Text(Fmt.day("\(key)-01").map { Fmt.format($0, "MMMMyyyy") } ?? key).font(.headline)
                 Spacer()
                 Button("Next month", systemImage: "chevron.right") { step(1) }
             }
