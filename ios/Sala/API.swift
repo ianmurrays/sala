@@ -426,10 +426,10 @@ struct APIClient: Sendable {
     /// `month` is `YYYY-MM`.
     func calendar(month: String) async throws -> [CalendarEvent] { try await send("GET", "/calendar?month=\(month)") }
 
-    /// `page` is 1-based. Empty means no more.
     func contactGroups() async throws -> [ContactGroup] { try await send("GET", "/contacts/groups") }
     func groupContacts(_ group: Int) async throws -> GroupContacts { try await send("GET", "/contacts/groups/\(group)") }
 
+    /// `page` is 1-based. Empty means no more.
     func albums(page: Int) async throws -> [Album] { try await send("GET", "/albums?page=\(page)") }
     func photos(album: Int, page: Int) async throws -> [Photo] { try await send("GET", "/albums/\(album)/photos?page=\(page)") }
 
