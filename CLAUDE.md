@@ -4,4 +4,5 @@
 - Signing (team, bundle ID prefix) lives in the gitignored `ios/Config/Local.xcconfig`. Simulator builds need it too: unsigned, the app has no Keychain access and silently drops its settings. To build and install on a phone: `ios/scripts/install-device.sh "<device name>"`.
 - Tests: `cd ios && xcodebuild test -project Sala.xcodeproj -scheme Sala -destination 'platform=iOS Simulator,name=<an iPhone simulator>'`. The golden tests in `ios/SalaTests/` replay recorded Aula answers (from the old Python server on its fake Aula, now frozen in `ios/SalaTests/Goldens/`) and check the Swift answers and writes against the server's. A route change means editing its golden by hand.
 - Where fields sit in Aula's live responses: `docs/aula-shapes/` (captured from real Aula, anonymised).
+- Working on an Aula call: the `aula-api` skill. `scripts/aula-bundle.py` searches the web portal's JS for `?method=` calls; `scripts/pull-aula-traffic.sh` pulls what a debug build captured (Settings → Debug → Capture Aula traffic). Captured traffic is real families' data: it stays in `.cache/`.
 - CI (`.github/workflows/ci.yml`) runs gitleaks, the project drift check and the iOS tests.

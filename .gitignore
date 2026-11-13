@@ -3,3 +3,4 @@ ios/build/
 xcuserdata/
 .DS_Store
 ios/Config/Local.xcconfig
+.cache/

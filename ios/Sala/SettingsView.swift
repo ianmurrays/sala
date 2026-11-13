@@ -4,6 +4,9 @@ struct SettingsView: View {
     @Environment(Store.self) private var store
     @Environment(\.dismiss) private var dismiss
     @State private var confirmLogout = false
+    #if DEBUG
+    @State private var captureTraffic = TrafficLog.enabled
+    #endif
 
     var body: some View {
         NavigationStack {
@@ -15,7 +18,19 @@ struct SettingsView: View {
                 }
 
                 #if DEBUG
-                Section("Debug") {
+                Section {
+                    Toggle("Capture Aula traffic", isOn: Binding(get: { captureTraffic }, set: {
+                        captureTraffic = $0
+                        TrafficLog.enabled = $0
+                    }))
+                    Button("Clear captured traffic", role: .destructive) { TrafficLog.clear() }
+                } header: {
+                    Text("Debug")
+                } footer: {
+                    Text("Writes every Aula call and its answer to aula-traffic.jsonl. Pull it with scripts/pull-aula-traffic.sh.")
+                }
+
+                Section {
                     Button("Expire the Aula session and reload") {
                         Task {
                             await Aula.shared.debugExpireSession()

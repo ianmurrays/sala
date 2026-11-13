@@ -119,6 +119,9 @@ actor Aula {
         for dir in ["aula-attachments.json", "pictures"] { try? FileManager.default.removeItem(at: URL.cachesDirectory.appending(path: dir)) }
         Keychain.delete(Self.tokensKey)
         transport.clearCookies()
+        #if DEBUG
+        TrafficLog.clear()
+        #endif
     }
 
     private func save(_ t: Tokens?) {
@@ -258,6 +261,9 @@ actor Aula {
                 if let csrf = transport.cookie(named: "Csrfp-Token") ?? csrf { req.setValue(csrf, forHTTPHeaderField: "csrfp-token") }
             }
             let (data, resp) = try await transport.send(req)
+            #if DEBUG
+            TrafficLog.record(verb, method, params, body: body, status: resp.statusCode, response: data)
+            #endif
             if resp.statusCode == 410 { apiVersion += 1; continue }
             let json = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any]
             let status = json?["status"] as? [String: Any]
@@ -367,3 +373,43 @@ private final class RedirectGuard: NSObject, URLSessionTaskDelegate, Sendable {
         allowed(request.url) ? request : nil
     }
 }
+
+#if DEBUG
+/// Settings → Debug → "Capture Aula traffic": every Aula API call and its answer, one JSON line each,
+/// in `Caches/aula-traffic.jsonl`. `scripts/pull-aula-traffic.sh` copies it to the Mac. It holds
+/// real children's data, so it never goes into git; `docs/aula-shapes/` gets anonymised copies.
+/// The access token is left out (cookies and the CSRF header are never part of a line).
+enum TrafficLog {
+    static let file = URL.cachesDirectory.appending(path: "aula-traffic.jsonl")
+    private static let key = "aula.captureTraffic"
+
+    static var enabled: Bool {
+        get { UserDefaults.standard.bool(forKey: key) }
+        set { UserDefaults.standard.set(newValue, forKey: key) }
+    }
+
+    static func clear() { try? FileManager.default.removeItem(at: file) }
+
+    static func record(_ verb: String, _ method: String, _ params: [(String, String)], body: Data?, status: Int, response: Data) {
+        guard enabled else { return }
+        var line: [String: Any] = [
+            "time": ISO8601DateFormatter().string(from: Date()),
+            "verb": verb,
+            "method": method,
+            "params": params.filter { $0.0 != "access_token" }.map { [$0.0, $0.1] },
+            "status": status,
+        ]
+        line["body"] = body.flatMap { try? JSONSerialization.jsonObject(with: $0) } ?? NSNull()
+        line["response"] = (try? JSONSerialization.jsonObject(with: response)) ?? String(decoding: response.prefix(2000), as: UTF8.self)
+        guard var data = try? JSONSerialization.data(withJSONObject: line, options: [.sortedKeys]) else { return }
+        data.append(0x0A)
+        if let h = try? FileHandle(forWritingTo: file) {
+            defer { try? h.close() }
+            _ = try? h.seekToEnd()
+            try? h.write(contentsOf: data)
+        } else {
+            try? data.write(to: file)
+        }
+    }
+}
+#endif
