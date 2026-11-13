@@ -17,12 +17,15 @@
      },
      {
       "file": {
+       "created": "2026-11-13T10:10:22+01:00",
        "id": 6001999,
        "name": "film.mp4",
        "url": "https://fake-files.aula.dk/files/film.mp4"
       },
       "id": 6001999,
-      "mediaType": "video"
+      "largeThumbnailUrl": "https://fake-files.aula.dk/files/film-large.png?Expires=1&Signature=91",
+      "mediaType": "video",
+      "smallThumbnailUrl": "https://fake-files.aula.dk/files/film-small.png?Expires=1&Signature=90"
      },
      {
       "file": {
@@ -955,12 +958,15 @@
      },
      {
       "file": {
+       "created": "2026-11-13T10:10:22+01:00",
        "id": 6001999,
        "name": "film.mp4",
        "url": "https://fake-files.aula.dk/files/film.mp4"
       },
       "id": 6001999,
-      "mediaType": "video"
+      "largeThumbnailUrl": "https://fake-files.aula.dk/files/film-large.png?Expires=1&Signature=91",
+      "mediaType": "video",
+      "smallThumbnailUrl": "https://fake-files.aula.dk/files/film-small.png?Expires=1&Signature=90"
      },
      {
       "file": {

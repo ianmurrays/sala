@@ -312,6 +312,13 @@
      "date": "2026-11-13T10:40:22+01:00"
     },
     {
+     "id": 6001999,
+     "thumbnail": "c902352514b4c0b540a8c44d",
+     "image": "f5d337e26f679a6de645f7ed",
+     "video": "23430e865dbbaae89ad0c7e3",
+     "date": null
+    },
+    {
      "id": 6001001,
      "thumbnail": "96c03e938bbf1bd0bb5da6f5",
      "image": "c20883a1e548ae9601c8574d",
@@ -732,7 +739,9 @@
           "id": 6001999,
           "name": "film.mp4",
           "url": "https://fake-files.aula.dk/files/film.mp4"
-         }
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/film-small.jpg?Expires=1&Signature=90",
+         "largeThumbnailUrl": "https://fake-files.aula.dk/files/film-large.jpg?Expires=1&Signature=91"
         },
         {
          "id": 6001001,

@@ -124,8 +124,11 @@ struct Contact: Decodable, Sendable, Hashable {
 struct Photo: Decodable, Sendable, Equatable, Identifiable {
     var id: Int
     /// Ids for `GET /attachments/{id}`: a small size for the grid, the original for the viewer and saving.
-    var thumbnail: String
-    var image: String
+    /// Always set for a photo; nil for a video Aula made no still of.
+    var thumbnail: String?
+    var image: String?
+    /// Set for a video: its mp4, also from `GET /attachments/{id}`. `image` is then its still.
+    var video: String?
     /// Upload time, ISO 8601.
     var date: String?
 }
@@ -523,6 +526,18 @@ struct APIClient: Sendable {
         try? FileManager.default.createDirectory(at: Self.pictureCache, withIntermediateDirectories: true)
         try? data.write(to: file)
         return data
+    }
+
+    /// A gallery video's mp4 as a file (AVPlayer and Photos want one), kept on disk beside the pictures.
+    func video(_ id: String) async throws -> URL {
+        let file = Self.pictureCache.appending(path: id.replacingOccurrences(of: "/", with: "-") + ".mp4")
+        if FileManager.default.fileExists(atPath: file.path) { return file }
+        // ponytail: the whole mp4 passes through memory once; Aula's converted files are small (4.7 MB for one
+        // live clip). Stream it to disk (URLSession download task) if long videos run out of memory.
+        let data = try await perform { try await aula.attachment(id).0 }
+        try FileManager.default.createDirectory(at: Self.pictureCache, withIntermediateDirectories: true)
+        try data.write(to: file, options: .atomic)
+        return file
     }
 
     /// Downloads an attachment into a fresh temp directory, named after `name`.

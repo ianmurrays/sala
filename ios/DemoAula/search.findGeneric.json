@@ -184,9 +184,9 @@
       "docType": "Media",
       "file": {
        "created": "2026-11-11T10:00:00+01:00",
-       "id": 9801,
-       "name": "foto1.jpg",
-       "url": "https://media-prod.aula.dk/gallery/foto1.jpg?sig=1"
+       "id": 9802,
+       "name": "film.mp4",
+       "url": "https://media-prod.aula.dk/gallery/film.mp4?sig=3"
       },
       "id": 8802,
       "mediaType": "video",
@@ -248,9 +248,9 @@
       "docType": "Media",
       "file": {
        "created": "2026-11-11T10:00:00+01:00",
-       "id": 9801,
-       "name": "foto1.jpg",
-       "url": "https://media-prod.aula.dk/gallery/foto1.jpg?sig=1"
+       "id": 9802,
+       "name": "film.mp4",
+       "url": "https://media-prod.aula.dk/gallery/film.mp4?sig=3"
       },
       "id": 8802,
       "mediaType": "video",
