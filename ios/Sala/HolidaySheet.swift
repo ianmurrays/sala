@@ -374,7 +374,9 @@ struct AbsenceSheet: View {
                 Section("When") {
                     DatePicker("From", selection: $start, in: (startLocked ? start : today)..., displayedComponents: .date)
                         .disabled(startLocked)
-                    DatePicker("To", selection: $end, in: max(start, today)...(Fmt.copenhagen.date(byAdding: .year, value: 1, to: start) ?? start), displayedComponents: .date)
+                    // The upper bound can't fall below the lower: a range that does traps (an absence from over a year ago).
+                    let earliest = max(start, today), latest = Fmt.copenhagen.date(byAdding: .year, value: 1, to: start) ?? start
+                    DatePicker("To", selection: $end, in: earliest...max(latest, earliest), displayedComponents: .date)
                 }
 
                 Section {
