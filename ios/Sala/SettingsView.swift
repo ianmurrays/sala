@@ -4,6 +4,9 @@ struct SettingsView: View {
     @Environment(Store.self) private var store
     @Environment(\.dismiss) private var dismiss
     @State private var confirmLogout = false
+    @State private var calendarSync = CalendarSync.enabled
+    @State private var calendarDenied = false
+    @State private var syncStatus = CalendarSync.status
     #if DEBUG
     @State private var captureTraffic = TrafficLog.enabled
     #endif
@@ -15,6 +18,26 @@ struct SettingsView: View {
                     Button("Log out of Aula", role: .destructive) { confirmLogout = true }
                 } footer: {
                     Text("Sala talks to Aula directly from this phone. Logging out forgets the session; you'll need MitID to log in again.")
+                }
+
+                Section {
+                    Toggle("Sync to iOS Calendar", isOn: Binding(get: { calendarSync }, set: { on in
+                        calendarSync = on
+                        Task {
+                            if !on { CalendarSync.disable(); return }
+                            calendarSync = await CalendarSync.enable()
+                            calendarDenied = !calendarSync
+                            if calendarSync { await CalendarSync.sync(store.client) }
+                            syncStatus = CalendarSync.status
+                        }
+                    }))
+                } footer: {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(calendarDenied
+                            ? "Sala needs full calendar access for this. Turn it on in the Settings app under Privacy & Security → Calendars."
+                            : "Keeps a Sala calendar with the next \(CalendarSync.months) months of Aula events, updated each time you open the app. Turning it off removes that calendar.")
+                        if calendarSync, let s = syncStatus { Text(s) }
+                    }
                 }
 
                 #if DEBUG

@@ -93,6 +93,23 @@ Nullable here: `opensAt`, `closesAt`, `current.time`, `current.by`.
 
 `POST /absences` body `{"childIds":[123],"startDate":"2026-12-27","endDate":"2026-12-30","comment":""}` → `{"ok":true}`. Registers a holiday or days off (Aula's "Ferie/fri"). `endDate` may equal `startDate` for one day. Start in the past, end before start, end more than a year after start, a comment over 250 characters, no children, an unknown child, or a child Aula won't take an absence for (no custody, or the institution doesn't let guardians register absences; when that can't be read, Aula decides) → `400` with the reason in `message`. There is no listing or cancelling.
 
+## Calendar
+
+`GET /calendar?month=2026-12` → what is on in that month (Europe/Copenhagen), sorted by `startDate`, all-day first, then `startTime`:
+```json
+[{"id":"event-9001-2026-12-23","kind":"absence","title":"Ferie/fri","subtitle":"Oskar",
+  "startDate":"2026-12-23","endDate":"2026-12-23","startTime":null,"endTime":null}]
+```
+- `month` is `YYYY-MM`, default the current month; anything else → `400`.
+- Every event that touches the month is listed, so one spanning two months comes back for both. `id` is stable across loads and months (it holds the occurrence's start date, so each occurrence of a repeating event has its own); deduplicate by it.
+- `kind`:
+  - `absence`: a registered holiday or day off (Aula's "Ferie/fri", including holiday requests answered "not coming"). `subtitle` is the children's names.
+  - `meeting`: an event to book a time for (a school–home meeting). Booked: the booked slot's date and times. Not booked: the booking window's dates, no times, `subtitle` "Not booked".
+  - `birthday`: a child in the institution. `subtitle` is the group.
+  - `event`: anything else Aula puts in the calendar. `subtitle` is the institution.
+- `endDate` is inclusive. `startTime` and `endTime` are `HH:mm`, both `null` for an all-day item.
+- Nullable: `subtitle`, `startTime`, `endTime`.
+
 ## Posts
 
 `GET /posts?page=N` → `[Post]`, newest first, 10 per page. `page` is 1-based (default 1, at most 100, else `400`); page 1 is the `posts` of `/today`. An empty list means there are no more posts.

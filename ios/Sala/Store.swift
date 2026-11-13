@@ -2,7 +2,7 @@ import Foundation
 import Observation
 import WidgetKit
 
-enum AppTab: Hashable { case today, messages, gallery }
+enum AppTab: Hashable { case today, calendar, messages, gallery }
 
 @MainActor @Observable
 final class Store {
@@ -113,6 +113,7 @@ final class Store {
             morePosts.reset(next: 2)
             phase = .ready
             Task { if let f = try? await c.features() { canTranslate = f.translate } }
+            Task { await CalendarSync.sync(c) }
             // Keeps the Messages tab badge current without holding up Today.
             Task {
                 await loadThreads()
@@ -517,6 +518,9 @@ final class Store {
     func handleDeepLink(_ url: URL) {
         guard url.scheme?.lowercased() == "sala" else { return }
         switch url.host()?.lowercased() {
+        case "calendar":
+            // Events Sala writes to iOS Calendar link back here (CalendarSync).
+            selectedTab = .calendar
         case "thread":
             let id = url.pathComponents.filter { $0 != "/" }.first ?? ""
             selectedTab = .messages

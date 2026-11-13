@@ -1,0 +1,64 @@
+[
+ {
+  "addedToInstitutionCalendar": "bool",
+  "additionalResourceText": "null",
+  "additionalResources": [],
+  "allDay": "bool",
+  "belongsToProfiles": [
+   "int"
+  ],
+  "belongsToResources": [],
+  "createdDateTime": "str",
+  "creatorInstProfileId": "int",
+  "creatorName": "str",
+  "creatorProfileId": "int",
+  "directlyRelated": "bool",
+  "endDateTime": "str",
+  "hasAttachments": "bool",
+  "id": "int",
+  "institutionCode": "str",
+  "institutionName": "str",
+  "invitedGroups": [],
+  "lesson": "null",
+  "oldAllDay": "bool|null",
+  "oldEndDateTime": "null",
+  "oldStartDateTime": "null",
+  "primaryResource": "null",
+  "primaryResourceText": "null",
+  "private": "bool",
+  "repeating": "null",
+  "requiresNewAnswer": "bool",
+  "responseDeadline": "null",
+  "responseRequired": "bool",
+  "responseStatus": "str|null",
+  "startDateTime": "str",
+  "timeSlot": {
+   "childRequired": "bool",
+   "timeSlots": [
+    {
+     "answers": [
+      {
+       "concerningProfileId": "int",
+       "id": "int",
+       "instProfileId": "int",
+       "selectedTimeSlotIndex": "int"
+      }
+     ],
+     "belongsToResource": "null",
+     "endDate": "str",
+     "id": "int",
+     "startDate": "str",
+     "timeSlotIndexes": [
+      {
+       "endTime": "str",
+       "startTime": "str"
+      }
+     ]
+    }
+   ]
+  },
+  "title": "str",
+  "type": "str",
+  "vacationChildrenCountByDates": "null"
+ }
+]

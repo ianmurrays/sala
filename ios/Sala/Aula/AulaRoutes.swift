@@ -57,7 +57,7 @@ extension Aula {
 
     private enum Route {
         case today, features, translate, pickup(String), sick(String), holiday(String), absences, posts, save(String)
-        case albums, photos(String)
+        case albums, photos(String), calendar
         case attachment(String), threads, thread(String), reply(String), folders, folder(String)
     }
 
@@ -71,6 +71,7 @@ extension Aula {
             case "absences": return (.absences, ["POST"])
             case "posts": return (.posts, ["GET"])
             case "albums": return (.albums, ["GET"])
+            case "calendar": return (.calendar, ["GET"])
             case "threads": return (.threads, ["GET"])
             case "folders": return (.folders, ["GET", "POST"])
             default: return nil
@@ -182,6 +183,18 @@ extension Aula {
         case (.posts, _):
             let page = try input.queryInt("page", default: 1, min: 1, max: 100)
             return try await posts(try await profile(), page: page)
+
+        case (.calendar, _):
+            let today = AulaTime.today()
+            var (year, month) = (today.year, today.month)
+            if let raw = input.query.last(where: { $0.0 == "month" })?.1 {
+                let parts = raw.split(separator: "-", omittingEmptySubsequences: false)
+                guard raw.count == 7, parts.count == 2, let y = Int(parts[0]), let m = Int(parts[1]), (1...12).contains(m) else {
+                    throw APIError.http(400, "month must be YYYY-MM")
+                }
+                (year, month) = (y, m)
+            }
+            return try await calendar(try await profile(), year: year, month: month)
 
         case (.albums, _):
             let page = try input.queryInt("page", default: 1, min: 1, max: 100)

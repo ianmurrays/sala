@@ -1,0 +1,184 @@
+{
+ "actualNumberOfParticipants": "null",
+ "addedToInstitutionCalendar": "bool",
+ "additionalResourceText": "null",
+ "additionalResources": [],
+ "allDay": "bool",
+ "attachments": [],
+ "canAnswerForSeries": "null",
+ "canEditStartDate": "bool|null",
+ "coOrganizers": [],
+ "creator": {
+  "id": "int",
+  "institutionCode": "str",
+  "institutionName": "str",
+  "institutionRole": "str",
+  "mainGroup": "null",
+  "metadata": "str",
+  "name": "str",
+  "profileId": "int",
+  "profilePicture": {
+   "bucket": "str",
+   "id": "int",
+   "isImageScalingPending": "bool",
+   "key": "str",
+   "scanningStatus": "str",
+   "url": "str"
+  },
+  "role": "str",
+  "shortName": "str"
+ },
+ "description": {
+  "html": "str"
+ },
+ "doRequestNumberOfParticipants": "bool",
+ "endDateTime": "str",
+ "eventClass": "str",
+ "hideInOwnCalendar": "bool",
+ "id": "int",
+ "institutionCode": "str",
+ "institutionName": "str",
+ "invitedGroupHomeChildren": [],
+ "invitedGroups": [],
+ "inviteeGroups": [],
+ "invitees": [
+  {
+   "instProfile": {
+    "firstName": "str",
+    "fullName": "str",
+    "id": "int",
+    "institutionCode": "str",
+    "institutionName": "str",
+    "lastName": "str",
+    "metadata": "str",
+    "profileId": "int",
+    "profilePictureUrl": "str|null",
+    "role": "str",
+    "shortName": "str"
+   },
+   "numberOfAdultParticipants": "null",
+   "numberOfChildParticipants": "null",
+   "responseDateTime": "str",
+   "responseType": "str"
+  }
+ ],
+ "isDeadlineExceeded": "bool",
+ "isDeleted": "bool",
+ "isVacationCreatedFromVacationRequest": "bool|null",
+ "lastReminderDateTime": "null",
+ "lesson": "null",
+ "maximumNumberOfParticipants": "null",
+ "occurrenceDate": "null",
+ "oldAllDay": "bool|null",
+ "oldEndDateTime": "null",
+ "oldStartDateTime": "null",
+ "pendingMedia": "bool",
+ "primaryResource": "null",
+ "primaryResourceText": "null",
+ "private": "bool",
+ "repeating": "null",
+ "responseDeadline": "null",
+ "responseRequired": "bool",
+ "startDateTime": "str",
+ "timeSlot": {
+  "breakLength": "int",
+  "canUpdateResponseToEvent": "bool",
+  "childRequired": "bool",
+  "meetingDuration": "int",
+  "meetingsBetweenBreaks": "int",
+  "numberOfParticipantsPerTimeSlot": "null",
+  "timeSlots": [
+   {
+    "answers": [
+     {
+      "canRemoveBlockingOrResponseForTimeSlot": "bool",
+      "concerningProfile": {
+       "firstName": "str",
+       "fullName": "str",
+       "gender": "str",
+       "id": "int",
+       "institution": {
+        "administrativeAuthority": {
+         "id": "int",
+         "institutionCodes": [],
+         "name": "str"
+        },
+        "institutionCode": "str",
+        "institutionName": "str",
+        "municipalityCode": "str",
+        "municipalityName": "str",
+        "type": "str"
+       },
+       "lastName": "str",
+       "mailBoxId": "int",
+       "mainGroupName": "str",
+       "metadata": "str",
+       "profileId": "int",
+       "profilePicture": {
+        "bucket": "str",
+        "id": "int",
+        "isImageScalingPending": "bool",
+        "key": "str",
+        "scanningStatus": "str",
+        "url": "str"
+       },
+       "role": "str",
+       "shortName": "str",
+       "uniPersonId": "int"
+      },
+      "id": "int",
+      "instProfile": {
+       "firstName": "str",
+       "fullName": "str",
+       "gender": "str",
+       "id": "int",
+       "institution": {
+        "administrativeAuthority": {
+         "id": "int",
+         "institutionCodes": [],
+         "name": "str"
+        },
+        "institutionCode": "str",
+        "institutionName": "str",
+        "municipalityCode": "str",
+        "municipalityName": "str",
+        "type": "str"
+       },
+       "lastName": "str",
+       "mailBoxId": "int",
+       "mainGroupName": "null",
+       "metadata": "str",
+       "profileId": "int",
+       "profilePicture": {
+        "bucket": "str",
+        "id": "int",
+        "isImageScalingPending": "bool",
+        "key": "str",
+        "scanningStatus": "str",
+        "url": "str"
+       },
+       "role": "str",
+       "shortName": "str",
+       "uniPersonId": "int"
+      },
+      "selectedTimeSlotIndex": "int"
+     }
+    ],
+    "endDate": "str",
+    "id": "int",
+    "primaryResource": "null",
+    "primaryResourceText": "str",
+    "startDate": "str",
+    "timeSlotIndexes": [
+     {
+      "endTime": "str",
+      "startTime": "str"
+     }
+    ]
+   }
+  ]
+ },
+ "title": "str",
+ "type": "str",
+ "vacationRegistration": "null"
+}
