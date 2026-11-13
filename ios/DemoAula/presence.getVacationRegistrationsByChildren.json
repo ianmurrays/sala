@@ -22,7 +22,7 @@
       {
        "endDate": "2027-02-20",
        "isEditable": true,
-       "isMissingAnswer": true,
+       "isMissingAnswer": false,
        "isPresenceTimesRequired": true,
        "noteToGuardian": "",
        "responseDeadline": "2026-11-25",

@@ -509,7 +509,7 @@ extension Aula {
         var out: [(JSONObject, Day)] = []
         var ids = Set<Int?>()
         for reg in try await getVacationRegistrations(childIds) {
-            if !reg.isMissingAnswer || ids.contains(reg.id) { continue }  // one row per child; one card per request
+            if !reg.needsAnswer || ids.contains(reg.id) { continue }  // one row per child; one card per request
             ids.insert(reg.id)
             let start = Self.localDate(reg.startDate), end = Self.localDate(reg.endDate)
             let deadline = Self.localDate(reg.responseDeadline)
@@ -730,7 +730,8 @@ extension Aula {
             if let code = Self.nonEmpty(child?.institutionCode), let start, let end {
                 closed = try await read("opening hours") { try await self.closedDays(code, start, end) } ?? []
             }
-            let mayAnswer = isOpen && (child == nil || child?.hasCustodyOrExtendedAccess != false)
+            // The portal's own gate (app.*.js canEdit), per child's row: isEditable, custody and the deadline.
+            let mayAnswer = isOpen && reg.isEditable && (child == nil || child?.hasCustodyOrExtendedAccess != false)
             var days: [JSONObject] = []
             if let start, let end {
                 for day in Self.weekdays(start, end) {
@@ -762,7 +763,7 @@ extension Aula {
             "endDate": J.out(end?.iso),
             "timesRequired": first.isPresenceTimesRequired,
             "answered": children.allSatisfy { ($0["answered"] as? Bool) ?? false },
-            "editable": isOpen,
+            "editable": isOpen && regs.contains(where: \.isEditable),
             "children": children,
         ]
         return (out, responses)
@@ -785,7 +786,10 @@ extension Aula {
     func answerHolidayRequest(_ profile: AulaProfile, _ requestId: String, _ answers: [(Int, ChildAnswer)]) async throws {
         if answers.isEmpty { throw MapError.badRequest("children is empty") }
         let (out, responses) = try await holiday(profile, requestId, strict: true)
-        if !((out["editable"] as? Bool) ?? false) { throw MapError.conflict("The deadline for this holiday request has passed") }
+        if !((out["editable"] as? Bool) ?? false) {
+            let passed = (out["deadline"] as? String).flatMap(Day.parse).map { $0 < AulaTime.today() } ?? false
+            throw MapError.conflict(passed ? "The deadline for this holiday request has passed" : "Aula no longer takes an answer to this holiday request")
+        }
         let withTimes = (out["timesRequired"] as? Bool) ?? false
         var byChild: [Int: JSONObject] = [:]
         for c in out["children"] as? [JSONObject] ?? [] {
@@ -890,6 +894,144 @@ extension Aula {
             throw MapError.badRequest("\(Self.nonEmpty(known[cid]?.name) ?? String(cid)): \(reason)")
         }
         try await addVacation(unique, start: start, end: end, comment: comment)
+    }
+
+    /// `GET /holiday-requests`: requests whose deadline hasn't passed, answered or not, so an answer
+    /// can be changed. Same rows and deadline rule as `holiday`.
+    func openHolidayRequests(_ profile: AulaProfile) async throws -> [JSONObject] {
+        let today = AulaTime.today()
+        var order: [Int] = []
+        var rows: [Int: [VacationRegistration]] = [:]
+        for reg in try await getVacationRegistrations(profile.children.map(\.id)) {
+            guard let id = reg.id, id != 0 else { continue }
+            if !reg.isEditable { continue }
+            if let d = Self.localDate(reg.responseDeadline), d < today { continue }
+            if rows[id] == nil { order.append(id) }
+            rows[id, default: []].append(reg)
+        }
+        let out = order.map { id -> (JSONObject, Day) in
+            let regs = rows[id]!, first = regs[0]
+            let deadline = Self.localDate(first.responseDeadline)
+            return ([
+                "id": "vacation-\(id)",
+                "title": Self.nonEmpty(first.title) ?? "",
+                "startDate": J.out(Self.localDate(first.startDate)?.iso),
+                "endDate": J.out(Self.localDate(first.endDate)?.iso),
+                "deadline": J.out(deadline?.iso),
+                "answered": regs.allSatisfy { !$0.isMissingAnswer },
+            ], deadline ?? Day(ordinal: Int.max))
+        }
+        return out.enumerated().sorted { ($0.element.1, $0.offset) < ($1.element.1, $1.offset) }.map(\.element.0)
+    }
+
+    // MARK: registered absences
+
+    struct RegisteredAbsence {
+        var id: Int
+        var children: [(id: Int, name: String)]
+        var start: Day
+        var end: Day
+        var comment: String
+        var editable: Bool
+
+        var json: JSONObject {
+            ["id": "absence-\(id)", "children": children.map { ["id": $0.id, "name": $0.name] as JSONObject },
+             "startDate": start.iso, "endDate": end.iso, "comment": comment, "editable": editable]
+        }
+    }
+
+    /// Registered holidays and days off that haven't ended, one per Aula event, by start date.
+    ///
+    /// From the portal bundle (app.*.js, the guardian's absence list, LOAD_VACATION_ANNOUCEMENTS_BY_CHILDREN
+    /// in 0.*.js: GET `?method=presence.getVacationAnnouncementsByChildren` with `childIds`). The list
+    /// reads `data` as [{child, vacationAnnouncements: [{vacationId, startDate, endDate, description,
+    /// isEditable}]}], and `vacationId` is the calendar event's id. Live shape:
+    /// docs/aula-shapes/presence.getVacationAnnouncementsByChildren.json (dates are plain "YYYY-MM-DD").
+    func absences(_ profile: AulaProfile) async throws -> [RegisteredAbsence] {
+        let today = AulaTime.today()
+        let r = try await get("presence.getVacationAnnouncementsByChildren", Self.ids("childIds[]", profile.children.map(\.id)))
+        var out: [RegisteredAbsence] = []
+        for case let group as JSONObject in J.list(J.get(r, "data")) ?? [] {
+            let childId = J.int(J.getIn(group, "child.id"))
+            let child = childId.flatMap { id in profile.children.first { $0.id == id } }
+            let name = Self.nonEmpty(child?.name) ?? J.str(J.getIn(group, "child.name")) ?? ""
+            for case let a as JSONObject in J.list(J.get(group, "vacationAnnouncements")) ?? [] {
+                guard let id = J.int(J.get(a, "vacationId")), let start = Self.date(J.get(a, "startDate")),
+                      let end = Self.date(J.get(a, "endDate")), end >= today else { continue }
+                let editable = J.truthy(J.get(a, "isEditable")) && child?.hasCustodyOrExtendedAccess != false
+                if let i = out.firstIndex(where: { $0.id == id }) {
+                    // The same event under two children: one entry, editable only if it is for both.
+                    if let childId, !out[i].children.contains(where: { $0.id == childId }) { out[i].children.append((childId, name)) }
+                    out[i].editable = out[i].editable && editable
+                    continue
+                }
+                out.append(RegisteredAbsence(id: id, children: childId.map { [($0, name)] } ?? [], start: start, end: end,
+                                   comment: J.str(J.get(a, "description")) ?? "", editable: editable))
+            }
+        }
+        return out.enumerated().sorted { ($0.element.start, $0.offset) < ($1.element.start, $1.offset) }.map(\.element)
+    }
+
+    /// The absence `id` names, if it is one of ours that may be changed. The writes act on any calendar
+    /// event, so only an id from our own list is ever sent.
+    private func editableAbsence(_ profile: AulaProfile, _ id: String) async throws -> RegisteredAbsence {
+        let digits = id.hasPrefix("absence-") ? String(id.dropFirst("absence-".count)) : ""
+        guard Py.isDigits(digits), let wanted = Int(digits),
+              let absence = try await absences(profile).first(where: { $0.id == wanted }) else { throw MapError.notFound("absence \(id)") }
+        if !absence.editable { throw MapError.conflict("This absence can no longer be changed") }
+        return absence
+    }
+
+    /// Change an absence's dates or comment.
+    ///
+    /// Payload from the portal bundle (app.*.js, the register-vacation drawer's `updateVacation` ->
+    /// UPDATE_SIMPLE_EVENT in 0.*.js, POST `?method=calendar.updateSimpleEvent`): the event read by
+    /// `calendar.getEventById` (`eventId`) gives `title`, `responseRequired`, `addedToInstitutionCalendar`,
+    /// `hideInOwnCalendar` and `canEditStartDate` (the drawer locks the start date unless it is true);
+    /// dates are "YYYY-MM-DD", `description` the plain comment. The store's `w()` adds
+    /// `addToInstitutionCalendar` when `hideInOwnCalendar` is set. Never tried against live Aula.
+    func updateAbsence(_ profile: AulaProfile, _ id: String, _ start: Day, _ end: Day, _ comment: String) async throws {
+        let today = AulaTime.today()
+        if end < today { throw MapError.badRequest("end date \(end.iso) is in the past") }
+        // The start date's own rule waits for the event: an unchanged start may be in the past.
+        if let err = Self.validateVacation(start: start, end: end, comment: comment, today: min(start, today)) {
+            throw MapError.badRequest(err)
+        }
+        let absence = try await editableAbsence(profile, id)
+        guard let event = J.dict(J.get(try await get("calendar.getEventById", [("eventId", String(absence.id))]), "data")) else {
+            throw MapError.upstream("Aula sent no event for \(id)")
+        }
+        if start != (Self.date(J.get(event, "startDateTime")) ?? absence.start) {
+            if J.bool(J.get(event, "canEditStartDate")) != true {
+                throw MapError.badRequest("the start date can no longer be changed")
+            }
+            if let err = Self.validateVacation(start: start, end: end, comment: comment, today: today) { throw MapError.badRequest(err) }
+        }
+        let hide = J.get(event, "hideInOwnCalendar")
+        var body: JSONObject = [
+            "eventId": absence.id,
+            "startDateTime": start.iso,
+            "endDateTime": end.iso,
+            "type": "presence_holiday",
+            "description": comment,
+            "title": J.get(event, "title") ?? "",
+            "allDay": true,
+            "private": false,
+            "responseRequired": J.get(event, "responseRequired") ?? NSNull(),
+            "addedToInstitutionCalendar": J.get(event, "addedToInstitutionCalendar") ?? NSNull(),
+            "hideInOwnCalendar": hide ?? NSNull(),
+            "isEditEvent": true,
+        ]
+        if J.truthy(hide) { body["addToInstitutionCalendar"] = hide! }
+        _ = try await post("calendar.updateSimpleEvent", body)
+    }
+
+    /// Cancel an absence. From the portal bundle (app.*.js drawer `deleteVacation` -> DELETE_EVENT in
+    /// 0.*.js: POST `?method=calendar.deleteEvent` with `{id, occurrenceDateTime}`; the latter is unset
+    /// for an absence, so not sent). Never tried against live Aula.
+    func deleteAbsence(_ profile: AulaProfile, _ id: String) async throws {
+        let absence = try await editableAbsence(profile, id)
+        _ = try await post("calendar.deleteEvent", ["id": absence.id] as JSONObject)
     }
 
     // MARK: contacts

@@ -56,7 +56,7 @@ extension Aula {
     // MARK: routing
 
     private enum Route {
-        case today, pickup(String), sick(String), holiday(String), absences, posts, save(String)
+        case today, pickup(String), sick(String), holiday(String), holidays, absences, absence(String), posts, save(String)
         case albums, photos(String), search, calendar, contactGroups, contactGroup(String)
         case attachment(String), threads, thread(String), reply(String), folders, folder(String)
     }
@@ -66,7 +66,8 @@ extension Aula {
         case 1:
             switch s[0] {
             case "today": return (.today, ["GET"])
-            case "absences": return (.absences, ["POST"])
+            case "absences": return (.absences, ["GET", "POST"])
+            case "holiday-requests": return (.holidays, ["GET"])
             case "posts": return (.posts, ["GET"])
             case "albums": return (.albums, ["GET"])
             case "search": return (.search, ["GET"])
@@ -78,6 +79,7 @@ extension Aula {
         case 2:
             switch s[0] {
             case "holiday-requests": return (.holiday(s[1]), ["GET", "POST"])
+            case "absences": return (.absence(s[1]), ["PUT", "DELETE"])
             case "attachments": return (.attachment(s[1]), ["GET"])
             case "threads": return (.thread(s[1]), ["GET", "PATCH"])
             case "folders": return (.folder(s[1]), ["PATCH", "DELETE"])
@@ -164,6 +166,24 @@ extension Aula {
             let profile = try await profile()
             try await answerHolidayRequest(profile, id, answers)
             return try await holidayRequest(profile, id)
+
+        case (.holidays, _):
+            return try await openHolidayRequests(try await profile())
+
+        case (.absences, "GET"):
+            return try await absences(try await profile()).map(\.json)
+
+        case let (.absence(id), "PUT"):
+            let b = try input.object()
+            let start = try Input.date(Input.required(b, "startDate"), "startDate")
+            let end = try Input.date(Input.required(b, "endDate"), "endDate")
+            let comment = b["comment"] == nil ? "" : try Input.str(b, "comment")
+            try await updateAbsence(try await profile(), id, start, end, comment)
+            return ["ok": true]
+
+        case let (.absence(id), _):
+            try await deleteAbsence(try await profile(), id)
+            return ["ok": true]
 
         case (.absences, _):
             let b = try input.object()

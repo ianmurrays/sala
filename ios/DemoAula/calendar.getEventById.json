@@ -1,0 +1,68 @@
+[
+ {
+  "when": {
+   "eventId": "7001"
+  },
+  "answer": {
+   "status": {
+    "code": 0,
+    "message": "OK"
+   },
+   "data": {
+    "id": 7001,
+    "title": "Ferie/fri",
+    "type": "presence_holiday",
+    "allDay": true,
+    "startDateTime": "2026-11-20T00:00:00+00:00",
+    "endDateTime": "2026-11-21T23:59:00+00:00",
+    "description": {
+     "html": "Bedsteforældre på besøg"
+    },
+    "canEditStartDate": true,
+    "responseRequired": false,
+    "addedToInstitutionCalendar": false,
+    "hideInOwnCalendar": false,
+    "private": false,
+    "institutionCode": "999001",
+    "institutionName": "Børnehuset",
+    "creator": {
+     "id": 2001,
+     "name": "Oskar"
+    }
+   }
+  }
+ },
+ {
+  "when": {
+   "eventId": "7002"
+  },
+  "answer": {
+   "status": {
+    "code": 0,
+    "message": "OK"
+   },
+   "data": {
+    "id": 7002,
+    "title": "Ferie/fri",
+    "type": "presence_holiday",
+    "allDay": true,
+    "startDateTime": "2026-12-28T00:00:00+00:00",
+    "endDateTime": "2026-12-30T23:59:00+00:00",
+    "description": {
+     "html": "Skiferie"
+    },
+    "canEditStartDate": true,
+    "responseRequired": false,
+    "addedToInstitutionCalendar": false,
+    "hideInOwnCalendar": false,
+    "private": false,
+    "institutionCode": "999001",
+    "institutionName": "Børnehuset",
+    "creator": {
+     "id": 2001,
+     "name": "Oskar"
+    }
+   }
+  }
+ }
+]

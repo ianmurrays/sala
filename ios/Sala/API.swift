@@ -373,6 +373,34 @@ struct AbsenceRequest: Encodable, Sendable {
     var comment: String
 }
 
+/// `GET /holiday-requests`: one that can still be answered.
+struct HolidayRequestSummary: Decodable, Sendable, Equatable, Identifiable {
+    var id: String
+    var title: String
+    var startDate: String?
+    var endDate: String?
+    var deadline: String?
+    var answered: Bool
+}
+
+/// `GET /absences`: a registered holiday or days off.
+struct Absence: Decodable, Sendable, Equatable, Identifiable {
+    struct Child: Decodable, Sendable, Equatable { var id: Int; var name: String }
+    var id: String
+    var children: [Child]
+    var startDate: String
+    var endDate: String
+    var comment: String
+    var editable: Bool
+}
+
+/// `PUT /absences/{id}`.
+struct AbsenceChange: Encodable, Sendable {
+    var startDate: String
+    var endDate: String
+    var comment: String
+}
+
 struct OkResponse: Decodable, Sendable { var ok: Bool }
 
 extension KeyedDecodingContainer {
@@ -473,8 +501,16 @@ struct APIClient: Sendable {
     func answerHolidayRequest(_ id: String, _ answer: HolidayAnswer) async throws -> HolidayRequest {
         try await send("POST", "/holiday-requests/\(id.urlPathEscaped)", body: answer)
     }
+    func holidayRequests() async throws -> [HolidayRequestSummary] { try await send("GET", "/holiday-requests") }
     func addAbsence(_ request: AbsenceRequest) async throws {
         let _: OkResponse = try await send("POST", "/absences", body: request)
+    }
+    func absences() async throws -> [Absence] { try await send("GET", "/absences") }
+    func changeAbsence(_ id: String, _ change: AbsenceChange) async throws {
+        let _: OkResponse = try await send("PUT", "/absences/\(id.urlPathEscaped)", body: change)
+    }
+    func cancelAbsence(_ id: String) async throws {
+        let _: OkResponse = try await send("DELETE", "/absences/\(id.urlPathEscaped)")
     }
 
     private static let pictureCache = URL.cachesDirectory.appending(path: "pictures", directoryHint: .isDirectory)

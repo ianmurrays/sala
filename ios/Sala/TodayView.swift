@@ -5,6 +5,7 @@ struct TodayView: View {
     @State private var pickupChild: Child?
     @State private var holidayItem: AttentionItem?
     @State private var showAbsence = false
+    @State private var showHolidays = false
     @State private var showContacts = false
     @State private var attachments = AttachmentOpener()
 
@@ -27,7 +28,10 @@ struct TodayView: View {
                 PickupSheet(child: child)
             }
             .sheet(item: $holidayItem) { item in
-                HolidaySheet(item: item)
+                HolidaySheet(id: item.id, fallbackTitle: item.title)
+            }
+            .sheet(isPresented: $showHolidays) {
+                HolidaysView()
             }
             .sheet(isPresented: $showAbsence) {
                 AbsenceSheet()
@@ -114,10 +118,18 @@ struct TodayView: View {
             ChildCard(child: child) { pickupChild = child }
         }
         if !today.children.isEmpty {
-            Button { showAbsence = true } label: {
-                Label("Register holiday or days off", systemImage: "sun.max")
-                    .font(.body.weight(.semibold))
-                    .frame(maxWidth: .infinity, minHeight: 30)
+            HStack(spacing: 10) {
+                Button { showAbsence = true } label: {
+                    Label("Register holiday or days off", systemImage: "sun.max")
+                        .font(.body.weight(.semibold))
+                        .frame(maxWidth: .infinity, minHeight: 30)
+                }
+                Button { showHolidays = true } label: {
+                    Image(systemName: "list.bullet")
+                        .font(.body.weight(.semibold))
+                        .frame(minWidth: 30, minHeight: 30)
+                }
+                .accessibilityLabel("Registered holidays")
             }
             .buttonStyle(.glass)
             .tint(.salaAccent)
