@@ -221,6 +221,7 @@ final class GoldenTests: XCTestCase {
     func testSave() async throws { try await run("save") }
     func testGallery() async throws { try await run("gallery") }
     func testCalendar() async throws { try await run("calendar") }
+    func testContacts() async throws { try await run("contacts") }
     func testThreads() async throws { try await run("threads") }
     func testPatchThread() async throws { try await run("patch_thread") }
     func testThreadDetail() async throws { try await run("thread_detail") }
@@ -233,7 +234,7 @@ final class GoldenTests: XCTestCase {
     func testAllScenariosCovered() throws {
         let tested: Set<String> = [
             "today", "today_partial", "session_gone", "pickup", "pickup_absent", "sick", "holiday", "absences", "absence_denied",
-            "posts", "gallery", "calendar", "save", "threads", "patch_thread", "thread_detail", "reply", "folders", "attachments", "guards",
+            "posts", "gallery", "calendar", "contacts", "save", "threads", "patch_thread", "thread_detail", "reply", "folders", "attachments", "guards",
         ]
         let files = try FileManager.default.contentsOfDirectory(atPath: goldensDir.path)
             .filter { $0.hasSuffix(".json") && !$0.hasPrefix("_") }.map { String($0.dropLast(5)) }

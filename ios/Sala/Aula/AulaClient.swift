@@ -191,6 +191,32 @@ extension Aula {
         return (J.list(r["data"]) ?? []).compactMap { $0 as? JSONObject }
     }
 
+    // MARK: contacts
+
+    /// The portal's contact book (0.*.js LOAD_GROUP_FILTER: GET groups.getGroupsByContext with
+    /// `childInstitutionProfileIds`; answers `[{displayName, profileId, groups: [{id, name, showAsDefault}]}]`).
+    func getGroupsByContext(_ childId: Int) async throws -> [JSONObject] {
+        let r = try await get("groups.getGroupsByContext", [("childInstitutionProfileIds[]", String(childId))])
+        return (J.list(r["data"]) ?? []).compactMap { $0 as? JSONObject }
+    }
+
+    /// 0.*.js LOAD_CONTACT_LIST: GET profiles.getContactlist `{groupId, filter, field, page, order}`, 20 rows a
+    /// page; the portal asks for the next page while one comes back with 20 or more. `filter` is the portal's
+    /// child|boy|girl|guardian|employee, `field` name|birthday, `page` 1-based.
+    func getContactList(group: Int, filter: String) async throws -> [JSONObject] {
+        var out: [JSONObject] = []
+        // ponytail: 25 pages (500 people) caps a runaway loop; no group in a school is that big
+        for page in 1...25 {
+            let r = try await get("profiles.getContactlist", [
+                ("groupId", String(group)), ("filter", filter), ("field", "name"), ("page", String(page)), ("order", "asc"),
+            ])
+            let rows = (J.list(r["data"]) ?? []).compactMap { $0 as? JSONObject }
+            out += rows
+            if rows.count < 20 { break }
+        }
+        return out
+    }
+
     // MARK: posts
 
     func getPosts(_ institutionProfileIds: [Int], page: Int = 1, limit: Int = 10) async throws -> [AulaPost] {

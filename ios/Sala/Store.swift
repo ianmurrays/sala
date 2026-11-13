@@ -2,7 +2,7 @@ import Foundation
 import Observation
 import WidgetKit
 
-enum AppTab: Hashable { case today, calendar, messages, gallery }
+enum AppTab: Hashable { case today, calendar, messages, gallery, contacts }
 
 @MainActor @Observable
 final class Store {

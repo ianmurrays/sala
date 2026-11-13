@@ -57,7 +57,7 @@ extension Aula {
 
     private enum Route {
         case today, features, translate, pickup(String), sick(String), holiday(String), absences, posts, save(String)
-        case albums, photos(String), calendar
+        case albums, photos(String), calendar, contactGroups, contactGroup(String)
         case attachment(String), threads, thread(String), reply(String), folders, folder(String)
     }
 
@@ -82,6 +82,7 @@ extension Aula {
             case "attachments": return (.attachment(s[1]), ["GET"])
             case "threads": return (.thread(s[1]), ["GET", "PATCH"])
             case "folders": return (.folder(s[1]), ["PATCH", "DELETE"])
+            case "contacts" where s[1] == "groups": return (.contactGroups, ["GET"])
             default: return nil
             }
         case 3:
@@ -90,6 +91,7 @@ extension Aula {
             case ("children", "sick"): return (.sick(s[1]), ["POST", "DELETE"])
             case ("posts", "save"): return (.save(s[1]), ["POST", "DELETE"])
             case ("albums", "photos"): return (.photos(s[1]), ["GET"])
+            case ("contacts", _) where s[1] == "groups": return (.contactGroup(s[2]), ["GET"])
             case ("threads", "reply"): return (.reply(s[1]), ["POST"])
             default: return nil
             }
@@ -206,6 +208,12 @@ extension Aula {
             let albumId = try Input.pathInt(id, "album_id")
             let page = try input.queryInt("page", default: 1, min: 1, max: 100)
             return try await albumPhotos(try await profile(), albumId, page: page)
+
+        case (.contactGroups, _):
+            return try await contactGroups(try await profile())
+
+        case let (.contactGroup(id), _):
+            return try await groupContacts(try Input.pathInt(id, "group_id"))
 
         case let (.save(id), _):
             let postId = try Input.pathInt(id, "post_id")

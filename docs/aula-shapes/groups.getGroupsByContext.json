@@ -1,0 +1,14 @@
+[
+ {
+  "displayName": "str",
+  "groups": [
+   {
+    "id": "int",
+    "institutionCode": "str",
+    "name": "str",
+    "showAsDefault": "bool"
+   }
+  ],
+  "profileId": "int"
+ }
+]
