@@ -1,0 +1,29 @@
+[
+ {
+  "answer": {
+   "data": [
+    {
+     "allDay": false,
+     "endDateTime": "2026-11-18T11:00:00+01:00",
+     "id": 5001,
+     "startDateTime": "2026-11-18T09:00:00+01:00",
+     "title": "Juleklip i Stue",
+     "type": "event"
+    },
+    {
+     "allDay": true,
+     "endDateTime": "2026-11-27T17:00:00+01:00",
+     "id": 5002,
+     "startDateTime": "2026-11-27T09:00:00+01:00",
+     "title": "Personaledag – Børnehuset lukket",
+     "type": "event"
+    }
+   ],
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {}
+ }
+]

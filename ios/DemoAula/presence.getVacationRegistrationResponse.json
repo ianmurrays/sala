@@ -1,0 +1,151 @@
+[
+ {
+  "answer": {
+   "data": {
+    "vacationRegistration": {
+     "endDate": "2026-12-23",
+     "isEditable": true,
+     "isMissingAnswer": true,
+     "noteToGuardian": "Giv besked om Oskar holder fri.",
+     "responseDeadline": "2026-11-14",
+     "responseId": 5501,
+     "startDate": "2026-12-21",
+     "title": "Juleferie",
+     "vacationRegistrationId": 55
+    },
+    "vacationRegistrationResponse": {
+     "childId": 2001,
+     "comment": "",
+     "days": [],
+     "vacationRegistrationResponseId": 5501
+    }
+   },
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {
+   "vacationRegistrationResponseId": "5501"
+  }
+ },
+ {
+  "answer": {
+   "data": {
+    "vacationRegistration": {
+     "endDate": "2027-02-20",
+     "isEditable": true,
+     "isMissingAnswer": true,
+     "isPresenceTimesRequired": true,
+     "noteToGuardian": "",
+     "responseDeadline": "2026-11-25",
+     "responseId": 5601,
+     "startDate": "2027-02-16",
+     "title": "Vinterferie",
+     "vacationRegistrationId": 56
+    },
+    "vacationRegistrationResponse": {
+     "childId": 2001,
+     "comment": "",
+     "days": [],
+     "vacationRegistrationResponseId": 5601
+    }
+   },
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {
+   "vacationRegistrationResponseId": "5601"
+  }
+ },
+ {
+  "answer": {
+   "data": {
+    "vacationRegistration": {
+     "endDate": "2026-10-28",
+     "isEditable": false,
+     "isMissingAnswer": false,
+     "responseDeadline": "2026-10-14",
+     "responseId": 5401,
+     "startDate": "2026-10-24",
+     "title": "Efterårsferie",
+     "vacationRegistrationId": 54
+    },
+    "vacationRegistrationResponse": {
+     "childId": 2001,
+     "comment": "",
+     "days": [
+      {
+       "date": "2026-10-24",
+       "entryTime": null,
+       "exitTime": null,
+       "isComing": false
+      },
+      {
+       "date": "2026-10-25",
+       "entryTime": null,
+       "exitTime": null,
+       "isComing": false
+      },
+      {
+       "date": "2026-10-26",
+       "entryTime": null,
+       "exitTime": null,
+       "isComing": false
+      },
+      {
+       "date": "2026-10-27",
+       "entryTime": null,
+       "exitTime": null,
+       "isComing": false
+      },
+      {
+       "date": "2026-10-28",
+       "entryTime": null,
+       "exitTime": null,
+       "isComing": false
+      }
+     ],
+     "vacationRegistrationResponseId": 5401
+    }
+   },
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {
+   "vacationRegistrationResponseId": "5401"
+  }
+ },
+ {
+  "answer": {
+   "data": {
+    "vacationRegistration": {
+     "endDate": "2026-12-23",
+     "isEditable": true,
+     "isMissingAnswer": true,
+     "noteToGuardian": "Giv besked om Oskar holder fri.",
+     "responseDeadline": "2026-11-14",
+     "responseId": 5501,
+     "startDate": "2026-12-21",
+     "title": "Juleferie",
+     "vacationRegistrationId": 55
+    },
+    "vacationRegistrationResponse": {
+     "childId": 2001,
+     "comment": "",
+     "days": [],
+     "vacationRegistrationResponseId": 5501
+    }
+   },
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {}
+ }
+]

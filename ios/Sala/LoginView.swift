@@ -26,18 +26,18 @@ struct LoginView: View {
                         .multilineTextAlignment(.center)
                         .foregroundStyle(.secondary)
 
-                    Button {
-                        error = nil
-                        showWeb = true
-                    } label: {
-                        Group {
-                            if finishing { ProgressView() } else { Text("Log in with MitID").bold() }
-                        }
-                        .frame(maxWidth: .infinity, minHeight: 32)
+                    #if DEBUG
+                    if DemoTransport.enabled {
+                        // Demo mode never shows the MitID button: there is no real login to start.
+                        Button("Back to demo data") { Task { await store.load() } }
+                            .buttonStyle(.glassProminent)
+                            .controlSize(.large)
+                    } else {
+                        mitIDButton
                     }
-                    .buttonStyle(.glassProminent)
-                    .controlSize(.large)
-                    .disabled(finishing)
+                    #else
+                    mitIDButton
+                    #endif
 
                     if let error {
                         Label(error, systemImage: "exclamationmark.triangle.fill")
@@ -68,6 +68,21 @@ struct LoginView: View {
                 }
             }
         }
+    }
+
+    private var mitIDButton: some View {
+        Button {
+            error = nil
+            showWeb = true
+        } label: {
+            Group {
+                if finishing { ProgressView() } else { Text("Log in with MitID").bold() }
+            }
+            .frame(maxWidth: .infinity, minHeight: 32)
+        }
+        .buttonStyle(.glassProminent)
+        .controlSize(.large)
+        .disabled(finishing)
     }
 }
 

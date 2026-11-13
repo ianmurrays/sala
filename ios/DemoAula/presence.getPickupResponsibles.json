@@ -1,0 +1,34 @@
+[
+ {
+  "answer": {
+   "data": [
+    {
+     "pickupSuggestions": [
+      {
+       "id": 81,
+       "pickUpName": "Mormor Lis"
+      }
+     ],
+     "relatedPersons": [
+      {
+       "institutionProfileId": 1001,
+       "name": "Jonas Hansen",
+       "relation": "Far"
+      },
+      {
+       "institutionProfileId": 1002,
+       "name": "Maria Hansen",
+       "relation": "Mor"
+      }
+     ],
+     "uniStudentId": 2001
+    }
+   ],
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {}
+ }
+]

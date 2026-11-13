@@ -1,0 +1,26 @@
+[
+ {
+  "answer": {
+   "data": {
+    "openingHoursOverviewDto": [
+     {
+      "institutionCode": "999001",
+      "openingHoursDto": [
+       {
+        "closeTime": "16:45",
+        "date": "2026-11-13",
+        "openTime": "06:30",
+        "type": "general_opening_hours"
+       }
+      ]
+     }
+    ]
+   },
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {}
+ }
+]

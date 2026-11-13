@@ -1,0 +1,998 @@
+[
+ {
+  "answer": {
+   "data": {
+    "posts": [
+     {
+      "allowComments": true,
+      "attachments": [
+       {
+        "file": {
+         "id": 9901,
+         "name": "Præsentation.pdf",
+         "scanningStatus": "Clean",
+         "url": "https://fake-files.aula.dk/files/praesentation.pdf"
+        },
+        "id": 9901,
+        "status": "available"
+       }
+      ],
+      "commentCount": 0,
+      "content": {
+       "html": "<p>Kære forældre,</p><p>Vinteren er på vej. Husk <b>flyverdragt</b> og ekstra vanter.</p><p>Se præsentationen fra forældremødet.</p>"
+      },
+      "id": 401,
+      "importantFrom": "2026-11-12T10:40:21+01:00",
+      "importantTo": "2026-11-20T10:40:21+01:00",
+      "isBookmarked": false,
+      "isImportant": true,
+      "isPublished": true,
+      "ownerProfile": {
+       "firstName": "Anne",
+       "fullName": "Anne Holm",
+       "id": 1501,
+       "institution": {
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset"
+       },
+       "lastName": "Holm",
+       "profileId": 11501,
+       "profilePicture": null,
+       "role": "employee",
+       "shortName": "AH"
+      },
+      "sharedWithGroups": [
+       {
+        "id": 3001,
+        "name": "Stue",
+        "shortName": "Stue"
+       }
+      ],
+      "timestamp": "2026-11-13T07:40:21+01:00",
+      "title": "Velkommen til vinteren"
+     },
+     {
+      "allowComments": true,
+      "attachments": [
+       {
+        "id": 9902,
+        "media": {
+         "file": {
+          "id": 9902,
+          "name": "skovtur.png",
+          "url": "https://fake-files.aula.dk/files/skovtur.png"
+         },
+         "mediaType": "image",
+         "thumbnailUrl": "https://fake-files.aula.dk/files/skovtur.png",
+         "title": "Skovtur"
+        },
+        "status": "available"
+       }
+      ],
+      "commentCount": 0,
+      "content": {
+       "html": "<p>Vi havde en dejlig tur i skoven i går. Her er et af billederne.</p>"
+      },
+      "id": 402,
+      "isBookmarked": false,
+      "isImportant": false,
+      "isPublished": true,
+      "ownerProfile": {
+       "firstName": "Mette",
+       "fullName": "Mette Lund",
+       "id": 1502,
+       "institution": {
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset"
+       },
+       "lastName": "Lund",
+       "profileId": 11502,
+       "profilePicture": {
+        "id": 77,
+        "url": "https://fake-files.aula.dk/files/profile.png?sig=0"
+       },
+       "role": "employee",
+       "shortName": "ML"
+      },
+      "sharedWithGroups": [
+       {
+        "id": 3001,
+        "name": "Stue",
+        "shortName": "Stue"
+       }
+      ],
+      "timestamp": "2026-11-12T08:40:21+01:00",
+      "title": "Billeder fra skovturen"
+     },
+     {
+      "allowComments": true,
+      "attachments": [
+       {
+        "id": 9904,
+        "link": {
+         "name": "Tøjliste",
+         "service": "onedrive",
+         "url": "https://onedrive.live.com/view?id=fake"
+        },
+        "status": "available"
+       }
+      ],
+      "commentCount": 0,
+      "content": {
+       "html": "<p>Vi har en stor bunke glemt tøj. Skriv venligst navn i alt tøj.</p>"
+      },
+      "id": 403,
+      "isBookmarked": true,
+      "isImportant": false,
+      "isPublished": true,
+      "ownerProfile": {
+       "firstName": "Kasper",
+       "fullName": "Kasper Berg",
+       "id": 1503,
+       "institution": {
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset"
+       },
+       "lastName": "Berg",
+       "profileId": 11503,
+       "profilePicture": null,
+       "role": "employee",
+       "shortName": "KB"
+      },
+      "sharedWithGroups": [
+       {
+        "id": 3001,
+        "name": "Stue",
+        "shortName": "Stue"
+       }
+      ],
+      "timestamp": "2026-11-10T10:40:21+01:00",
+      "title": "Husk navn i tøjet"
+     },
+     {
+      "allowComments": true,
+      "attachments": [],
+      "commentCount": 0,
+      "content": {
+       "html": "<p>Kort nyt fra Stue, opslag 1.</p>"
+      },
+      "id": 399,
+      "isBookmarked": false,
+      "isImportant": false,
+      "isPublished": true,
+      "ownerProfile": {
+       "firstName": "Anne",
+       "fullName": "Anne Holm",
+       "id": 1501,
+       "institution": {
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset"
+       },
+       "lastName": "Holm",
+       "profileId": 11501,
+       "profilePicture": null,
+       "role": "employee",
+       "shortName": "AH"
+      },
+      "sharedWithGroups": [
+       {
+        "id": 3001,
+        "name": "Stue",
+        "shortName": "Stue"
+       }
+      ],
+      "timestamp": "2026-11-09T10:40:21+01:00",
+      "title": "Ugeplan (uge 1)"
+     },
+     {
+      "allowComments": true,
+      "attachments": [],
+      "commentCount": 0,
+      "content": {
+       "html": "<p>Kort nyt fra Stue, opslag 2.</p>"
+      },
+      "id": 398,
+      "isBookmarked": false,
+      "isImportant": false,
+      "isPublished": true,
+      "ownerProfile": {
+       "firstName": "Mette",
+       "fullName": "Mette Lund",
+       "id": 1502,
+       "institution": {
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset"
+       },
+       "lastName": "Lund",
+       "profileId": 11502,
+       "profilePicture": {
+        "id": 77,
+        "url": "https://fake-files.aula.dk/files/profile.png?sig=0"
+       },
+       "role": "employee",
+       "shortName": "ML"
+      },
+      "sharedWithGroups": [
+       {
+        "id": 3001,
+        "name": "Stue",
+        "shortName": "Stue"
+       }
+      ],
+      "timestamp": "2026-11-07T22:40:21+01:00",
+      "title": "Nyt fra Stue (uge 2)"
+     },
+     {
+      "allowComments": true,
+      "attachments": [],
+      "commentCount": 0,
+      "content": {
+       "html": "<p>Kort nyt fra Stue, opslag 3.</p>"
+      },
+      "id": 397,
+      "isBookmarked": false,
+      "isImportant": false,
+      "isPublished": true,
+      "ownerProfile": {
+       "firstName": "Kasper",
+       "fullName": "Kasper Berg",
+       "id": 1503,
+       "institution": {
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset"
+       },
+       "lastName": "Berg",
+       "profileId": 11503,
+       "profilePicture": null,
+       "role": "employee",
+       "shortName": "KB"
+      },
+      "sharedWithGroups": [
+       {
+        "id": 3001,
+        "name": "Stue",
+        "shortName": "Stue"
+       }
+      ],
+      "timestamp": "2026-11-06T10:40:21+01:00",
+      "title": "Turdag (uge 3)"
+     },
+     {
+      "allowComments": true,
+      "attachments": [],
+      "commentCount": 0,
+      "content": {
+       "html": "<p>Kort nyt fra Stue, opslag 4.</p>"
+      },
+      "id": 396,
+      "isBookmarked": false,
+      "isImportant": false,
+      "isPublished": true,
+      "ownerProfile": {
+       "firstName": "Anne",
+       "fullName": "Anne Holm",
+       "id": 1501,
+       "institution": {
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset"
+       },
+       "lastName": "Holm",
+       "profileId": 11501,
+       "profilePicture": null,
+       "role": "employee",
+       "shortName": "AH"
+      },
+      "sharedWithGroups": [
+       {
+        "id": 3001,
+        "name": "Stue",
+        "shortName": "Stue"
+       }
+      ],
+      "timestamp": "2026-11-04T22:40:21+01:00",
+      "title": "Madpakker (uge 4)"
+     },
+     {
+      "allowComments": true,
+      "attachments": [],
+      "commentCount": 0,
+      "content": {
+       "html": "<p>Kort nyt fra Stue, opslag 5.</p>"
+      },
+      "id": 395,
+      "isBookmarked": false,
+      "isImportant": false,
+      "isPublished": true,
+      "ownerProfile": {
+       "firstName": "Mette",
+       "fullName": "Mette Lund",
+       "id": 1502,
+       "institution": {
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset"
+       },
+       "lastName": "Lund",
+       "profileId": 11502,
+       "profilePicture": {
+        "id": 77,
+        "url": "https://fake-files.aula.dk/files/profile.png?sig=0"
+       },
+       "role": "employee",
+       "shortName": "ML"
+      },
+      "sharedWithGroups": [
+       {
+        "id": 3001,
+        "name": "Stue",
+        "shortName": "Stue"
+       }
+      ],
+      "timestamp": "2026-11-03T10:40:21+01:00",
+      "title": "Sangdag (uge 5)"
+     },
+     {
+      "allowComments": true,
+      "attachments": [],
+      "commentCount": 0,
+      "content": {
+       "html": "<p>Kort nyt fra Stue, opslag 6.</p>"
+      },
+      "id": 394,
+      "isBookmarked": false,
+      "isImportant": false,
+      "isPublished": true,
+      "ownerProfile": {
+       "firstName": "Kasper",
+       "fullName": "Kasper Berg",
+       "id": 1503,
+       "institution": {
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset"
+       },
+       "lastName": "Berg",
+       "profileId": 11503,
+       "profilePicture": null,
+       "role": "employee",
+       "shortName": "KB"
+      },
+      "sharedWithGroups": [
+       {
+        "id": 3001,
+        "name": "Stue",
+        "shortName": "Stue"
+       }
+      ],
+      "timestamp": "2026-11-01T22:40:21+01:00",
+      "title": "Legetøjsdag (uge 6)"
+     },
+     {
+      "allowComments": true,
+      "attachments": [],
+      "commentCount": 0,
+      "content": {
+       "html": "<p>Kort nyt fra Stue, opslag 7.</p>"
+      },
+      "id": 393,
+      "isBookmarked": false,
+      "isImportant": false,
+      "isPublished": true,
+      "ownerProfile": {
+       "firstName": "Anne",
+       "fullName": "Anne Holm",
+       "id": 1501,
+       "institution": {
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset"
+       },
+       "lastName": "Holm",
+       "profileId": 11501,
+       "profilePicture": null,
+       "role": "employee",
+       "shortName": "AH"
+      },
+      "sharedWithGroups": [
+       {
+        "id": 3001,
+        "name": "Stue",
+        "shortName": "Stue"
+       }
+      ],
+      "timestamp": "2026-10-31T10:40:21+01:00",
+      "title": "Forældrekaffe (uge 7)"
+     }
+    ]
+   },
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {
+   "index": "0"
+  }
+ },
+ {
+  "answer": {
+   "data": {
+    "posts": [
+     {
+      "allowComments": true,
+      "attachments": [],
+      "commentCount": 0,
+      "content": {
+       "html": "<p>Kort nyt fra Stue, opslag 8.</p>"
+      },
+      "id": 392,
+      "isBookmarked": false,
+      "isImportant": false,
+      "isPublished": true,
+      "ownerProfile": {
+       "firstName": "Mette",
+       "fullName": "Mette Lund",
+       "id": 1502,
+       "institution": {
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset"
+       },
+       "lastName": "Lund",
+       "profileId": 11502,
+       "profilePicture": {
+        "id": 77,
+        "url": "https://fake-files.aula.dk/files/profile.png?sig=0"
+       },
+       "role": "employee",
+       "shortName": "ML"
+      },
+      "sharedWithGroups": [
+       {
+        "id": 3001,
+        "name": "Stue",
+        "shortName": "Stue"
+       }
+      ],
+      "timestamp": "2026-10-29T22:40:22+01:00",
+      "title": "Ugeplan (uge 8)"
+     },
+     {
+      "allowComments": true,
+      "attachments": [],
+      "commentCount": 0,
+      "content": {
+       "html": "<p>Kort nyt fra Stue, opslag 9.</p>"
+      },
+      "id": 391,
+      "isBookmarked": false,
+      "isImportant": false,
+      "isPublished": true,
+      "ownerProfile": {
+       "firstName": "Kasper",
+       "fullName": "Kasper Berg",
+       "id": 1503,
+       "institution": {
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset"
+       },
+       "lastName": "Berg",
+       "profileId": 11503,
+       "profilePicture": null,
+       "role": "employee",
+       "shortName": "KB"
+      },
+      "sharedWithGroups": [
+       {
+        "id": 3001,
+        "name": "Stue",
+        "shortName": "Stue"
+       }
+      ],
+      "timestamp": "2026-10-28T10:40:22+01:00",
+      "title": "Nyt fra Stue (uge 9)"
+     },
+     {
+      "allowComments": true,
+      "attachments": [],
+      "commentCount": 0,
+      "content": {
+       "html": "<p>Kort nyt fra Stue, opslag 10.</p>"
+      },
+      "id": 390,
+      "isBookmarked": false,
+      "isImportant": false,
+      "isPublished": true,
+      "ownerProfile": {
+       "firstName": "Anne",
+       "fullName": "Anne Holm",
+       "id": 1501,
+       "institution": {
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset"
+       },
+       "lastName": "Holm",
+       "profileId": 11501,
+       "profilePicture": null,
+       "role": "employee",
+       "shortName": "AH"
+      },
+      "sharedWithGroups": [
+       {
+        "id": 3001,
+        "name": "Stue",
+        "shortName": "Stue"
+       }
+      ],
+      "timestamp": "2026-10-26T22:40:22+01:00",
+      "title": "Turdag (uge 10)"
+     },
+     {
+      "allowComments": true,
+      "attachments": [],
+      "commentCount": 0,
+      "content": {
+       "html": "<p>Kort nyt fra Stue, opslag 11.</p>"
+      },
+      "id": 389,
+      "isBookmarked": false,
+      "isImportant": false,
+      "isPublished": true,
+      "ownerProfile": {
+       "firstName": "Mette",
+       "fullName": "Mette Lund",
+       "id": 1502,
+       "institution": {
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset"
+       },
+       "lastName": "Lund",
+       "profileId": 11502,
+       "profilePicture": {
+        "id": 77,
+        "url": "https://fake-files.aula.dk/files/profile.png?sig=0"
+       },
+       "role": "employee",
+       "shortName": "ML"
+      },
+      "sharedWithGroups": [
+       {
+        "id": 3001,
+        "name": "Stue",
+        "shortName": "Stue"
+       }
+      ],
+      "timestamp": "2026-10-25T10:40:22+01:00",
+      "title": "Madpakker (uge 11)"
+     },
+     {
+      "allowComments": true,
+      "attachments": [],
+      "commentCount": 0,
+      "content": {
+       "html": "<p>Kort nyt fra Stue, opslag 12.</p>"
+      },
+      "id": 388,
+      "isBookmarked": false,
+      "isImportant": false,
+      "isPublished": true,
+      "ownerProfile": {
+       "firstName": "Kasper",
+       "fullName": "Kasper Berg",
+       "id": 1503,
+       "institution": {
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset"
+       },
+       "lastName": "Berg",
+       "profileId": 11503,
+       "profilePicture": null,
+       "role": "employee",
+       "shortName": "KB"
+      },
+      "sharedWithGroups": [
+       {
+        "id": 3001,
+        "name": "Stue",
+        "shortName": "Stue"
+       }
+      ],
+      "timestamp": "2026-10-23T22:40:22+02:00",
+      "title": "Sangdag (uge 12)"
+     },
+     {
+      "allowComments": true,
+      "attachments": [],
+      "commentCount": 0,
+      "content": {
+       "html": "<p>Kort nyt fra Stue, opslag 13.</p>"
+      },
+      "id": 387,
+      "isBookmarked": false,
+      "isImportant": false,
+      "isPublished": true,
+      "ownerProfile": {
+       "firstName": "Anne",
+       "fullName": "Anne Holm",
+       "id": 1501,
+       "institution": {
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset"
+       },
+       "lastName": "Holm",
+       "profileId": 11501,
+       "profilePicture": null,
+       "role": "employee",
+       "shortName": "AH"
+      },
+      "sharedWithGroups": [
+       {
+        "id": 3001,
+        "name": "Stue",
+        "shortName": "Stue"
+       }
+      ],
+      "timestamp": "2026-10-22T10:40:22+02:00",
+      "title": "Legetøjsdag (uge 13)"
+     },
+     {
+      "allowComments": true,
+      "attachments": [],
+      "commentCount": 0,
+      "content": {
+       "html": "<p>Kort nyt fra Stue, opslag 14.</p>"
+      },
+      "id": 386,
+      "isBookmarked": false,
+      "isImportant": false,
+      "isPublished": true,
+      "ownerProfile": {
+       "firstName": "Mette",
+       "fullName": "Mette Lund",
+       "id": 1502,
+       "institution": {
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset"
+       },
+       "lastName": "Lund",
+       "profileId": 11502,
+       "profilePicture": {
+        "id": 77,
+        "url": "https://fake-files.aula.dk/files/profile.png?sig=0"
+       },
+       "role": "employee",
+       "shortName": "ML"
+      },
+      "sharedWithGroups": [
+       {
+        "id": 3001,
+        "name": "Stue",
+        "shortName": "Stue"
+       }
+      ],
+      "timestamp": "2026-10-20T22:40:22+02:00",
+      "title": "Forældrekaffe (uge 14)"
+     },
+     {
+      "allowComments": true,
+      "attachments": [],
+      "commentCount": 0,
+      "content": {
+       "html": "<p>Kort nyt fra Stue, opslag 15.</p>"
+      },
+      "id": 385,
+      "isBookmarked": false,
+      "isImportant": false,
+      "isPublished": true,
+      "ownerProfile": {
+       "firstName": "Kasper",
+       "fullName": "Kasper Berg",
+       "id": 1503,
+       "institution": {
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset"
+       },
+       "lastName": "Berg",
+       "profileId": 11503,
+       "profilePicture": null,
+       "role": "employee",
+       "shortName": "KB"
+      },
+      "sharedWithGroups": [
+       {
+        "id": 3001,
+        "name": "Stue",
+        "shortName": "Stue"
+       }
+      ],
+      "timestamp": "2026-10-19T10:40:22+02:00",
+      "title": "Ugeplan (uge 15)"
+     },
+     {
+      "allowComments": true,
+      "attachments": [],
+      "commentCount": 0,
+      "content": {
+       "html": "<p>Kort nyt fra Stue, opslag 16.</p>"
+      },
+      "id": 384,
+      "isBookmarked": false,
+      "isImportant": false,
+      "isPublished": true,
+      "ownerProfile": {
+       "firstName": "Anne",
+       "fullName": "Anne Holm",
+       "id": 1501,
+       "institution": {
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset"
+       },
+       "lastName": "Holm",
+       "profileId": 11501,
+       "profilePicture": null,
+       "role": "employee",
+       "shortName": "AH"
+      },
+      "sharedWithGroups": [
+       {
+        "id": 3001,
+        "name": "Stue",
+        "shortName": "Stue"
+       }
+      ],
+      "timestamp": "2026-10-17T22:40:22+02:00",
+      "title": "Nyt fra Stue (uge 16)"
+     },
+     {
+      "allowComments": true,
+      "attachments": [],
+      "commentCount": 0,
+      "content": {
+       "html": "<p>Kort nyt fra Stue, opslag 17.</p>"
+      },
+      "id": 383,
+      "isBookmarked": false,
+      "isImportant": false,
+      "isPublished": true,
+      "ownerProfile": {
+       "firstName": "Mette",
+       "fullName": "Mette Lund",
+       "id": 1502,
+       "institution": {
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset"
+       },
+       "lastName": "Lund",
+       "profileId": 11502,
+       "profilePicture": {
+        "id": 77,
+        "url": "https://fake-files.aula.dk/files/profile.png?sig=0"
+       },
+       "role": "employee",
+       "shortName": "ML"
+      },
+      "sharedWithGroups": [
+       {
+        "id": 3001,
+        "name": "Stue",
+        "shortName": "Stue"
+       }
+      ],
+      "timestamp": "2026-10-16T10:40:22+02:00",
+      "title": "Turdag (uge 17)"
+     }
+    ]
+   },
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {
+   "index": "10"
+  }
+ },
+ {
+  "answer": {
+   "data": {
+    "posts": [
+     {
+      "allowComments": true,
+      "attachments": [],
+      "commentCount": 0,
+      "content": {
+       "html": "<p>Kort nyt fra Stue, opslag 18.</p>"
+      },
+      "id": 382,
+      "isBookmarked": false,
+      "isImportant": false,
+      "isPublished": true,
+      "ownerProfile": {
+       "firstName": "Kasper",
+       "fullName": "Kasper Berg",
+       "id": 1503,
+       "institution": {
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset"
+       },
+       "lastName": "Berg",
+       "profileId": 11503,
+       "profilePicture": null,
+       "role": "employee",
+       "shortName": "KB"
+      },
+      "sharedWithGroups": [
+       {
+        "id": 3001,
+        "name": "Stue",
+        "shortName": "Stue"
+       }
+      ],
+      "timestamp": "2026-10-14T22:40:22+02:00",
+      "title": "Madpakker (uge 18)"
+     },
+     {
+      "allowComments": true,
+      "attachments": [],
+      "commentCount": 0,
+      "content": {
+       "html": "<p>Kort nyt fra Stue, opslag 19.</p>"
+      },
+      "id": 381,
+      "isBookmarked": false,
+      "isImportant": false,
+      "isPublished": true,
+      "ownerProfile": {
+       "firstName": "Anne",
+       "fullName": "Anne Holm",
+       "id": 1501,
+       "institution": {
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset"
+       },
+       "lastName": "Holm",
+       "profileId": 11501,
+       "profilePicture": null,
+       "role": "employee",
+       "shortName": "AH"
+      },
+      "sharedWithGroups": [
+       {
+        "id": 3001,
+        "name": "Stue",
+        "shortName": "Stue"
+       }
+      ],
+      "timestamp": "2026-10-13T10:40:22+02:00",
+      "title": "Sangdag (uge 19)"
+     },
+     {
+      "allowComments": true,
+      "attachments": [],
+      "commentCount": 0,
+      "content": {
+       "html": "<p>Kort nyt fra Stue, opslag 20.</p>"
+      },
+      "id": 380,
+      "isBookmarked": false,
+      "isImportant": false,
+      "isPublished": true,
+      "ownerProfile": {
+       "firstName": "Mette",
+       "fullName": "Mette Lund",
+       "id": 1502,
+       "institution": {
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset"
+       },
+       "lastName": "Lund",
+       "profileId": 11502,
+       "profilePicture": {
+        "id": 77,
+        "url": "https://fake-files.aula.dk/files/profile.png?sig=0"
+       },
+       "role": "employee",
+       "shortName": "ML"
+      },
+      "sharedWithGroups": [
+       {
+        "id": 3001,
+        "name": "Stue",
+        "shortName": "Stue"
+       }
+      ],
+      "timestamp": "2026-10-11T22:40:22+02:00",
+      "title": "Legetøjsdag (uge 20)"
+     },
+     {
+      "allowComments": true,
+      "attachments": [],
+      "commentCount": 0,
+      "content": {
+       "html": "<p>Kort nyt fra Stue, opslag 21.</p>"
+      },
+      "id": 379,
+      "isBookmarked": false,
+      "isImportant": false,
+      "isPublished": true,
+      "ownerProfile": {
+       "firstName": "Kasper",
+       "fullName": "Kasper Berg",
+       "id": 1503,
+       "institution": {
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset"
+       },
+       "lastName": "Berg",
+       "profileId": 11503,
+       "profilePicture": null,
+       "role": "employee",
+       "shortName": "KB"
+      },
+      "sharedWithGroups": [
+       {
+        "id": 3001,
+        "name": "Stue",
+        "shortName": "Stue"
+       }
+      ],
+      "timestamp": "2026-10-10T10:40:22+02:00",
+      "title": "Forældrekaffe (uge 21)"
+     },
+     {
+      "allowComments": true,
+      "attachments": [],
+      "commentCount": 0,
+      "content": {
+       "html": "<p>Kort nyt fra Stue, opslag 22.</p>"
+      },
+      "id": 378,
+      "isBookmarked": false,
+      "isImportant": false,
+      "isPublished": true,
+      "ownerProfile": {
+       "firstName": "Anne",
+       "fullName": "Anne Holm",
+       "id": 1501,
+       "institution": {
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset"
+       },
+       "lastName": "Holm",
+       "profileId": 11501,
+       "profilePicture": null,
+       "role": "employee",
+       "shortName": "AH"
+      },
+      "sharedWithGroups": [
+       {
+        "id": 3001,
+        "name": "Stue",
+        "shortName": "Stue"
+       }
+      ],
+      "timestamp": "2026-10-08T22:40:22+02:00",
+      "title": "Ugeplan (uge 22)"
+     }
+    ]
+   },
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {
+   "index": "20"
+  }
+ },
+ {
+  "answer": {
+   "data": {
+    "posts": []
+   },
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {
+   "index": "30"
+  }
+ }
+]

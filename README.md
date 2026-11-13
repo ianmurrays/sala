@@ -37,6 +37,10 @@ Requires Xcode with the iOS 26 SDK and [XcodeGen](https://github.com/yonaskolb/X
 1. Copy `ios/Config/Local.example.xcconfig` to `ios/Config/Local.xcconfig` (gitignored) and set your `DEVELOPMENT_TEAM` and a `SALA_BUNDLE_ID` your team can register. A free personal team works: the app and widget share data through a keychain access group, not an app group. Simulator builds need this too, since an unsigned build has no Keychain access.
 2. Open `ios/Sala.xcodeproj` and run, or install on a connected phone with `ios/scripts/install-device.sh "<device name>"`.
 
+### Demo mode
+
+A debug build launched with `-demo YES` (Xcode: Product → Scheme → Edit Scheme → Run → Arguments) skips the login and runs on a fake Aula with invented data from `ios/DemoAula/`. Everything but the network is real: routes, mapping, views. Dates follow today. Writes (pickup, sick, replies, folders) succeed but change nothing, so a reload shows the old state; creating a folder fails, since the fake can't show the new one. Log out leads to a "Back to demo data" button, never MitID. Use it in the simulator: on a phone, demo data also reaches the widget and the Sala calendar. The fixtures are not in Release builds.
+
 `ios/project.yml` is the source of truth for the Xcode project. `ios/Sala.xcodeproj` is generated from it and committed, so run `xcodegen generate` in `ios/` after changing the spec.
 
 ## Tests
@@ -44,6 +48,8 @@ Requires Xcode with the iOS 26 SDK and [XcodeGen](https://github.com/yonaskolb/X
 ```sh
 cd ios && xcodebuild test -project Sala.xcodeproj -scheme Sala -destination 'platform=iOS Simulator,name=<an iPhone simulator>'
 ```
+
+`DemoTests` fail when the app calls an Aula method that has no fixture in `ios/DemoAula/`, when a fixture's method is no longer called, or when a screen's route can't be answered from the fixtures.
 
 ## Docs
 

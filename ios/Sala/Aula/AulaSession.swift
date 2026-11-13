@@ -17,7 +17,11 @@ import Foundation
 /// Raw Aula JSON (`[String: Any]`) never leaves this actor: mapping code lives in extensions of it
 /// and hands out `Data` in API.md's shapes.
 actor Aula {
+    #if DEBUG
+    static let shared = DemoTransport.enabled ? Aula(transport: DemoTransport(), tokens: DemoTransport.tokens) : Aula()
+    #else
     static let shared = Aula()
+    #endif
 
     // OAuth (aula/const.py)
     static let authBase = "https://login.aula.dk/simplesaml/module.php/oidc"
@@ -108,6 +112,9 @@ actor Aula {
     }
 
     func logout() {
+        #if DEBUG
+        if transport is DemoTransport { tokens = DemoTransport.tokens; open = false; return }  // never touch the real login
+        #endif
         tokens = nil
         open = false
         csrf = nil
@@ -125,6 +132,9 @@ actor Aula {
     }
 
     private func save(_ t: Tokens?) {
+        #if DEBUG
+        if transport is DemoTransport { tokens = DemoTransport.tokens; open = false; return }  // never touch the real login
+        #endif
         tokens = t
         open = false
         if let t, let d = try? JSONEncoder().encode(t) { Keychain.write(d, Self.tokensKey) }

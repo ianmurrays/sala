@@ -1,0 +1,199 @@
+[
+ {
+  "answer": {
+   "data": [
+    {
+     "allDay": true,
+     "belongsToProfiles": [
+      2001
+     ],
+     "endDateTime": "2026-11-21T23:59:00+00:00",
+     "id": 7001,
+     "institutionCode": "999001",
+     "institutionName": "Børnehuset",
+     "repeating": null,
+     "responseRequired": false,
+     "startDateTime": "2026-11-20T00:00:00+00:00",
+     "timeSlot": null,
+     "title": "Ferie/fri",
+     "type": "presence_holiday"
+    },
+    {
+     "allDay": false,
+     "belongsToProfiles": [],
+     "endDateTime": "2026-11-25T09:30:00+00:00",
+     "id": 7002,
+     "institutionCode": "999001",
+     "institutionName": "Børnehuset",
+     "repeating": null,
+     "responseRequired": true,
+     "startDateTime": "2026-11-24T07:30:00+00:00",
+     "timeSlot": {
+      "childRequired": false,
+      "timeSlots": [
+       {
+        "answers": [
+         {
+          "concerningProfileId": 2001,
+          "id": 1,
+          "instProfileId": 1001,
+          "selectedTimeSlotIndex": 1
+         },
+         {
+          "concerningProfileId": 3002,
+          "id": 2,
+          "instProfileId": 3001,
+          "selectedTimeSlotIndex": 0
+         }
+        ],
+        "belongsToResource": null,
+        "endDate": "2026-11-24T08:30:00+00:00",
+        "id": 1,
+        "startDate": "2026-11-24T07:30:00+00:00",
+        "timeSlotIndexes": [
+         {
+          "endTime": "2026-11-24T07:55:00.000+00:00",
+          "startTime": "2026-11-24T07:30:00.000+00:00"
+         },
+         {
+          "endTime": "2026-11-24T08:25:00.000+00:00",
+          "startTime": "2026-11-24T08:00:00.000+00:00"
+         }
+        ]
+       }
+      ]
+     },
+     "title": "Skole-hjem-samtale",
+     "type": "school_home_meeting"
+    },
+    {
+     "allDay": false,
+     "belongsToProfiles": [],
+     "endDateTime": "2026-11-27T09:30:00+00:00",
+     "id": 7003,
+     "institutionCode": "999001",
+     "institutionName": "Børnehuset",
+     "repeating": null,
+     "responseRequired": true,
+     "startDateTime": "2026-11-26T07:30:00+00:00",
+     "timeSlot": {
+      "childRequired": false,
+      "timeSlots": [
+       {
+        "answers": [
+         {
+          "concerningProfileId": 3002,
+          "id": 3,
+          "instProfileId": 3001,
+          "selectedTimeSlotIndex": 0
+         }
+        ],
+        "belongsToResource": null,
+        "endDate": "2026-11-26T08:30:00+00:00",
+        "id": 1,
+        "startDate": "2026-11-26T07:30:00+00:00",
+        "timeSlotIndexes": [
+         {
+          "endTime": "2026-11-26T07:55:00.000+00:00",
+          "startTime": "2026-11-26T07:30:00.000+00:00"
+         },
+         {
+          "endTime": "2026-11-26T08:25:00.000+00:00",
+          "startTime": "2026-11-26T08:00:00.000+00:00"
+         }
+        ]
+       }
+      ]
+     },
+     "title": "Forældresamtale",
+     "type": "school_home_meeting"
+    },
+    {
+     "allDay": false,
+     "belongsToProfiles": [],
+     "endDateTime": "2026-11-13T16:00:00+00:00",
+     "id": 7004,
+     "institutionCode": "999001",
+     "institutionName": "Børnehuset",
+     "repeating": null,
+     "responseRequired": false,
+     "startDateTime": "2026-11-13T14:00:00+00:00",
+     "timeSlot": null,
+     "title": "Juletræsfest",
+     "type": "event"
+    },
+    {
+     "allDay": true,
+     "belongsToProfiles": [],
+     "endDateTime": "2026-11-02T23:59:00+00:00",
+     "id": 7005,
+     "institutionCode": "999001",
+     "institutionName": "Børnehuset",
+     "repeating": null,
+     "responseRequired": false,
+     "startDateTime": "2026-10-30T00:00:00+00:00",
+     "timeSlot": null,
+     "title": "Lukket",
+     "type": "event"
+    },
+    {
+     "allDay": true,
+     "belongsToProfiles": [],
+     "endDateTime": "2026-11-05T23:59:00+00:00",
+     "id": null,
+     "institutionCode": "999001",
+     "institutionName": "Børnehuset",
+     "repeating": null,
+     "responseRequired": false,
+     "startDateTime": "2026-11-05T00:00:00+00:00",
+     "timeSlot": null,
+     "title": "No id",
+     "type": "event"
+    },
+    {
+     "allDay": false,
+     "belongsToProfiles": [],
+     "endDateTime": "2026-11-25T09:30:00+00:00",
+     "id": 7006,
+     "institutionCode": "999001",
+     "institutionName": "Børnehuset",
+     "repeating": null,
+     "responseRequired": true,
+     "startDateTime": "2026-10-26T07:30:00+00:00",
+     "timeSlot": {
+      "childRequired": false,
+      "timeSlots": [
+       {
+        "answers": [
+         {
+          "concerningProfileId": 2001,
+          "id": 5,
+          "instProfileId": 1001,
+          "selectedTimeSlotIndex": 0
+         }
+        ],
+        "belongsToResource": null,
+        "endDate": "2026-10-27T08:30:00+00:00",
+        "id": 9,
+        "startDate": "2026-10-27T07:30:00+00:00",
+        "timeSlotIndexes": [
+         {
+          "endTime": "2026-10-27T07:55:00.000+00:00",
+          "startTime": "2026-10-27T07:30:00.000+00:00"
+         }
+        ]
+       }
+      ]
+     },
+     "title": "Samtale",
+     "type": "school_home_meeting"
+    }
+   ],
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {}
+ }
+]

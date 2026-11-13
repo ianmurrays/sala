@@ -1,0 +1,631 @@
+[
+ {
+  "answer": {
+   "data": {
+    "docTypeCount": [
+     {
+      "count": 3,
+      "key": "Media",
+      "name": "Media"
+     },
+     {
+      "count": 2,
+      "key": "Post",
+      "name": "Post"
+     },
+     {
+      "count": 1,
+      "key": "ThreadMessage",
+      "name": "ThreadMessage"
+     },
+     {
+      "count": 4,
+      "key": "Profile",
+      "name": "Profile"
+     }
+    ],
+    "from": 0,
+    "groupTypeCount": [],
+    "mediaResults": [],
+    "profileTypeCount": [],
+    "query": "bål & co+1",
+    "results": [
+     {
+      "author": "Mette Lund",
+      "description": null,
+      "docId": "3101",
+      "docType": "ThreadMessage",
+      "folderId": null,
+      "id": "3101",
+      "latestMessageSendTime": "2026-11-12T09:15:00+01:00",
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "message": "<p>Husk <b>madpakke</b> til skovturen &amp; bål</p>",
+      "messageId": "MSG-0001",
+      "messageType": "Message",
+      "metadata": "Stue",
+      "score": 0,
+      "stepUpRequired": false,
+      "subscriptionId": 7101,
+      "threadId": 3101,
+      "title": "Skovtur fredag"
+     },
+     {
+      "author": "Mette Lund",
+      "description": null,
+      "docId": "3102",
+      "docType": "ThreadMessage",
+      "folderId": null,
+      "id": "3102",
+      "latestMessageSendTime": "2026-11-12T09:15:00+01:00",
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "message": "<p>Husk <b>madpakke</b> til skovturen &amp; bål</p>",
+      "messageId": "MSG-0002",
+      "messageType": "Message",
+      "metadata": "Stue",
+      "score": 0,
+      "stepUpRequired": false,
+      "subscriptionId": 7101,
+      "threadId": null,
+      "title": "Skovtur fredag"
+     }
+    ],
+    "size": 20,
+    "totalSize": 2
+   },
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {
+   "docType": "ThreadMessage",
+   "offset": "0"
+  }
+ },
+ {
+  "answer": {
+   "data": {
+    "docTypeCount": [
+     {
+      "count": 3,
+      "key": "Media",
+      "name": "Media"
+     },
+     {
+      "count": 2,
+      "key": "Post",
+      "name": "Post"
+     },
+     {
+      "count": 1,
+      "key": "ThreadMessage",
+      "name": "ThreadMessage"
+     },
+     {
+      "count": 4,
+      "key": "Profile",
+      "name": "Profile"
+     }
+    ],
+    "from": 0,
+    "groupTypeCount": [],
+    "mediaResults": [],
+    "profileTypeCount": [],
+    "query": "bål & co+1",
+    "results": [],
+    "size": 20,
+    "totalSize": 3
+   },
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {
+   "docType": "Post",
+   "offset": "20"
+  }
+ },
+ {
+  "answer": {
+   "data": {
+    "docTypeCount": [
+     {
+      "count": 3,
+      "key": "Media",
+      "name": "Media"
+     },
+     {
+      "count": 2,
+      "key": "Post",
+      "name": "Post"
+     },
+     {
+      "count": 1,
+      "key": "ThreadMessage",
+      "name": "ThreadMessage"
+     },
+     {
+      "count": 4,
+      "key": "Profile",
+      "name": "Profile"
+     }
+    ],
+    "from": 0,
+    "groupTypeCount": [],
+    "mediaResults": [
+     {
+      "albumId": 4401,
+      "albumTitle": "Skovtur",
+      "docId": "8801",
+      "docType": "Media",
+      "file": {
+       "created": "2026-11-11T10:00:00+01:00",
+       "id": 9801,
+       "name": "foto1.jpg",
+       "url": "https://media-prod.aula.dk/gallery/foto1.jpg?sig=1"
+      },
+      "id": 8801,
+      "mediaType": "image",
+      "score": 0,
+      "smallThumbnailUrl": "https://media-prod.aula.dk/gallery/foto1-small.jpg?sig=2",
+      "thumbnailUrl": null
+     },
+     {
+      "albumId": 4401,
+      "albumTitle": "Skovtur",
+      "docId": "8802",
+      "docType": "Media",
+      "file": {
+       "created": "2026-11-11T10:00:00+01:00",
+       "id": 9801,
+       "name": "foto1.jpg",
+       "url": "https://media-prod.aula.dk/gallery/foto1.jpg?sig=1"
+      },
+      "id": 8802,
+      "mediaType": "video",
+      "score": 0,
+      "smallThumbnailUrl": "https://media-prod.aula.dk/gallery/foto1-small.jpg?sig=2",
+      "thumbnailUrl": null
+     }
+    ],
+    "profileTypeCount": [],
+    "query": "bål & co+1",
+    "results": [],
+    "size": 20,
+    "totalSize": 2
+   },
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {
+   "docType": "Media",
+   "offset": "0",
+   "orderDirection": "desc",
+   "sortOn": "datetime"
+  }
+ },
+ {
+  "answer": {
+   "data": {
+    "docTypeCount": [
+     {
+      "count": 3,
+      "key": "Media",
+      "name": "Media"
+     },
+     {
+      "count": 2,
+      "key": "Post",
+      "name": "Post"
+     },
+     {
+      "count": 1,
+      "key": "ThreadMessage",
+      "name": "ThreadMessage"
+     },
+     {
+      "count": 4,
+      "key": "Profile",
+      "name": "Profile"
+     }
+    ],
+    "from": 0,
+    "groupTypeCount": [],
+    "mediaResults": [
+     {
+      "albumId": 4401,
+      "albumTitle": "Skovtur",
+      "docId": "8802",
+      "docType": "Media",
+      "file": {
+       "created": "2026-11-11T10:00:00+01:00",
+       "id": 9801,
+       "name": "foto1.jpg",
+       "url": "https://media-prod.aula.dk/gallery/foto1.jpg?sig=1"
+      },
+      "id": 8802,
+      "mediaType": "video",
+      "score": 0,
+      "smallThumbnailUrl": "https://media-prod.aula.dk/gallery/foto1-small.jpg?sig=2",
+      "thumbnailUrl": null
+     }
+    ],
+    "profileTypeCount": [],
+    "query": "bål & co+1",
+    "results": [],
+    "size": 20,
+    "totalSize": 1
+   },
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {
+   "docType": "Media",
+   "offset": "20",
+   "orderDirection": "desc",
+   "sortOn": "datetime"
+  }
+ },
+ {
+  "answer": {
+   "data": {
+    "docTypeCount": [
+     {
+      "count": 3,
+      "key": "Media",
+      "name": "Media"
+     },
+     {
+      "count": 2,
+      "key": "Post",
+      "name": "Post"
+     },
+     {
+      "count": 1,
+      "key": "ThreadMessage",
+      "name": "ThreadMessage"
+     },
+     {
+      "count": 4,
+      "key": "Profile",
+      "name": "Profile"
+     }
+    ],
+    "from": 0,
+    "groupTypeCount": [],
+    "mediaResults": [
+     {
+      "albumId": 4401,
+      "albumTitle": "Skovtur",
+      "docId": "8801",
+      "docType": "Media",
+      "file": {
+       "created": "2026-11-11T10:00:00+01:00",
+       "id": 9801,
+       "name": "foto1.jpg",
+       "url": "https://media-prod.aula.dk/gallery/foto1.jpg?sig=1"
+      },
+      "id": 8801,
+      "mediaType": "image",
+      "score": 0,
+      "smallThumbnailUrl": "https://media-prod.aula.dk/gallery/foto1-small.jpg?sig=2",
+      "thumbnailUrl": null
+     }
+    ],
+    "profileTypeCount": [],
+    "query": "bål & co+1",
+    "results": [],
+    "size": 20,
+    "totalSize": 1
+   },
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {
+   "docType": "Media",
+   "offset": "40",
+   "orderDirection": "desc",
+   "sortOn": "datetime"
+  }
+ },
+ {
+  "answer": {
+   "data": {
+    "docTypeCount": [
+     {
+      "count": 3,
+      "key": "Media",
+      "name": "Media"
+     },
+     {
+      "count": 2,
+      "key": "Post",
+      "name": "Post"
+     },
+     {
+      "count": 1,
+      "key": "ThreadMessage",
+      "name": "ThreadMessage"
+     },
+     {
+      "count": 4,
+      "key": "Profile",
+      "name": "Profile"
+     }
+    ],
+    "from": 0,
+    "groupTypeCount": [],
+    "mediaResults": [],
+    "profileTypeCount": [],
+    "query": "bål & co+1",
+    "results": [
+     {
+      "allowComments": true,
+      "attachments": [
+       {
+        "file": {
+         "id": 9901,
+         "name": "Præsentation.pdf",
+         "scanningStatus": "Clean",
+         "url": "https://fake-files.aula.dk/files/praesentation.pdf"
+        },
+        "id": 9901,
+        "status": "available"
+       }
+      ],
+      "commentCount": 0,
+      "content": "<p>Kære forældre,</p><p>Vinteren er på vej. Husk <b>flyverdragt</b> og ekstra vanter.</p><p>Se præsentationen fra forældremødet.</p>",
+      "creator": {
+       "firstName": "Anne",
+       "fullName": "Anne Holm",
+       "id": 1501,
+       "institution": {
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset"
+       },
+       "lastName": "Holm",
+       "profileId": 11501,
+       "profilePicture": null,
+       "role": "employee",
+       "shortName": "AH"
+      },
+      "description": null,
+      "docId": "401",
+      "docType": "Post",
+      "id": "401",
+      "importantFrom": "2026-11-12T10:40:22+01:00",
+      "importantTo": "2026-11-20T10:40:22+01:00",
+      "isImportant": true,
+      "isPublished": true,
+      "score": 0,
+      "sharedWithGroups": [
+       {
+        "id": 3001,
+        "name": "Stue",
+        "shortName": "Stue"
+       }
+      ],
+      "timestamp": "2026-11-13T07:40:22+01:00",
+      "title": "Velkommen til vinteren"
+     },
+     {
+      "allowComments": true,
+      "attachments": [
+       {
+        "id": 9902,
+        "media": {
+         "file": {
+          "id": 9902,
+          "name": "skovtur.png",
+          "url": "https://fake-files.aula.dk/files/skovtur.png"
+         },
+         "mediaType": "image",
+         "thumbnailUrl": "https://fake-files.aula.dk/files/skovtur.png",
+         "title": "Skovtur"
+        },
+        "status": "available"
+       }
+      ],
+      "commentCount": 0,
+      "content": "<p>Vi havde en dejlig tur i skoven i går. Her er et af billederne.</p>",
+      "creator": {
+       "firstName": "Mette",
+       "fullName": "Mette Lund",
+       "id": 1502,
+       "institution": {
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset"
+       },
+       "lastName": "Lund",
+       "profileId": 11502,
+       "profilePicture": {
+        "id": 77,
+        "url": "https://fake-files.aula.dk/files/profile.png?sig=0"
+       },
+       "role": "employee",
+       "shortName": "ML"
+      },
+      "description": null,
+      "docId": "402",
+      "docType": "Post",
+      "id": "402",
+      "isImportant": false,
+      "isPublished": true,
+      "score": 0,
+      "sharedWithGroups": [
+       {
+        "id": 3001,
+        "name": "Stue",
+        "shortName": "Stue"
+       }
+      ],
+      "timestamp": "2026-11-12T08:40:22+01:00",
+      "title": "Billeder fra skovturen"
+     },
+     {
+      "allowComments": true,
+      "attachments": [
+       {
+        "file": {
+         "id": 9901,
+         "name": "Præsentation.pdf",
+         "scanningStatus": "Clean",
+         "url": "https://fake-files.aula.dk/files/praesentation.pdf"
+        },
+        "id": 9901,
+        "status": "available"
+       }
+      ],
+      "commentCount": 0,
+      "content": "<p>Kære forældre,</p><p>Vinteren er på vej. Husk <b>flyverdragt</b> og ekstra vanter.</p><p>Se præsentationen fra forældremødet.</p>",
+      "creator": {
+       "firstName": "Anne",
+       "fullName": "Anne Holm",
+       "id": 1501,
+       "institution": {
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset"
+       },
+       "lastName": "Holm",
+       "profileId": 11501,
+       "profilePicture": null,
+       "role": "employee",
+       "shortName": "AH"
+      },
+      "description": null,
+      "docId": "499",
+      "docType": "Post",
+      "id": "499",
+      "importantFrom": "2026-11-12T10:40:22+01:00",
+      "importantTo": "2026-11-20T10:40:22+01:00",
+      "isImportant": true,
+      "isPublished": true,
+      "score": 0,
+      "sharedWithGroups": [
+       {
+        "id": 3001,
+        "name": "Stue",
+        "shortName": "Stue"
+       }
+      ],
+      "timestamp": null,
+      "title": "Velkommen til vinteren"
+     }
+    ],
+    "size": 20,
+    "totalSize": 3
+   },
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {
+   "docType": "Post",
+   "offset": "0"
+  }
+ },
+ {
+  "answer": {
+   "data": {
+    "docTypeCount": [
+     {
+      "count": 3,
+      "key": "Media",
+      "name": "Media"
+     },
+     {
+      "count": 2,
+      "key": "Post",
+      "name": "Post"
+     },
+     {
+      "count": 1,
+      "key": "ThreadMessage",
+      "name": "ThreadMessage"
+     },
+     {
+      "count": 4,
+      "key": "Profile",
+      "name": "Profile"
+     }
+    ],
+    "from": 0,
+    "groupTypeCount": [],
+    "mediaResults": [],
+    "profileTypeCount": [],
+    "query": "bål & co+1",
+    "results": [],
+    "size": 20,
+    "totalSize": 2
+   },
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {
+   "docType": "ThreadMessage",
+   "offset": "20"
+  }
+ },
+ {
+  "answer": {
+   "data": {
+    "docTypeCount": [
+     {
+      "count": 3,
+      "key": "Media",
+      "name": "Media"
+     },
+     {
+      "count": 2,
+      "key": "Post",
+      "name": "Post"
+     },
+     {
+      "count": 1,
+      "key": "ThreadMessage",
+      "name": "ThreadMessage"
+     },
+     {
+      "count": 4,
+      "key": "Profile",
+      "name": "Profile"
+     }
+    ],
+    "from": 0,
+    "groupTypeCount": [],
+    "mediaResults": 0,
+    "profileTypeCount": [],
+    "query": "bål & co+1",
+    "results": [],
+    "size": 20,
+    "totalSize": 1
+   },
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {
+   "docType": "Media",
+   "offset": "60",
+   "orderDirection": "desc",
+   "sortOn": "datetime"
+  }
+ }
+]

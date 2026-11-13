@@ -1,0 +1,20 @@
+[
+ {
+  "answer": {
+   "data": [
+    {
+     "birthday": "2021-11-21",
+     "institutionCode": "999001",
+     "institutionProfileId": 2002,
+     "mainGroupName": "Stue",
+     "name": "Ida Jensen"
+    }
+   ],
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {}
+ }
+]

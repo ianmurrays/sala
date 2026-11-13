@@ -1,0 +1,37 @@
+[
+ {
+  "answer": {
+   "data": [
+    {
+     "attachments": [],
+     "canReplyToMessage": true,
+     "id": "m9101-r1",
+     "messageType": "Message",
+     "sendDateTime": "2026-11-13T10:40:22+01:00",
+     "sender": {
+      "answerDirectlyName": "Jonas Hansen",
+      "fullName": "Jonas Hansen",
+      "institutionCode": "999001",
+      "mailBoxOwner": {
+       "id": 1001,
+       "isDeactivated": false,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "metadata": "Oskar (Far)",
+      "profileId": 11001,
+      "role": "guardian",
+      "shortName": "JH"
+     },
+     "text": {
+      "html": "<p>Tak!</p><p>Vi ses &lt;torsdag&gt; &amp; fredag</p>"
+     }
+    }
+   ],
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {}
+ }
+]

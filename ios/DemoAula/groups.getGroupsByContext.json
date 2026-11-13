@@ -1,0 +1,40 @@
+[
+ {
+  "answer": {
+   "data": [
+    {
+     "displayName": "Børnehuset",
+     "groups": [
+      {
+       "id": 77,
+       "name": "Stue",
+       "showAsDefault": true
+      },
+      {
+       "id": 78,
+       "name": "Hele huset",
+       "showAsDefault": false
+      }
+     ],
+     "profileId": 1001
+    },
+    {
+     "displayName": "Børnehuset",
+     "groups": [
+      {
+       "id": 77,
+       "name": "Stue",
+       "showAsDefault": true
+      }
+     ],
+     "profileId": 1001
+    }
+   ],
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {}
+ }
+]
