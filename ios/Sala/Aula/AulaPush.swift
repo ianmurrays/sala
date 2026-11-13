@@ -72,7 +72,7 @@ enum Push {
     /// Each reminder key names its day, so it exists only on that day: never sent late or after the deadline.
     /// It waits until 07:00; a new-request event on such a day stands in for the reminder (covers it) and waits too.
     static func holidayEvents(_ reg: VacationRegistration, today: Day) -> [PushEvent] {
-        guard reg.isMissingAnswer, let id = reg.id else { return [] }
+        guard reg.needsAnswer, let id = reg.id else { return [] }
         let start = Aula.localDate(reg.startDate), end = Aula.localDate(reg.endDate)
         let deadline = Aula.localDate(reg.responseDeadline)
         let label = Py.rstrip("Holiday request \(start.map { Aula.dateRangeLabel($0, end) } ?? reg.title ?? "")")
@@ -96,7 +96,7 @@ enum Push {
     /// One request per id from Aula's rows (one per child), skipping the children already answered for.
     static func holidayEvents(_ regs: [VacationRegistration], today: Day) -> [PushEvent] {
         var ids = Set<Int>()
-        return regs.filter { $0.isMissingAnswer && ($0.id.map { ids.insert($0).inserted } ?? false) }
+        return regs.filter { $0.needsAnswer && ($0.id.map { ids.insert($0).inserted } ?? false) }
             .flatMap { holidayEvents($0, today: today) }
     }
 

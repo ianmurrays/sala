@@ -29,14 +29,20 @@
         "name": "Oskar",
         "userId": "oskar01",
         "hasCustodyOrExtendedAccess": true,
-        "institutionProfile": {
-         "institutionName": "Børnehuset",
-         "institutionCode": "999001",
-         "metadata": "Stue"
-        },
         "profilePicture": {
          "id": 77,
          "url": "https://fake-files.aula.dk/files/profile.png?sig=32"
+        }
+       },
+       {
+        "id": 2002,
+        "profileId": 602,
+        "name": "Ella",
+        "userId": "ella01",
+        "hasCustodyOrExtendedAccess": true,
+        "profilePicture": {
+         "id": 78,
+         "url": "https://fake-files.aula.dk/files/profile2.png?sig=33"
         }
        }
       ]
@@ -117,6 +123,10 @@
       [
        "childIds[]",
        "2001"
+      ],
+      [
+       "childIds[]",
+       "2002"
       ]
      ],
      "body": null,
@@ -193,6 +203,10 @@
       [
        "childIds[]",
        "2001"
+      ],
+      [
+       "childIds[]",
+       "2002"
       ]
      ],
      "body": null,
@@ -357,6 +371,10 @@
       [
        "childIds[]",
        "2001"
+      ],
+      [
+       "childIds[]",
+       "2002"
       ]
      ],
      "body": null,
@@ -469,6 +487,10 @@
       [
        "childIds[]",
        "2001"
+      ],
+      [
+       "childIds[]",
+       "2002"
       ]
      ],
      "body": null,
@@ -631,6 +653,10 @@
       [
        "childIds[]",
        "2001"
+      ],
+      [
+       "childIds[]",
+       "2002"
       ]
      ],
      "body": null,
@@ -707,6 +733,10 @@
       [
        "childIds[]",
        "2001"
+      ],
+      [
+       "childIds[]",
+       "2002"
       ]
      ],
      "body": null,
@@ -808,6 +838,10 @@
       [
        "childIds[]",
        "2001"
+      ],
+      [
+       "childIds[]",
+       "2002"
       ]
      ],
      "body": null,
@@ -908,6 +942,10 @@
       [
        "childIds[]",
        "2001"
+      ],
+      [
+       "childIds[]",
+       "2002"
       ]
      ],
      "body": null,
@@ -995,6 +1033,10 @@
       [
        "childIds[]",
        "2001"
+      ],
+      [
+       "childIds[]",
+       "2002"
       ]
      ],
      "body": null,
@@ -1047,6 +1089,230 @@
        "code": 0,
        "message": "OK"
       }
+     }
+    }
+   ],
+   "writes": []
+  },
+  {
+   "note": "Aula locks one child's row only",
+   "verb": "GET",
+   "path": "/holiday-requests/vacation-57",
+   "body": null,
+   "status": 200,
+   "response": {
+    "id": "vacation-57",
+    "title": "Juledag",
+    "note": null,
+    "deadline": "2026-11-20",
+    "startDate": "2026-12-07",
+    "endDate": "2026-12-08",
+    "timesRequired": false,
+    "answered": false,
+    "editable": true,
+    "children": [
+     {
+      "id": 2001,
+      "name": "Oskar",
+      "answered": false,
+      "comment": "",
+      "days": [
+       {
+        "date": "2026-12-07",
+        "coming": null,
+        "entryTime": null,
+        "exitTime": null,
+        "editable": false
+       },
+       {
+        "date": "2026-12-08",
+        "coming": null,
+        "entryTime": null,
+        "exitTime": null,
+        "editable": false
+       }
+      ]
+     },
+     {
+      "id": 2002,
+      "name": "Ella",
+      "answered": false,
+      "comment": "",
+      "days": [
+       {
+        "date": "2026-12-07",
+        "coming": null,
+        "entryTime": null,
+        "exitTime": null,
+        "editable": true
+       },
+       {
+        "date": "2026-12-08",
+        "coming": null,
+        "entryTime": null,
+        "exitTime": null,
+        "editable": true
+       }
+      ]
+     }
+    ]
+   },
+   "aula": [
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getVacationRegistrationsByChildren"
+      ],
+      [
+       "childIds[]",
+       "2001"
+      ],
+      [
+       "childIds[]",
+       "2002"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": [
+       {
+        "child": {
+         "id": 2001,
+         "name": "Oskar"
+        },
+        "vacationRegistrations": [
+         {
+          "vacationRegistrationId": 57,
+          "title": "Juledag",
+          "startDate": "2026-12-07",
+          "endDate": "2026-12-08",
+          "responseDeadline": "2026-11-20",
+          "isMissingAnswer": true,
+          "isEditable": false,
+          "responseId": 0
+         }
+        ]
+       },
+       {
+        "child": {
+         "id": 2002,
+         "name": "Ella"
+        },
+        "vacationRegistrations": [
+         {
+          "vacationRegistrationId": 57,
+          "title": "Juledag",
+          "startDate": "2026-12-07",
+          "endDate": "2026-12-08",
+          "responseDeadline": "2026-11-20",
+          "isMissingAnswer": true,
+          "isEditable": true,
+          "responseId": 0
+         }
+        ]
+       }
+      ]
+     }
+    }
+   ],
+   "writes": []
+  },
+  {
+   "note": "Aula locks every child's row, deadline not passed",
+   "verb": "POST",
+   "path": "/holiday-requests/vacation-57",
+   "body": {
+    "children": [
+     {
+      "id": 2002,
+      "days": [
+       {
+        "date": "2026-12-07",
+        "coming": false
+       },
+       {
+        "date": "2026-12-08",
+        "coming": false
+       }
+      ],
+      "comment": ""
+     }
+    ]
+   },
+   "status": 409,
+   "response": {
+    "error": "conflict",
+    "message": "Aula no longer takes an answer to this holiday request"
+   },
+   "aula": [
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getVacationRegistrationsByChildren"
+      ],
+      [
+       "childIds[]",
+       "2001"
+      ],
+      [
+       "childIds[]",
+       "2002"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": [
+       {
+        "child": {
+         "id": 2001,
+         "name": "Oskar"
+        },
+        "vacationRegistrations": [
+         {
+          "vacationRegistrationId": 57,
+          "title": "Juledag",
+          "startDate": "2026-12-07",
+          "endDate": "2026-12-08",
+          "responseDeadline": "2026-11-20",
+          "isMissingAnswer": true,
+          "isEditable": false,
+          "responseId": 0
+         }
+        ]
+       },
+       {
+        "child": {
+         "id": 2002,
+         "name": "Ella"
+        },
+        "vacationRegistrations": [
+         {
+          "vacationRegistrationId": 57,
+          "title": "Juledag",
+          "startDate": "2026-12-07",
+          "endDate": "2026-12-08",
+          "responseDeadline": "2026-11-20",
+          "isMissingAnswer": true,
+          "isEditable": false,
+          "responseId": 0
+         }
+        ]
+       }
+      ]
      }
     }
    ],

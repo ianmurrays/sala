@@ -52,5 +52,10 @@ final class PushTests: XCTestCase {
         // One row per child: an answered sibling's row first must not hide the request.
         let answered = VacationRegistration(["vacationRegistrationId": 5, "isMissingAnswer": false], child: ["id": 4])
         XCTAssertEqual(Push.holidayEvents([answered, reg, reg], today: Day(2026, 11, 1)!).map(\.key), ["holiday:5"])
+
+        // Aula locked it (the portal won't take an answer): nothing to ask for.
+        let locked = VacationRegistration(["vacationRegistrationId": 6, "isMissingAnswer": true, "isEditable": false,
+                                           "responseDeadline": "2026-11-13"], child: ["id": 3])
+        XCTAssertEqual(Push.holidayEvents([locked], today: Day(2026, 11, 12)!).map(\.key), [])
     }
 }

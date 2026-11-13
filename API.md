@@ -77,8 +77,8 @@ Nullable here: `opensAt`, `closesAt`, `current.time`, `current.by`.
    "days":[{"date":"2026-12-21","coming":null,"entryTime":null,"exitTime":null,"editable":true}]}]}
 ```
 - One entry in `children` per child the request is for. `days` are the weekdays from `startDate` to `endDate`, as in Aula's own form.
-- `coming` is the current answer (`null` = not answered). `editable` is false for days that are today or past, days the institution is closed, every day once the deadline has passed, and every day of a child Aula says you have no custody of. Those days are not sent.
-- `answered` is true when every child has an answer. `editable` (top level) is false once the deadline has passed; then a `POST` → `409`.
+- `coming` is the current answer (`null` = not answered). `editable` is false for days that are today or past, days the institution is closed, every day once the deadline has passed, and every day of a child Aula says you have no custody of or whose answer Aula has locked. Those days are not sent.
+- `answered` is true when every child has an answer. `editable` (top level) is false once the deadline has passed, or when Aula has locked every child's answer; then a `POST` → `409`.
 - `timesRequired`: the institution wants drop-off and pickup times for the days the child comes.
 - Nullable: `note`, `deadline`, `startDate`, `endDate`, `days[].coming`, `days[].entryTime`, `days[].exitTime`.
 

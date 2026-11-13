@@ -229,6 +229,8 @@ struct VacationRegistration: Sendable {
     var isPresenceTimesRequired: Bool
     /// Aula still takes an answer (the portal also checks the deadline and custody).
     var isEditable: Bool
+    /// Still waiting for our answer, and Aula would take one.
+    var needsAnswer: Bool { isMissingAnswer && isEditable }
 
     init(_ d: JSONObject, child: JSONObject) {
         id = J.int(J.get(d, "vacationRegistrationId", default: 0))

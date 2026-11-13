@@ -509,7 +509,7 @@ extension Aula {
         var out: [(JSONObject, Day)] = []
         var ids = Set<Int?>()
         for reg in try await getVacationRegistrations(childIds) {
-            if !reg.isMissingAnswer || ids.contains(reg.id) { continue }  // one row per child; one card per request
+            if !reg.needsAnswer || ids.contains(reg.id) { continue }  // one row per child; one card per request
             ids.insert(reg.id)
             let start = Self.localDate(reg.startDate), end = Self.localDate(reg.endDate)
             let deadline = Self.localDate(reg.responseDeadline)
@@ -707,8 +707,7 @@ extension Aula {
         let today = AulaTime.today()
         let start = Self.localDate(first.startDate), end = Self.localDate(first.endDate)
         let deadline = Self.localDate(first.responseDeadline)
-        // The portal's own gate (app.*.js canEdit): isEditable, custody (per child below) and the deadline.
-        let isOpen = first.isEditable && (deadline.map { today <= $0 } ?? true)
+        let isOpen = deadline.map { today <= $0 } ?? true
 
         func read<T: Sendable>(_ label: String, _ op: @Sendable () async throws -> T) async throws -> T? {
             strict ? try await op() : try await Self.optional(label, op)
@@ -731,7 +730,8 @@ extension Aula {
             if let code = Self.nonEmpty(child?.institutionCode), let start, let end {
                 closed = try await read("opening hours") { try await self.closedDays(code, start, end) } ?? []
             }
-            let mayAnswer = isOpen && (child == nil || child?.hasCustodyOrExtendedAccess != false)
+            // The portal's own gate (app.*.js canEdit), per child's row: isEditable, custody and the deadline.
+            let mayAnswer = isOpen && reg.isEditable && (child == nil || child?.hasCustodyOrExtendedAccess != false)
             var days: [JSONObject] = []
             if let start, let end {
                 for day in Self.weekdays(start, end) {
@@ -763,7 +763,7 @@ extension Aula {
             "endDate": J.out(end?.iso),
             "timesRequired": first.isPresenceTimesRequired,
             "answered": children.allSatisfy { ($0["answered"] as? Bool) ?? false },
-            "editable": isOpen,
+            "editable": isOpen && regs.contains(where: \.isEditable),
             "children": children,
         ]
         return (out, responses)
@@ -786,7 +786,10 @@ extension Aula {
     func answerHolidayRequest(_ profile: AulaProfile, _ requestId: String, _ answers: [(Int, ChildAnswer)]) async throws {
         if answers.isEmpty { throw MapError.badRequest("children is empty") }
         let (out, responses) = try await holiday(profile, requestId, strict: true)
-        if !((out["editable"] as? Bool) ?? false) { throw MapError.conflict("The deadline for this holiday request has passed") }
+        if !((out["editable"] as? Bool) ?? false) {
+            let passed = (out["deadline"] as? String).flatMap(Day.parse).map { $0 < AulaTime.today() } ?? false
+            throw MapError.conflict(passed ? "The deadline for this holiday request has passed" : "Aula no longer takes an answer to this holiday request")
+        }
         let withTimes = (out["timesRequired"] as? Bool) ?? false
         var byChild: [Int: JSONObject] = [:]
         for c in out["children"] as? [JSONObject] ?? [] {
