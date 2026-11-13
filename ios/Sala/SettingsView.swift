@@ -25,6 +25,16 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    NavigationLink {
+                        AISettingsView()
+                    } label: {
+                        LabeledContent("Translate and summarize", value: store.aiOn ? AI.provider.title : "Off")
+                    }
+                } footer: {
+                    Text("AI that translates or summarizes a message or post when you tap it.")
+                }
+
+                Section {
                     Toggle("Lock with Face ID", isOn: Binding(get: { appLock }, set: { on in
                         appLock = on
                         Task {
@@ -124,5 +134,99 @@ struct SettingsView: View {
                 }
             }
         }
+    }
+}
+
+/// Settings → AI: where translations and summaries run, or off.
+struct AISettingsView: View {
+    @Environment(Store.self) private var store
+    @State private var provider = AI.provider
+    @State private var endpoint = AI.endpoint
+    @State private var openAIModel = AI.openAIModel
+    @State private var openAIKey = AI.openAIKey
+    @State private var anthropicModel = AI.anthropicModel
+    @State private var anthropicKey = AI.anthropicKey
+    @State private var translatePrompt = AI.customPrompt(.translate)
+    @State private var summarizePrompt = AI.customPrompt(.summarize)
+
+    var body: some View {
+        Form {
+            Section {
+                Picker("Where AI runs", selection: $provider) {
+                    ForEach(AI.Provider.allCases) { Text($0.title).tag($0) }
+                }
+                .pickerStyle(.inline)
+                .labelsHidden()
+            } footer: {
+                Text(footer)
+            }
+
+            if provider == .openAI {
+                Section("Endpoint") {
+                    TextField("https://api.openai.com/v1", text: $endpoint)
+                        .keyboardType(.URL)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                    TextField("Model", text: $openAIModel)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                    SecureField("API key (optional)", text: $openAIKey)
+                }
+            }
+            if provider == .anthropic {
+                Section("Anthropic") {
+                    SecureField("API key", text: $anthropicKey)
+                    TextField("Model (default \(AI.defaultAnthropicModel))", text: $anthropicModel)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                }
+            }
+
+            if provider != .off {
+                if let reason = AI.unavailableReason(provider) {
+                    Section { Label(reason, systemImage: "exclamationmark.triangle").foregroundStyle(Color.sickText) }
+                }
+                Section {
+                    promptEditor($translatePrompt, .translate)
+                } header: {
+                    Text("Translate prompt")
+                } footer: {
+                    Text("Leave empty for the default. {lang} becomes your iPhone's language.")
+                }
+                Section("Summarize prompt") { promptEditor($summarizePrompt, .summarize) }
+            }
+        }
+        .navigationTitle("AI")
+        .navigationBarTitleDisplayMode(.inline)
+        .onDisappear(perform: save)
+        .onChange(of: provider) { save() }
+        .onChange(of: [endpoint, openAIModel, openAIKey, anthropicModel, anthropicKey, translatePrompt, summarizePrompt]) { save() }
+    }
+
+    private var footer: String {
+        switch provider {
+        case .off: "No AI buttons anywhere. Nothing is sent."
+        case .device: "Apple's model on this iPhone. Nothing leaves your phone. Needs Apple Intelligence."
+        case .pcc: "Apple's larger model on Apple's servers. The text leaves your phone: Apple says it's used only for your request and never stored, Apple staff can't access it, the servers run software independent researchers can inspect, and your iPhone only sends to servers that prove they run that software."
+        case .openAI, .anthropic: "The text of the message or post you tap is sent to this provider, and its terms and data policies apply. It may store it. Only use one you trust with your children's school messages."
+        }
+    }
+
+    private func promptEditor(_ text: Binding<String>, _ action: AI.Action) -> some View {
+        TextField(AI.defaultPrompt(action), text: text, axis: .vertical)
+            .font(.callout)
+            .lineLimit(3...12)
+    }
+
+    private func save() {
+        AI.provider = provider
+        AI.endpoint = endpoint
+        AI.openAIModel = openAIModel
+        AI.openAIKey = openAIKey
+        AI.anthropicModel = anthropicModel
+        AI.anthropicKey = anthropicKey
+        AI.setCustomPrompt(.translate, translatePrompt)
+        AI.setCustomPrompt(.summarize, summarizePrompt)
+        store.refreshAI()
     }
 }

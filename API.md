@@ -202,9 +202,9 @@ Aula's contact book (Kontaktbog). Other families' personal data: the app keeps i
 `POST /folders` body `{"name":"Skole"}` → the new folder `{"id":72,"name":"Skole"}`. `PATCH /folders/{id}` body `{"name":"..."}` → the renamed folder. The name is trimmed and must be 1–100 characters, else `400`. An unknown folder → `404`.
 `DELETE /folders/{id}` → `{"ok":true}`. Per Aula's own confirmation text ("Hvis denne mappe ikke er tom, vil alle beskeder i mappen blive slettet"; not tried live), the messages in the folder are deleted with it, not moved to the inbox. The client should say so before deleting.
 
-## Translation
+## Translation and summaries
 
-`GET /features` → `{"translate":false}`, and `POST /translate` → `404 {"error":"not_enabled"}`, until translation comes back (on-device models, or the user's own API key). The app shows its "Translate" buttons only when `translate` is true. When it's on: body `{"texts":["Hej","..."]}` → `{"texts":["Hi","..."]}`, one translation per text, same order, at most 50 texts of at most 20 000 characters each; only on a tap, never automatically.
+Not routes. The app translates or summarizes one message or post on a tap, in `ios/Sala/AI.swift`, with what Settings → AI picks: Apple's model on the phone, Apple's Private Cloud Compute, an OpenAI-compatible endpoint, or the Anthropic API. Off by default.
 
 ## Push
 

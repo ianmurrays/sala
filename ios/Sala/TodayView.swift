@@ -614,7 +614,7 @@ struct PostCard: View {
                 }
             }
 
-            TranslateButton(id: translationID, texts: [post.title, post.body])
+            AIActions(id: translationID, translate: [post.title, post.body], summarize: post.body)
 
             ForEach(Array(post.attachments.enumerated()), id: \.offset) { _, attachment in
                 AttachmentRow(attachment: attachment, downloading: downloading) { open(attachment) }
@@ -624,36 +624,61 @@ struct PostCard: View {
     }
 }
 
-/// "Translate" / "Show original" for a post or thread, shown only when the server translates.
-/// Never translates on its own; loading and errors show inline.
-struct TranslateButton: View {
+/// Translate / Summarize for one post or message, shown only when Settings → AI can run.
+/// Never runs on its own; the summary, loading and errors show inline. A translation replaces the text
+/// through `Store.display`.
+struct AIActions: View {
     @Environment(Store.self) private var store
-    /// "post-9" or "thread-123".
+    /// "post-9" or "message-12".
     let id: String
-    let texts: [String]
+    /// What Translate translates (a post's title and body).
+    let translate: [String]
+    /// What Summarize summarizes.
+    let summarize: String
+
+    private var source: String? {
+        AI.language(of: translate.joined(separator: "\n")).flatMap { $0.languageCode == AI.readerLanguage.languageCode ? nil : AI.name($0) }
+    }
 
     var body: some View {
-        if store.canTranslate {
-            HStack(spacing: 8) {
-                Button {
-                    Task { await store.toggleTranslation(id, texts: texts) }
-                } label: {
-                    Label(store.isTranslated(id, texts: texts) ? "Show original" : "Translate", systemImage: "translate")
+        if store.aiOn, !summarize.isEmpty || translate.contains(where: { !$0.isEmpty }) {
+            let source = source
+            let canSummarize = summarize.count >= AI.summaryMinLength
+            VStack(alignment: .leading, spacing: 8) {
+                if let summary = store.summary(of: summarize, in: id) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Label(source.map { "Summary · translated from \($0)" } ?? "Summary", systemImage: "sparkles")
+                            .font(.footnote.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                        Text(summary).font(.callout).textSelection(.enabled)
+                    }
+                    .padding(10)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color.salaAccent.opacity(0.08), in: .rect(cornerRadius: 12, style: .continuous))
+                }
+                HStack(spacing: 14) {
+                    if store.aiShowing[id] != nil {
+                        if store.aiShowing[id] == .translate, let source { Text("Translated from \(source)").foregroundStyle(.secondary) }
+                        button(store.aiShowing[id] == .summarize ? "Hide summary" : "Show original", "arrow.uturn.backward") { store.showOriginal(id) }
+                    } else {
+                        if source != nil { button("Translate", "translate") { await store.runAI(.translate, id: id, texts: translate) } }
+                        if canSummarize { button("Summarize", "sparkles") { await store.runAI(.summarize, id: id, texts: [summarize]) } }
+                    }
+                    if store.aiBusy.contains(id) { ProgressView().controlSize(.small) }
                 }
                 .font(.footnote.weight(.semibold))
-                .foregroundStyle(.secondary)
-                .buttonStyle(.borderless)
-                .disabled(store.translating.contains(id))
-                if store.translating.contains(id) {
-                    ProgressView().controlSize(.small)
-                } else if let error = store.translateErrors[id] {
-                    Text(error)
-                        .font(.footnote)
-                        .foregroundStyle(Color.sickText)
-                        .lineLimit(2)
+                if let error = store.aiErrors[id] {
+                    Text(error).font(.footnote).foregroundStyle(Color.sickText).lineLimit(3)
                 }
             }
         }
+    }
+
+    private func button(_ title: String, _ icon: String, _ action: @escaping @MainActor () async -> Void) -> some View {
+        Button { Task { await action() } } label: { Label(title, systemImage: icon) }
+            .foregroundStyle(.secondary)
+            .buttonStyle(.borderless)
+            .disabled(store.aiBusy.contains(id))
     }
 }
 
