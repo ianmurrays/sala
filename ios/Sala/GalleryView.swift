@@ -267,7 +267,11 @@ private struct PhotoViewer: View {
             // Zoomed in, a pan moves within the photo instead of paging or closing.
             .scrollDisabled(zoomed)
             // The filmstrip can jump away from a zoomed page before it reports zooming out.
-            .onChange(of: current) { zoomed = false }
+            .onChange(of: current) {
+                zoomed = false
+                // A video page has no tap to bring hidden bars back (the player takes taps), so show them.
+                if photos.items?.first(where: { $0.id == current })?.video != nil { chrome = true }
+            }
             .background(.black)
             .ignoresSafeArea()
             .onGeometryChange(for: EdgeInsets.self, of: \.safeAreaInsets) { insets = $0 }
