@@ -400,6 +400,8 @@ def test_gallery_albums_photos_and_images(api):
     albums = api.get("/albums", headers=AUTH).json()
     assert [(a["id"], a["tagged"]) for a in albums] == [(0, True), (6001, False), (6002, False)]
     assert albums[1]["title"] == "Skovtur" and albums[1]["date"] and albums[1]["cover"]
+    # Before any photo list registers the same file: the type comes from the URL, not the list.
+    assert api.get(f"/attachments/{albums[0]['cover']}", headers=AUTH).headers["content-type"] == "image/png"
     assert [p["id"] for p in api.get("/albums/0/photos", headers=AUTH).json()] == [6002000, 6002001, 6002002]
     assert api.get("/albums?page=2", headers=AUTH).json() == []
 

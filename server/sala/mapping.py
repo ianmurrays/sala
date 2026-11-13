@@ -238,7 +238,7 @@ def picture_id(picture: Any, register: Register | None) -> str | None:
     if register is None or not url:
         return None
     if not file_url_allowed(url):
-        _LOGGER.warning("Skipping profile picture on a non-Aula host: %s", urlsplit(url).hostname)
+        _LOGGER.warning("Skipping picture on a non-Aula host: %s", urlsplit(url).hostname)
         return None
     parts = urlsplit(url)
     return register(url, parts.path.rsplit("/", 1)[-1] or "picture", parts._replace(query="", fragment="").geturl())
@@ -936,15 +936,6 @@ async def posts(client: AulaApiClient, profile: Profile, register: Register, pag
 # --- gallery -----------------------------------------------------------------
 
 
-def _gallery_image(url: Any, name: str, register: Register) -> str | None:
-    """A gallery URL as an id stable across Aula's re-signed URLs (like ``picture_id``)."""
-    if not isinstance(url, str) or not file_url_allowed(url):
-        if url:
-            _LOGGER.warning("Skipping gallery image on a non-Aula host: %s", urlsplit(str(url)).hostname)
-        return None
-    return register(url, name, urlsplit(url)._replace(query="", fragment="").geturl())
-
-
 async def _gallery_get(client: AulaApiClient, method: str, params: dict) -> Any:
     resp = await client._request_with_version_retry("get", client.api_url, params={"method": method, **params})
     resp.raise_for_status()
@@ -970,7 +961,7 @@ async def albums(client: AulaApiClient, profile: Profile, register: Register, pa
             "id": a.get("id") or TAGGED_ALBUM,
             "title": a.get("title") or "",
             "date": iso(a.get("creationDate")),
-            "cover": _gallery_image(thumbs[0], "cover.jpg", register) if thumbs else None,
+            "cover": picture_id(thumbs[0], register) if thumbs else None,
             "tagged": a.get("id") is None,
         })
     return out
@@ -988,8 +979,7 @@ async def album_photos(client: AulaApiClient, profile: Profile, album_id: int, r
     for p in get_in(data, "results", default=None) or []:
         if not isinstance(p, dict) or not isinstance(p.get("id"), int) or p.get("mediaType") != "image":
             continue  # ponytail: videos are left out; show them when someone misses them
-        name = get_in(p, "file.name") or "photo.jpg"
-        image = _gallery_image(get_in(p, "file.url"), name, register)
+        image = picture_id(get_in(p, "file.url"), register)
         if image is None:
             continue
         # Live sizes (one photo): large 900x1200, medium 600x800, small 300x400 (~55 kB), extraSmall 150x200.
@@ -997,7 +987,7 @@ async def album_photos(client: AulaApiClient, profile: Profile, album_id: int, r
         thumb = p.get("smallThumbnailUrl") or p.get("thumbnailUrl")
         out.append({
             "id": p["id"],
-            "thumbnail": _gallery_image(thumb, "thumb-" + name, register) or image,
+            "thumbnail": picture_id(thumb, register) or image,
             "image": image,
             "date": iso(get_in(p, "file.created")),
         })

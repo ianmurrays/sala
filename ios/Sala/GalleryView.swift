@@ -5,6 +5,7 @@ import SwiftUI
 struct GalleryView: View {
     @Environment(Store.self) private var store
     @State private var albums = Paged<Album> { client, page in try await client.albums(page: page) }
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         NavigationStack {
@@ -30,6 +31,7 @@ struct GalleryView: View {
             .toolbar(.hidden, for: .navigationBar)
             .refreshable { await albums.load(store, reset: true) }
             .task { if albums.items == nil { await albums.load(store, reset: true) } }
+            .onChange(of: scenePhase) { if scenePhase == .active { Task { await albums.refreshURLs(store) } } }
             .navigationDestination(for: Album.self) { AlbumView(album: $0) }
         }
     }
@@ -96,7 +98,9 @@ private struct AlbumView: View {
     @State private var selection: Set<Int>?
     @State private var saving: Int?
     @State private var message: String?
+    @State private var selectingAll = false
     @Namespace private var zoom
+    @Environment(\.scenePhase) private var scenePhase
 
     init(album: Album) {
         self.album = album
@@ -131,6 +135,7 @@ private struct AlbumView: View {
         .toolbarVisibility(selection == nil ? .automatic : .hidden, for: .tabBar)
         .refreshable { await photos.load(store, reset: true) }
         .task { if photos.items == nil { await photos.load(store, reset: true) } }
+        .onChange(of: scenePhase) { if scenePhase == .active { Task { await photos.refreshURLs(store) } } }
         .fullScreenCover(isPresented: $viewing) {
             PhotoViewer(photos: photos, title: album.title, current: $current)
                 .navigationTransition(.zoom(sourceID: current, in: zoom))
@@ -175,7 +180,7 @@ private struct AlbumView: View {
     @ToolbarContentBuilder private var toolbar: some ToolbarContent {
         ToolbarItem(placement: .primaryAction) {
             Button(selection == nil ? "Select" : "Cancel") { selection = selection == nil ? [] : nil }
-                .disabled(saving != nil || photos.items?.isEmpty != false)
+                .disabled(saving != nil || selectingAll || photos.items?.isEmpty != false)
         }
         if let selection {
             ToolbarItem(placement: .bottomBar) {
@@ -193,9 +198,22 @@ private struct AlbumView: View {
             .sharedBackgroundVisibility(.hidden)
             ToolbarSpacer(.flexible, placement: .bottomBar)
             ToolbarItem(placement: .bottomBar) {
-                let all = Set((photos.items ?? []).map(\.id))
-                Button(selection == all ? "Deselect All" : "Select All") { self.selection = selection == all ? [] : all }
+                if selectingAll {
+                    ProgressView()
+                } else if !selection.isEmpty, selection == Set((photos.items ?? []).map(\.id)) {
+                    Button("Deselect All") { self.selection = [] }.disabled(saving != nil)
+                } else {
+                    // The whole album, not just the pages scrolled through so far.
+                    Button("Select All") {
+                        Task {
+                            selectingAll = true
+                            await photos.loadAll(store)
+                            selectingAll = false
+                            if self.selection != nil { self.selection = Set((photos.items ?? []).map(\.id)) }
+                        }
+                    }
                     .disabled(saving != nil)
+                }
             }
         }
     }
@@ -414,6 +432,23 @@ final class Paged<Item: Identifiable & Sendable> {
             error = nil
         } catch {
             if let msg = store.handle(error) { self.error = msg }
+        }
+    }
+
+    /// Requests the loaded pages again and drops the answers: ids are stable, but Aula's
+    /// image URLs expire, and listing is what makes the server store fresh ones.
+    func refreshURLs(_ store: Store) async {
+        guard items != nil else { return }
+        for page in 1..<next { _ = try? await fetch(store.client, page) }
+    }
+
+    /// Loads every remaining page, for Select All.
+    func loadAll(_ store: Store) async {
+        while !done, error == nil, items != nil {
+            if loading { try? await Task.sleep(for: .milliseconds(100)); continue }
+            let before = items?.count
+            await load(store)
+            if items?.count == before { break }  // nothing new: the end, or a failure handled elsewhere
         }
     }
 }
