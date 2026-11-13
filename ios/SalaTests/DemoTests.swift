@@ -9,7 +9,7 @@ private let fixtures = repo.appending(path: "DemoAula")
 
 final class DemoTests: XCTestCase {
     /// `"area.name"` literals in the Aula code that aren't Aula methods (JSON key paths, defaults keys).
-    private let notMethods: Set<String> = ["a", "aula", "content", "data", "file", "institution", "message", "sender", "text"]
+    private let notMethods: Set<String> = ["a", "aula", "child", "content", "data", "file", "institution", "message", "sender", "text"]
 
     func testEveryAulaMethodHasAFixture() throws {
         let aulaDir = repo.appending(path: "Sala/Aula")
@@ -73,6 +73,11 @@ final class DemoTests: XCTestCase {
         for item in today["attention"] as? [[String: Any]] ?? [] where item["kind"] as? String == "holiday_request" {
             _ = try await send("GET", "/holiday-requests/\(item["id"]!)")
         }
+        for request in try await send("GET", "/holiday-requests") as? [[String: Any]] ?? [] {
+            _ = try await send("GET", "/holiday-requests/\(request["id"]!)")
+        }
+        let absences = try await send("GET", "/absences") as? [Any] ?? []
+        XCTAssertFalse(absences.isEmpty, "\(now) /absences: empty")
         _ = try await pages("/posts")
         _ = try await send("GET", "/calendar?month=\(Day(ordinal: DemoTransport.anchor.ordinal + shift).iso.prefix(7))")
         _ = try await send("GET", "/folders")
@@ -85,11 +90,13 @@ final class DemoTests: XCTestCase {
 
         // Writes: the goldens' successful ones, dates moved like the fixtures'.
         guard writes else { return }
-        for name in ["pickup", "sick", "absences", "holiday", "save", "reply", "patch_thread", "folders"] {
+        for name in ["pickup", "sick", "absences", "manage_absences", "holiday", "save", "reply", "patch_thread", "folders"] {
             let golden = try JSONSerialization.jsonObject(with: Data(contentsOf: repo.appending(path: "SalaTests/Goldens/\(name).json"))) as! [String: Any]
             for step in golden["steps"] as! [[String: Any]] where step["verb"] as? String != "GET" && step["status"] as? Int == 200 {
                 // ponytail: creating a folder re-reads the folders to find it, which a fake that keeps no state can't show.
                 if step["verb"] as? String == "POST", step["path"] as? String == "/folders" { continue }
+                // ponytail: the demo's absence 7001 hasn't started, so a past start is refused there.
+                if step["note"] as? String == "shorten a started absence" { continue }
                 let body = (step["body"].flatMap { $0 is NSNull ? nil : $0 })
                     .map { DemoTransport.shiftDates(String(decoding: try! JSONSerialization.data(withJSONObject: $0, options: [.fragmentsAllowed]), as: UTF8.self), by: shift) }
                 _ = try await send(step["verb"] as! String, step["path"] as! String, body.map { Data($0.utf8) })

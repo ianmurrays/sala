@@ -1,0 +1,42 @@
+[
+ {
+  "when": {},
+  "answer": {
+   "status": {
+    "code": 0,
+    "message": "OK"
+   },
+   "data": [
+    {
+     "child": {
+      "id": 2001,
+      "name": "Oskar"
+     },
+     "vacationAnnouncements": [
+      {
+       "vacationId": 7001,
+       "startDate": "2026-11-20",
+       "endDate": "2026-11-21",
+       "description": "Bedsteforældre på besøg",
+       "isEditable": true
+      },
+      {
+       "vacationId": 7002,
+       "startDate": "2026-12-28",
+       "endDate": "2026-12-30",
+       "description": "Skiferie",
+       "isEditable": true
+      },
+      {
+       "vacationId": 7003,
+       "startDate": "2027-02-16",
+       "endDate": "2027-02-17",
+       "description": "",
+       "isEditable": false
+      }
+     ]
+    }
+   ]
+  }
+ }
+]

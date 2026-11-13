@@ -1,10 +1,12 @@
 import SwiftUI
 
-/// Answer a holiday request (opened from its "Needs attention" card): Comes / Off per day and child.
+/// Answer a holiday request, or change the answer until the deadline: Comes / Off per day and child.
 struct HolidaySheet: View {
     @Environment(Store.self) private var store
     @Environment(\.dismiss) private var dismiss
-    let item: AttentionItem
+    let id: String
+    /// Shown until the request has loaded its own title.
+    var fallbackTitle = ""
 
     struct DayState: Equatable {
         var coming: Bool?
@@ -74,7 +76,7 @@ struct HolidaySheet: View {
             Section {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack(alignment: .firstTextBaseline, spacing: 8) {
-                        Text(r.title.isEmpty ? item.title : r.title).font(.headline)
+                        Text(r.title.isEmpty ? fallbackTitle : r.title).font(.headline)
                         Spacer(minLength: 0)
                         if let due = dueText(r) {
                             Text(due)
@@ -102,17 +104,6 @@ struct HolidaySheet: View {
 
             ForEach(r.children) { child in
                 Section {
-                    if child.days.contains(where: \.editable) {
-                        HStack(spacing: 8) {
-                            Button("Off all days") { setAll(child, coming: false) }
-                                .frame(maxWidth: .infinity)
-                            Button("Comes all days") { setAll(child, coming: true) }
-                                .frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(.glass)
-                        .listRowBackground(Color.clear)
-                        .listRowInsets(EdgeInsets())
-                    }
                     ForEach(child.days, id: \.date) { day in
                         dayRow(child: child, day: day, timesRequired: r.timesRequired)
                     }
@@ -123,7 +114,18 @@ struct HolidaySheet: View {
                             .lineLimit(2...6)
                     }
                 } header: {
-                    Text(r.children.count > 1 || child.answered ? "\(child.name)\(child.answered ? " · answered" : "")" : "Days")
+                    HStack {
+                        Text(r.children.count > 1 || child.answered ? "\(child.name)\(child.answered ? " · answered" : "")" : "Days")
+                        Spacer()
+                        if child.days.contains(where: \.editable) {
+                            Menu("Set all") {
+                                Button("Comes all days", systemImage: "checkmark.circle") { setAll(child, coming: true) }
+                                Button("Off all days", systemImage: "sun.max") { setAll(child, coming: false) }
+                            }
+                            .font(.subheadline.weight(.semibold))
+                            .textCase(nil)
+                        }
+                    }
                 }
             }
 
@@ -210,7 +212,7 @@ struct HolidaySheet: View {
             let start = Fmt.format(s, "EEEdMMM")
             if let e = r.endDate.flatMap(Fmt.day), e != s { parts.append("\(start) – \(Fmt.format(e, "EEEdMMM"))") } else { parts.append(start) }
         }
-        if let d = r.deadline.flatMap(Fmt.day) { parts.append("answer by \(Fmt.format(d, "dMMM"))") }
+        if let d = r.deadline.flatMap(Fmt.day) { parts.append("\(r.answered && r.editable ? "change" : "answer") by \(Fmt.format(d, "dMMM"))") }
         return parts.isEmpty ? nil : parts.joined(separator: " · ")
     }
 
@@ -234,7 +236,7 @@ struct HolidaySheet: View {
     private func load() async {
         loadError = nil
         do {
-            let r = try await store.client.holidayRequest(item.id)
+            let r = try await store.client.holidayRequest(id)
             request = r
             answers = Dictionary(uniqueKeysWithValues: r.children.map { child in
                 (child.id, Dictionary(uniqueKeysWithValues: child.days.map {
@@ -304,17 +306,38 @@ private struct TimeField: View {
     }
 }
 
-/// Register a holiday or days off for one or more children (`POST /absences`).
+/// Register a holiday or days off for one or more children (`POST /absences`), or change or cancel
+/// a registered one (`editing`).
 struct AbsenceSheet: View {
     @Environment(Store.self) private var store
     @Environment(\.dismiss) private var dismiss
+    let editing: Absence?
 
     @State private var selected: Set<Int> = []
-    @State private var start = Fmt.copenhagen.startOfDay(for: Date())
-    @State private var end = Fmt.copenhagen.startOfDay(for: Date())
-    @State private var comment = ""
+    @State private var start: Date
+    @State private var end: Date
+    @State private var comment: String
     @State private var saving = false
     @State private var saveError: String?
+    @State private var confirmCancel = false
+
+    init(editing: Absence? = nil) {
+        self.editing = editing
+        let today = Fmt.copenhagen.startOfDay(for: Date())
+        _start = State(initialValue: editing.flatMap { Self.day($0.startDate) } ?? today)
+        _end = State(initialValue: editing.flatMap { Self.day($0.endDate) } ?? today)
+        _comment = State(initialValue: editing?.comment ?? "")
+    }
+
+    /// "yyyy-MM-dd" → that day in Copenhagen.
+    private static func day(_ ymd: String) -> Date? {
+        let p = ymd.split(separator: "-").compactMap { Int($0) }
+        return p.count == 3 ? Fmt.copenhagen.date(from: DateComponents(year: p[0], month: p[1], day: p[2])) : nil
+    }
+
+    private var today: Date { Fmt.copenhagen.startOfDay(for: Date()) }
+    /// Aula won't move the start of an absence that has started.
+    private var startLocked: Bool { editing.flatMap { Self.day($0.startDate) }.map { $0 <= today } ?? false }
 
     private var children: [Child] { store.today?.children ?? [] }
     private static let maxComment = 250
@@ -323,10 +346,12 @@ struct AbsenceSheet: View {
         NavigationStack {
             Form {
                 Section("Who") {
-                    if children.isEmpty {
+                    if let editing {
+                        Text(editing.children.map(\.name).joined(separator: ", "))
+                    } else if children.isEmpty {
                         Text("No children on this account.").foregroundStyle(.secondary)
                     }
-                    ForEach(children) { child in
+                    ForEach(editing == nil ? children : []) { child in
                         Button {
                             if selected.contains(child.id) { selected.remove(child.id) } else { selected.insert(child.id) }
                         } label: {
@@ -347,8 +372,9 @@ struct AbsenceSheet: View {
                 }
 
                 Section("When") {
-                    DatePicker("From", selection: $start, in: Fmt.copenhagen.startOfDay(for: Date())..., displayedComponents: .date)
-                    DatePicker("To", selection: $end, in: start...(Fmt.copenhagen.date(byAdding: .year, value: 1, to: start) ?? start), displayedComponents: .date)
+                    DatePicker("From", selection: $start, in: (startLocked ? start : today)..., displayedComponents: .date)
+                        .disabled(startLocked)
+                    DatePicker("To", selection: $end, in: max(start, today)...(Fmt.copenhagen.date(byAdding: .year, value: 1, to: start) ?? start), displayedComponents: .date)
                 }
 
                 Section {
@@ -368,11 +394,23 @@ struct AbsenceSheet: View {
                             .foregroundStyle(Color.sickText)
                     }
                 }
+
+                if editing != nil {
+                    Section {
+                        Button("Cancel this absence", role: .destructive) { confirmCancel = true }
+                            .disabled(saving)
+                    }
+                }
+            }
+            .confirmationDialog("Cancel this absence?", isPresented: $confirmCancel, titleVisibility: .visible) {
+                Button("Cancel absence", role: .destructive) { Task { await cancel() } }
+            } message: {
+                Text("The institution will expect \(editing?.children.map(\.name).joined(separator: " and ") ?? "them") on these days.")
             }
             // Aula's days are Danish days: pick and format them in Copenhagen time.
             .environment(\.timeZone, Fmt.copenhagen.timeZone)
             .environment(\.calendar, Fmt.copenhagen)
-            .navigationTitle("Holiday or days off")
+            .navigationTitle(editing == nil ? "Holiday or days off" : "Change holiday")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -383,29 +421,161 @@ struct AbsenceSheet: View {
                         ProgressView()
                     } else {
                         Button("Send", systemImage: "checkmark", role: .confirm) { Task { await send() } }
-                            .disabled(selected.isEmpty || comment.count > Self.maxComment)
+                            .disabled((editing == nil && selected.isEmpty) || comment.count > Self.maxComment)
                     }
                 }
             }
             .onChange(of: start) { _, new in if end < new { end = new } }
         }
         .presentationDetents([.large])
-        .onAppear { if children.count == 1, let only = children.first { selected = [only.id] } }
+        .onAppear { if editing == nil, children.count == 1, let only = children.first { selected = [only.id] } }
     }
 
     private func send() async {
+        await write {
+            if let editing {
+                try await store.client.changeAbsence(editing.id, AbsenceChange(startDate: Fmt.ymd(start), endDate: Fmt.ymd(end), comment: comment))
+            } else {
+                try await store.client.addAbsence(AbsenceRequest(childIds: children.map(\.id).filter(selected.contains),
+                                                                 startDate: Fmt.ymd(start), endDate: Fmt.ymd(end), comment: comment))
+            }
+        }
+    }
+
+    private func cancel() async {
+        guard let editing else { return }
+        await write { try await store.client.cancelAbsence(editing.id) }
+    }
+
+    private func write(_ op: () async throws -> Void) async {
         saving = true
         saveError = nil
         defer { saving = false }
-        let request = AbsenceRequest(childIds: children.map(\.id).filter(selected.contains),
-                                     startDate: Fmt.ymd(start), endDate: Fmt.ymd(end), comment: comment)
         do {
-            try await store.client.addAbsence(request)
+            try await op()
             await store.load()
             dismiss()
         } catch is CancellationError {
         } catch {
             saveError = store.handle(error) ?? error.localizedDescription
         }
+    }
+}
+
+/// Registered holidays and days off (tap one to change or cancel it), and the holiday requests that
+/// can still be answered (tap one to change the answer).
+struct HolidaysView: View {
+    @Environment(Store.self) private var store
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var absences: [Absence]?
+    @State private var requests: [HolidayRequestSummary] = []
+    @State private var loadError: String?
+    @State private var editing: Absence?
+    @State private var request: HolidayRequestSummary?
+    @State private var adding = false
+
+    var body: some View {
+        NavigationStack {
+            Group {
+                if absences != nil || loadError != nil {
+                    list(absences ?? [])
+                } else {
+                    ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+            }
+            .navigationTitle("Holidays")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Close", systemImage: "xmark", role: .close) { dismiss() }
+                }
+                ToolbarItem(placement: .primaryAction) {
+                    Button("Register holiday", systemImage: "plus") { adding = true }
+                }
+            }
+            .sheet(item: $editing, onDismiss: reload) { AbsenceSheet(editing: $0) }
+            .sheet(item: $request, onDismiss: reload) { HolidaySheet(id: $0.id, fallbackTitle: $0.title) }
+            .sheet(isPresented: $adding, onDismiss: reload) { AbsenceSheet() }
+        }
+        .presentationDetents([.large])
+        .task { await load() }
+    }
+
+    private func list(_ absences: [Absence]) -> some View {
+        List {
+            Section {
+                if let loadError {
+                    Label(loadError, systemImage: "exclamationmark.triangle.fill").foregroundStyle(Color.sickText)
+                    Button("Try again") { reload() }
+                } else if absences.isEmpty {
+                    Text("Nothing registered.").foregroundStyle(.secondary)
+                }
+                ForEach(absences) { a in
+                    Button { editing = a } label: {
+                        row(Self.range(a.startDate, a.endDate),
+                            [a.children.map(\.name).joined(separator: ", "), a.comment].filter { !$0.isEmpty }.joined(separator: " · "),
+                            locked: !a.editable)
+                    }
+                    .disabled(!a.editable)
+                }
+            } header: {
+                Text("Registered")
+            } footer: {
+                if absences.contains(where: { !$0.editable }) {
+                    Text("Locked ones can't be changed in Aula. Ask the institution.")
+                }
+            }
+            if !requests.isEmpty {
+                Section("Holiday requests") {
+                    ForEach(requests) { r in
+                        Button { request = r } label: {
+                            row(r.title.isEmpty ? "Holiday request" : r.title,
+                                [r.startDate.map { Self.range($0, r.endDate ?? $0) }, r.answered ? "Answered" : "Not answered",
+                                 r.deadline.flatMap(Fmt.day).map { "\(r.answered ? "change" : "answer") by \(Fmt.format($0, "dMMM"))" }].compactMap { $0 }.joined(separator: " · "),
+                                locked: false)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private func row(_ title: String, _ detail: String, locked: Bool) -> some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title).font(.body.weight(.semibold)).foregroundStyle(Color.primary)
+                if !detail.isEmpty { Text(detail).font(.footnote).foregroundStyle(Color.secondary) }
+            }
+            Spacer(minLength: 0)
+            Image(systemName: locked ? "lock" : "chevron.right")
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.tertiary)
+                .accessibilityHidden(!locked)
+                .accessibilityLabel("Can't be changed")
+        }
+        .contentShape(.rect)
+    }
+
+    static func range(_ start: String, _ end: String) -> String {
+        guard let s = Fmt.day(start) else { return start }
+        guard end != start, let e = Fmt.day(end) else { return Fmt.format(s, "EEEdMMM") }
+        return "\(Fmt.format(s, "EEEdMMM")) – \(Fmt.format(e, "EEEdMMM"))"
+    }
+
+    private func reload() { Task { await load() } }
+
+    private func load() async {
+        loadError = nil
+        // Separately: a failing absence list still shows the requests.
+        async let r = try? store.client.holidayRequests()
+        do {
+            absences = try await store.client.absences()
+        } catch is CancellationError {
+        } catch {
+            store.handle(error)
+            loadError = error.localizedDescription
+        }
+        requests = await r ?? requests
     }
 }

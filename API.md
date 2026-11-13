@@ -91,7 +91,24 @@ Nullable here: `opensAt`, `closesAt`, `current.time`, `current.by`.
 - Times are only used when `timesRequired`. Then a day with `coming: true` needs both `entryTime` and `exitTime`, with entry before exit, else `400`. Otherwise times are ignored, like Aula's form.
 - `comment` is per child (Aula keeps one per child's answer); a missing `comment` is sent as empty, replacing that child's previous one.
 
-`POST /absences` body `{"childIds":[123],"startDate":"2026-12-27","endDate":"2026-12-30","comment":""}` → `{"ok":true}`. Registers a holiday or days off (Aula's "Ferie/fri"). `endDate` may equal `startDate` for one day. Start in the past, end before start, end more than a year after start, a comment over 250 characters, no children, an unknown child, or a child Aula won't take an absence for (no custody, or the institution doesn't let guardians register absences; when that can't be read, Aula decides) → `400` with the reason in `message`. There is no listing or cancelling.
+`POST /absences` body `{"childIds":[123],"startDate":"2026-12-27","endDate":"2026-12-30","comment":""}` → `{"ok":true}`. Registers a holiday or days off (Aula's "Ferie/fri"). `endDate` may equal `startDate` for one day. Start in the past, end before start, end more than a year after start, a comment over 250 characters, no children, an unknown child, or a child Aula won't take an absence for (no custody, or the institution doesn't let guardians register absences; when that can't be read, Aula decides) → `400` with the reason in `message`.
+
+`GET /holiday-requests` → the requests that can still be answered (Aula marks them editable and the deadline is today or later, or none), answered or not, by deadline:
+```json
+[{"id":"vacation-55","title":"Juleferie","startDate":"2026-12-21","endDate":"2026-12-23","deadline":"2026-11-13","answered":true}]
+```
+Open one with `GET /holiday-requests/{id}`; `POST` changes the answer until the deadline. Nullable: `startDate`, `endDate`, `deadline`.
+
+`GET /absences` → the registered holidays and days off that haven't ended, by start date:
+```json
+[{"id":"absence-9001","children":[{"id":123,"name":"Oskar"}],"startDate":"2026-12-27","endDate":"2026-12-30","comment":"Skiferie","editable":true}]
+```
+- One entry per Aula absence, with the children it is for.
+- `editable` is false when Aula says the absence can't be changed, or you have no custody of a child in it.
+
+`PUT /absences/{id}` body `{"startDate":"2026-12-28","endDate":"2026-12-30","comment":""}` → `{"ok":true}`. Changes the dates or comment. The `POST /absences` rules apply, except that an unchanged start date may be in the past (an absence that has started can be shortened). An unknown `id` → `404`; not `editable` → `409`; a changed start date Aula no longer allows (the absence has started) → `400`; an end date in the past → `400`.
+
+`DELETE /absences/{id}` → `{"ok":true}`. Cancels the absence. An unknown `id` → `404`; not `editable` → `409` (stricter than Aula's portal, which offers delete on locked ones too).
 
 ## Calendar
 

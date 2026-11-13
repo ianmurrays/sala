@@ -35,7 +35,7 @@
     "vacationRegistration": {
      "endDate": "2027-02-20",
      "isEditable": true,
-     "isMissingAnswer": true,
+     "isMissingAnswer": false,
      "isPresenceTimesRequired": true,
      "noteToGuardian": "",
      "responseDeadline": "2026-11-25",
@@ -46,8 +46,33 @@
     },
     "vacationRegistrationResponse": {
      "childId": 2001,
-     "comment": "",
-     "days": [],
+     "comment": "Mormor henter torsdag og fredag.",
+     "days": [
+      {
+       "date": "2027-02-16",
+       "isComing": false,
+       "entryTime": null,
+       "exitTime": null
+      },
+      {
+       "date": "2027-02-17",
+       "isComing": false,
+       "entryTime": null,
+       "exitTime": null
+      },
+      {
+       "date": "2027-02-18",
+       "isComing": true,
+       "entryTime": "08:00",
+       "exitTime": "14:00"
+      },
+      {
+       "date": "2027-02-19",
+       "isComing": true,
+       "entryTime": "08:00",
+       "exitTime": "14:00"
+      }
+     ],
      "vacationRegistrationResponseId": 5601
     }
    },

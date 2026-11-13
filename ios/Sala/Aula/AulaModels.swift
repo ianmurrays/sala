@@ -227,6 +227,8 @@ struct VacationRegistration: Sendable {
     var noteToGuardian: String
     var isMissingAnswer: Bool
     var isPresenceTimesRequired: Bool
+    /// Aula still takes an answer (the portal also checks the deadline and custody).
+    var isEditable: Bool
 
     init(_ d: JSONObject, child: JSONObject) {
         id = J.int(J.get(d, "vacationRegistrationId", default: 0))
@@ -240,6 +242,7 @@ struct VacationRegistration: Sendable {
         noteToGuardian = J.str(J.or(J.get(d, "noteToGuardian", default: ""), "")) ?? ""
         isMissingAnswer = J.truthy(J.get(d, "isMissingAnswer", default: false))
         isPresenceTimesRequired = J.truthy(J.get(d, "isPresenceTimesRequired", default: false))
+        isEditable = J.truthy(J.get(d, "isEditable", default: true))
     }
 }
 
