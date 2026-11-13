@@ -16,19 +16,28 @@ enum BackgroundRefresh {
         try? BGTaskScheduler.shared.submit(request)
     }
 
+    /// What the last run did, for Settings → Debug: "14:32 · widget saved · 20 threads, 3 posts, 0 holiday requests · 0 posted".
+    static var status: String? { UserDefaults.standard.string(forKey: "backgroundRefreshStatus") }
+
     /// One run. Also the Debug button in Settings.
     static func run() async {
         schedule()
+        var parts = [Date.now.formatted(date: .abbreviated, time: .shortened)]
+        defer { UserDefaults.standard.set(parts.joined(separator: " · "), forKey: "backgroundRefreshStatus") }
         do {
             let t = try await APIClient().today()
             Shared.saveSnapshot(TodaySnapshot(date: t.date, children: t.children, fetchedAt: .now))
             WidgetCenter.shared.reloadAllTimelines()
             Notifier.sessionWorks()
+            parts.append("widget saved")
         } catch APIError.authRequired {
             await Notifier.loginNeeded()
+            parts.append("no Aula session")
             return
-        } catch {}
-        await Notifier.check()
+        } catch {
+            parts.append("/today failed: \(error.localizedDescription)")
+        }
+        parts.append(await Notifier.check())
     }
 }
 
@@ -111,8 +120,11 @@ enum Notifier {
 
     // MARK: Items
 
-    static func check() async {
-        guard enabled, !busy else { return }
+    /// Returns what it did, for `BackgroundRefresh.status`.
+    @discardableResult
+    static func check() async -> String {
+        guard enabled else { return "notifications off" }
+        guard !busy else { return "a check was already running" }
         busy = true
         defer { busy = false }
         let now = Date.now  // before the reads: an item sent during them isn't in the seed, so must count as newer
@@ -120,21 +132,29 @@ enum Notifier {
         do {
             found = try await Aula.shared.pushEvents()
         } catch APIError.authRequired {
-            return await postLoginNeeded()
+            await postLoginNeeded()
+            return "no Aula session"
         } catch {
-            return
+            return "Aula read failed: \(error.localizedDescription)"
         }
         if let holidays = found["holiday"] ?? nil {
             // A request answered before its held 07:00 notification shows: drop that notification.
             await removeHeldHolidays(keep: Set(holidays.map(\.key)))
         }
+        let names = ["message": "threads", "post": "important posts", "holiday": "holiday items"]
+        var counts: [String] = [], posted = 0
         for kind in Push.kinds {
-            guard let events = found[kind] ?? nil else { continue }  // read failed: neither seed nor notify
+            guard let events = found[kind] ?? nil else {  // read failed: neither seed nor notify
+                counts.append("\(names[kind]!) failed")
+                continue
+            }
+            counts.append("\(events.count) \(names[kind]!)")
             guard let seededAt = seeded[kind] else {
                 markSeen(events.map(\.key))
                 var s = seeded
                 s[kind] = now
                 defaults.set(s, forKey: seededKey)
+                counts[counts.count - 1] += " (seeded)"
                 continue
             }
             for e in events where !isSeen(e.key) {
@@ -143,9 +163,11 @@ enum Notifier {
                     markSeen([e.key])
                 } else if await post(e) {
                     markSeen([e.key] + e.covers)
+                    posted += 1
                 }
             }
         }
+        return counts.joined(separator: ", ") + " · \(posted) posted"
     }
 
     /// Titles only, never message or post bodies. True once iOS has accepted it.

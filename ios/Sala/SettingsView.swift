@@ -10,6 +10,7 @@ struct SettingsView: View {
     @State private var appLock = AppLock.enabled
     @State private var notifications = Notifier.enabled
     @State private var notificationsDenied = false
+    @State private var refreshStatus = BackgroundRefresh.status
     #if DEBUG
     @State private var captureTraffic = TrafficLog.enabled
     #endif
@@ -92,12 +93,18 @@ struct SettingsView: View {
                         }
                     }
                     Button("Run background refresh now") {
-                        Task { await BackgroundRefresh.run() }
+                        Task {
+                            await BackgroundRefresh.run()
+                            refreshStatus = BackgroundRefresh.status
+                        }
                     }
                     Button("Test still-sick notification in 5 s") {
                         let child = store.today?.children.first
                         Task { await StillSick.schedule(child: child?.id ?? 0, name: child?.name ?? "Oskar", at: Date() + 5) }
                     }
+                } footer: {
+                    // Background runs write it too, so this also shows whether iOS has run one.
+                    Text("Last background refresh: \(refreshStatus ?? "never")")
                 }
                 #endif
             }
