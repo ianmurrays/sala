@@ -1,4 +1,3 @@
-import CryptoKit
 import Foundation
 import Observation
 import WidgetKit
@@ -58,6 +57,8 @@ final class Store {
     private(set) var aiShowing: [String: AI.Action] = [:]
     /// SHA-256 of `aiKey` -> the result. Kept on disk too, so a repeat tap after a relaunch is free.
     private var aiCache: [String: String] = Store.loadAICache()
+    /// Bumped by `logout()`, so an answer that arrives afterwards is dropped, not written back to disk.
+    private var aiSession = 0
     private static let aiCacheFile = URL.cachesDirectory.appending(path: "ai-results.json")
     private(set) var aiBusy: Set<String> = []
     private(set) var aiErrors: [String: String] = [:]
@@ -88,6 +89,7 @@ final class Store {
     /// Forgets the Aula session and everything shown from it.
     func logout() async {
         await Aula.shared.logout()
+        aiSession += 1
         aiCache = [:]
         aiShowing = [:]
         try? FileManager.default.removeItem(at: Self.aiCacheFile)  // it holds Aula text
@@ -489,10 +491,20 @@ final class Store {
 
     func refreshAI() { aiOn = AI.isOn }
 
-    private func aiKey(_ action: AI.Action, _ text: String) -> String {
-        let key = [action.rawValue, AI.provider.rawValue, AI.model, AI.prompt(action, language: AI.name(AI.readerLanguage)), text].joined(separator: "\u{0}")
-        return SHA256.hash(data: Data(key.utf8)).map { String(format: "%02x", $0) }.joined()
+    /// Settings → AI saved. When the option, model, endpoint or a prompt changed, the shown translations and
+    /// summaries were made with the old settings: show the originals.
+    func aiSettingsChanged() {
+        let settings = AI.cacheKey(.translate, "") + AI.cacheKey(.summarize, "")
+        if settings != aiSettings {
+            aiSettings = settings
+            aiShowing = [:]
+            aiErrors = [:]
+        }
+        refreshAI()
     }
+    @ObservationIgnored private var aiSettings = AI.cacheKey(.translate, "") + AI.cacheKey(.summarize, "")
+
+    private func aiKey(_ action: AI.Action, _ text: String) -> String { AI.cacheKey(action, text) }
 
     // ponytail: one JSON file rewritten per result, no size cap; prune by age if it grows past a few MB.
     private static func loadAICache() -> [String: String] {
@@ -519,17 +531,22 @@ final class Store {
     func runAI(_ action: AI.Action, id: String, texts: [String]) async {
         guard !aiBusy.contains(id) else { return }
         aiErrors[id] = nil
-        let todo = Array(Set(texts.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && aiCache[aiKey(action, $0)] == nil }))
+        // Keys from the settings at the tap: a change during the call must not file the answer under the new ones.
+        let todo = Dictionary(texts.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }.map { (aiKey(action, $0), $0) },
+                              uniquingKeysWith: { a, _ in a }).filter { aiCache[$0.key] == nil }
+        let session = aiSession
         if !todo.isEmpty {
             aiBusy.insert(id)
             defer { aiBusy.remove(id) }
             do {
-                for text in todo {
-                    aiCache[aiKey(action, text)] = try await AI.run(action, text)
+                for (key, text) in todo {
+                    let result = try await AI.run(action, text)
+                    guard session == aiSession else { return }  // logged out meanwhile: keep nothing
+                    aiCache[key] = result
                     saveAICache()
                 }
             } catch {
-                aiErrors[id] = error.localizedDescription
+                if session == aiSession { aiErrors[id] = error.localizedDescription }
                 return
             }
         }

@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 import FoundationModels
 import NaturalLanguage
@@ -98,6 +99,18 @@ enum AI {
 
     static var isOn: Bool { unavailableReason() == nil }
 
+    /// The cache key for `action` on `text` with the current settings.
+    static func cacheKey(_ action: Action, _ text: String) -> String {
+        cacheKey(action, text, provider: provider, endpoint: provider == .openAI ? endpoint : "", model: model,
+                 prompt: prompt(action, language: name(readerLanguage)))
+    }
+
+    /// SHA-256 of everything that changes the answer; another server with the same model name is another answer.
+    static func cacheKey(_ action: Action, _ text: String, provider: Provider, endpoint: String, model: String, prompt: String) -> String {
+        let key = [action.rawValue, provider.rawValue, endpoint, model, prompt, text].joined(separator: "\u{0}")
+        return SHA256.hash(data: Data(key.utf8)).map { String(format: "%02x", $0) }.joined()
+    }
+
     /// The model the chosen option uses, for cache keys. Apple's models change with iOS updates.
     static var model: String {
         switch provider {
@@ -148,6 +161,8 @@ enum AI {
         let parts = action == .translate ? chunks(text) : [text]
         var out: [String] = []
         for part in parts {
+            // Switching to Off or On this iPhone mid-way must stop the rest going to a server.
+            guard AI.provider == provider else { throw Failure(errorDescription: "AI settings changed. Try again.") }
             out.append(try await call(provider, instructions: instructions, text: part))
         }
         let result = out.joined(separator: "\n\n").trimmingCharacters(in: .whitespacesAndNewlines)
@@ -215,7 +230,9 @@ enum AI {
 
     static func openAIText(_ data: Data) throws -> String {
         let j = try JSONSerialization.jsonObject(with: data) as? [String: Any]
-        let message = ((j?["choices"] as? [[String: Any]])?.first?["message"] as? [String: Any])
+        let choice = (j?["choices"] as? [[String: Any]])?.first
+        if choice?["finish_reason"] as? String == "length" { throw Failure(errorDescription: "The answer was cut off.") }
+        let message = choice?["message"] as? [String: Any]
         guard let text = message?["content"] as? String else { throw Failure(errorDescription: "The endpoint's answer had no text.") }
         return text
     }
@@ -230,7 +247,6 @@ enum AI {
             "max_tokens": 16000,
             "system": instructions,
             "messages": [["role": "user", "content": text]],
-            "output_config": ["effort": "low"],
         ] as [String: Any])
         return r
     }

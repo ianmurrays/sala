@@ -15,9 +15,19 @@ final class AITests: XCTestCase {
     }
 
     func testPromptFillsLanguage() {
-        let p = AI.prompt(.translate, language: "English")
+        // The default prompt, not AI.prompt: that reads the simulator's saved custom prompt.
+        let p = AI.defaultPrompt(.translate).replacingOccurrences(of: "{lang}", with: "English")
         XCTAssertTrue(p.contains("into natural English"))
-        XCTAssertFalse(p.contains("{lang}"))
+    }
+
+    func testCacheKeyCoversWhatChangesTheAnswer() {
+        let base = AI.cacheKey(.translate, "Hej", provider: .openAI, endpoint: "https://a.example/v1", model: "m", prompt: "p")
+        XCTAssertEqual(base, AI.cacheKey(.translate, "Hej", provider: .openAI, endpoint: "https://a.example/v1", model: "m", prompt: "p"))
+        XCTAssertNotEqual(base, AI.cacheKey(.translate, "Hej", provider: .openAI, endpoint: "https://b.example/v1", model: "m", prompt: "p"), "another server")
+        XCTAssertNotEqual(base, AI.cacheKey(.summarize, "Hej", provider: .openAI, endpoint: "https://a.example/v1", model: "m", prompt: "p"))
+        XCTAssertNotEqual(base, AI.cacheKey(.translate, "Hej", provider: .openAI, endpoint: "https://a.example/v1", model: "n", prompt: "p"))
+        XCTAssertNotEqual(base, AI.cacheKey(.translate, "Hej", provider: .openAI, endpoint: "https://a.example/v1", model: "m", prompt: "q"))
+        XCTAssertNotEqual(base, AI.cacheKey(.translate, "Hej", provider: .anthropic, endpoint: "https://a.example/v1", model: "m", prompt: "p"))
     }
 
     func testOpenAIRequestAndAnswer() throws {
@@ -35,6 +45,7 @@ final class AITests: XCTestCase {
 
         XCTAssertEqual(try AI.openAIText(Data(#"{"choices":[{"message":{"role":"assistant","content":"Hi"}}]}"#.utf8)), "Hi")
         XCTAssertThrowsError(try AI.openAIText(Data(#"{"error":{"message":"bad"}}"#.utf8)))
+        XCTAssertThrowsError(try AI.openAIText(Data(#"{"choices":[{"finish_reason":"length","message":{"content":"Hal"}}]}"#.utf8)), "cut off")
     }
 
     func testAnthropicRequestAndAnswer() throws {
@@ -46,6 +57,7 @@ final class AITests: XCTestCase {
         let body = try XCTUnwrap(JSONSerialization.jsonObject(with: r.httpBody!) as? [String: Any])
         XCTAssertEqual(body["system"] as? String, "sys")
         XCTAssertNil(body["temperature"], "a 400 on 2026-10-21")
+        XCTAssertNil(body["output_config"], "effort is a 400 on some models the picker offers")
 
         let ok = #"{"stop_reason":"end_turn","content":[{"type":"thinking","thinking":""},{"type":"text","text":"Hi"}]}"#
         XCTAssertEqual(try AI.anthropicText(Data(ok.utf8)), "Hi")

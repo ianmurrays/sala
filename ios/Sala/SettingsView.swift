@@ -148,8 +148,9 @@ struct AISettingsView: View {
     @State private var anthropicKey = AI.anthropicKey
     @State private var translatePrompt = AI.customPrompt(.translate)
     @State private var summarizePrompt = AI.customPrompt(.summarize)
-    /// The provider's models, loaded when its endpoint or key is set; nil until loaded.
+    /// The provider's models, loaded on a tap (never while the endpoint is typed: the key goes with the request); nil until loaded.
     @State private var models: [String]?
+    @State private var loadingModels = false
     @State private var modelsError: String?
     @State private var advanced = AI.provider == .openAI || AI.provider == .anthropic
 
@@ -206,15 +207,10 @@ struct AISettingsView: View {
         .onDisappear(perform: save)
         .onChange(of: provider) { save() }
         .onChange(of: [endpoint, openAIModel, openAIKey, anthropicModel, anthropicKey, translatePrompt, summarizePrompt]) { save() }
-        // Reloads when what the list depends on changes; the short sleep skips a request per keystroke.
-        .task(id: [provider.rawValue, endpoint, openAIKey, anthropicKey]) {
+        // A list loaded for another provider, endpoint or key is not this one's.
+        .onChange(of: [provider.rawValue, endpoint, openAIKey, anthropicKey]) {
             models = nil
             modelsError = nil
-            let ready = provider == .openAI ? URL(string: endpoint)?.host != nil : provider == .anthropic && !anthropicKey.isEmpty
-            guard ready else { return }
-            try? await Task.sleep(for: .milliseconds(600))
-            guard !Task.isCancelled else { return }
-            do { models = try await AI.models(provider) } catch { if !Task.isCancelled { modelsError = error.localizedDescription } }
         }
     }
 
@@ -250,11 +246,27 @@ struct AISettingsView: View {
             TextField(placeholder, text: model)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
+            if models == nil {
+                Button {
+                    loadingModels = true
+                    modelsError = nil
+                    Task {
+                        defer { loadingModels = false }
+                        do { models = try await AI.models(provider) } catch { modelsError = error.localizedDescription }
+                    }
+                } label: {
+                    HStack {
+                        Text("Load models")
+                        if loadingModels { Spacer(); ProgressView() }
+                    }
+                }
+                .disabled(loadingModels)
+            }
         } header: {
             Text("Model")
         } footer: {
             if let modelsError { Text("Couldn't load the models: \(modelsError) You can still type a model's name.") }
-            else if models == nil { Text("Loads the provider's models once the endpoint or key is set. Or type a model's name.") }
+            else if models == nil { Text("Type a model's name, or load the provider's list.") }
         }
     }
 
@@ -273,6 +285,6 @@ struct AISettingsView: View {
         AI.anthropicKey = anthropicKey
         AI.setCustomPrompt(.translate, translatePrompt)
         AI.setCustomPrompt(.summarize, summarizePrompt)
-        store.refreshAI()
+        store.aiSettingsChanged()
     }
 }
