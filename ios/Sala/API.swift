@@ -415,7 +415,7 @@ enum APIError: LocalizedError, Sendable {
 /// The app's view of Aula, in API.md's shapes. The routes run on the phone (`Aula.handle`, a port of the
 /// old server's routes); the method names still follow them.
 struct APIClient: Sendable {
-    private var aula: Aula { .shared }
+    var aula: Aula = .shared
 
     func today() async throws -> Today { try await send("GET", "/today") }
     func pickupOptions(child: Int) async throws -> PickupOptions { try await send("GET", "/children/\(child)/pickup") }
