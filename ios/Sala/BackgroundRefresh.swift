@@ -6,6 +6,7 @@ import WidgetKit
 /// Best effort, from iOS background app refresh (iOS picks when, often a few times a day, never after a force-quit):
 /// saves the widget snapshot and posts local notifications for what the old server pushed (API.md → Push).
 /// Never starts MitID: with no session it only posts "Aula login needed".
+@MainActor
 enum BackgroundRefresh {
     static let id = (Bundle.main.bundleIdentifier ?? "sala") + ".refresh"
 
@@ -34,11 +35,15 @@ enum BackgroundRefresh {
 /// Local notifications and their seen-set (UserDefaults). Each kind is seeded silently on its first
 /// successful read, so items that exist when notifications are turned on never notify; an item is marked
 /// seen only once iOS has accepted its notification, so a failed one is tried again next run.
+/// On the main actor, and one check at a time (`busy`), so overlapping runs (Settings, Debug, background)
+/// can't post the same item twice or lose each other's seen-set writes.
+@MainActor
 enum Notifier {
     private static let enabledKey = "notifications", seenKey = "pushSeen", seededKey = "pushSeeded", lossKey = "pushLoginLoss"
     private static var defaults: UserDefaults { .standard }
 
     static var enabled: Bool { defaults.bool(forKey: enabledKey) }
+    private static var busy = false
 
     /// Asks for permission (from the Settings toggle, never in the background) and starts over: the next run seeds again.
     static func enable() async -> Bool {
@@ -47,16 +52,19 @@ enum Notifier {
         defaults.set(true, forKey: enabledKey)
         BackgroundRefresh.schedule()
         await check()  // seed now, so what arrives before the first background run still notifies
-        return true
+        return enabled  // turned off again while checking
     }
 
     static func disable() {
         defaults.set(false, forKey: enabledKey)
-        Task {
-            let center = UNUserNotificationCenter.current()
-            let held = await center.pendingNotificationRequests().map(\.identifier).filter { $0.hasPrefix("holiday") }
-            center.removePendingNotificationRequests(withIdentifiers: held)
-        }
+        Task { await removeHeldHolidays() }
+    }
+
+    /// Drops held 07:00 holiday notifications whose key isn't in `keep`.
+    private static func removeHeldHolidays(keep: Set<String> = []) async {
+        let center = UNUserNotificationCenter.current()
+        let stale = await center.pendingNotificationRequests().map(\.identifier).filter { $0.hasPrefix("holiday") && !keep.contains($0) }
+        center.removePendingNotificationRequests(withIdentifiers: stale)
     }
 
     // MARK: Seen-set
@@ -77,14 +85,23 @@ enum Notifier {
     /// Aula answered: the loss, if any, is over, and the next one notifies again.
     static func sessionWorks() { defaults.removeObject(forKey: lossKey) }
 
-    /// A deliberate logout is a loss nobody needs telling about.
+    /// A deliberate logout is a loss nobody needs telling about. The next login (maybe another account) seeds again.
     static func loggedOut() {
         let marker = Date.now.ISO8601Format()
         defaults.set(marker, forKey: lossKey)
         markSeen(["login:\(marker)"])
+        defaults.removeObject(forKey: seededKey)
+        Task { await removeHeldHolidays() }
     }
 
     static func loginNeeded() async {
+        guard !busy else { return }
+        busy = true
+        defer { busy = false }
+        await postLoginNeeded()
+    }
+
+    private static func postLoginNeeded() async {
         guard enabled else { return }
         let marker = defaults.string(forKey: lossKey) ?? Date.now.ISO8601Format()
         defaults.set(marker, forKey: lossKey)
@@ -95,22 +112,21 @@ enum Notifier {
     // MARK: Items
 
     static func check() async {
-        guard enabled else { return }
+        guard enabled, !busy else { return }
+        busy = true
+        defer { busy = false }
+        let now = Date.now  // before the reads: an item sent during them isn't in the seed, so must count as newer
         let found: [String: [PushEvent]?]
         do {
             found = try await Aula.shared.pushEvents()
         } catch APIError.authRequired {
-            return await loginNeeded()
+            return await postLoginNeeded()
         } catch {
             return
         }
-        let now = Date.now
         if let holidays = found["holiday"] ?? nil {
             // A request answered before its held 07:00 notification shows: drop that notification.
-            let current = Set(holidays.map(\.key))
-            let center = UNUserNotificationCenter.current()
-            let stale = await center.pendingNotificationRequests().map(\.identifier).filter { $0.hasPrefix("holiday") && !current.contains($0) }
-            center.removePendingNotificationRequests(withIdentifiers: stale)
+            await removeHeldHolidays(keep: Set(holidays.map(\.key)))
         }
         for kind in Push.kinds {
             guard let events = found[kind] ?? nil else { continue }  // read failed: neither seed nor notify
@@ -134,6 +150,7 @@ enum Notifier {
 
     /// Titles only, never message or post bodies. True once iOS has accepted it.
     private static func post(_ e: PushEvent) async -> Bool {
+        guard enabled else { return false }  // turned off while this run was reading Aula
         let content = UNMutableNotificationContent()
         content.title = e.title
         content.sound = .default
