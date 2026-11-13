@@ -892,6 +892,78 @@ extension Aula {
         try await addVacation(unique, start: start, end: end, comment: comment)
     }
 
+    // MARK: contacts
+
+    /// `GET /contacts/groups`: one getGroupsByContext call per child, so each group is paired with its
+    /// child whatever Aula's outer entries are (per child or per institution).
+    func contactGroups(_ profile: AulaProfile) async throws -> [JSONObject] {
+        var out: [JSONObject] = []
+        for child in profile.children {
+            var seen = Set<Int>()
+            for entry in try await getGroupsByContext(child.id) {
+                for case let g as JSONObject in J.list(J.get(entry, "groups")) ?? [] {
+                    guard let id = J.int(J.get(g, "id")), seen.insert(id).inserted else { continue }
+                    out.append(["id": id, "name": J.str(J.get(g, "name")) ?? "", "child": child.name ?? ""])
+                }
+            }
+        }
+        return out
+    }
+
+    /// `GET /contacts/groups/{id}`: the children with their guardians (filter child, whose rows carry
+    /// `relations`), then the staff (filter employee).
+    func groupContacts(_ groupId: Int) async throws -> JSONObject {
+        // Children without an id are left out. Guardians and staff carry none in the answer: the portal keys
+        // relation rows by index, so they may have no id.
+        let children = try await getContactList(group: groupId, filter: "child").compactMap { row -> JSONObject? in
+            guard let id = J.int(J.get(row, "id")) else { return nil }
+            let guardians = (J.list(J.get(row, "relations")) ?? []).compactMap { $0 as? JSONObject }.map { Self.contactOut($0, topLevel: false) }
+            return ["id": id, "name": Self.contactName(row), "guardians": guardians]
+        }
+        let staff = try await getContactList(group: groupId, filter: "employee").map { Self.contactOut($0, topLevel: true) }
+        return ["children": children, "staff": staff]
+    }
+
+    static func contactName(_ p: JSONObject) -> String {
+        if let full = nonEmpty(J.str(J.get(p, "fullName"))) { return full }
+        return [J.get(p, "firstName"), J.get(p, "lastName")].compactMap { J.str($0) }.filter { !$0.isEmpty }.joined(separator: " ")
+    }
+
+    /// A guardian or staff member, with only what the portal shows (ContactsFragment's contact row): details
+    /// only with `userHasGivenConsentToShowContactInformation`, and on a top-level row (staff) also
+    /// `currentUserCanViewContactInformation`; no address for a child, no home phone for a group home.
+    /// Aula may send fields the portal hides, so the gate is here and not in the view.
+    static func contactOut(_ p: JSONObject, topLevel: Bool) -> JSONObject {
+        let shared = J.bool(J.get(p, "userHasGivenConsentToShowContactInformation")) == true
+            && (!topLevel || J.bool(J.get(p, "currentUserCanViewContactInformation")) == true)
+        let groupHome = J.str(J.get(p, "contactType")) == "groupHome"
+        var phones: [JSONObject] = []
+        var address: String?
+        var email: String?
+        if shared {
+            let numbers: [(String, String)] = groupHome
+                ? [("mobilePhoneNumber", "Primary"), ("workPhoneNumber", "Secondary")]
+                : [("homePhoneNumber", "Home"), ("mobilePhoneNumber", "Mobile"), ("workPhoneNumber", "Work")]
+            for (key, label) in numbers {
+                if let n = nonEmpty(J.str(J.get(p, key)).map(Py.strip)) { phones.append(["label": label, "number": n]) }
+            }
+            email = nonEmpty(J.str(J.get(p, "email")).map(Py.strip))
+            if J.str(J.get(p, "role")) != "child" { address = contactAddress(J.get(p, "address")) }
+        }
+        return [
+            "name": contactName(p), "relation": J.out(nonEmpty(J.str(J.get(p, "relation")))),
+            "shared": shared, "phones": phones, "email": J.out(email), "address": J.out(address),
+        ]
+    }
+
+    /// The portal's generateAddress ("street, postalCode postalDistrict"), leaving out what's unknown;
+    /// the portal writes a street of "Ukendt" for none.
+    static func contactAddress(_ a: Any?) -> String? {
+        guard let street = nonEmpty(J.str(J.get(a, "street")).map(Py.strip)), street != "Ukendt" else { return nil }
+        let town = [J.get(a, "postalCode"), J.get(a, "postalDistrict")].compactMap { $0 }.map(J.pyStr).filter { !$0.isEmpty }
+        return town.isEmpty ? street : "\(street), \(town.joined(separator: " "))"
+    }
+
     // MARK: posts
 
     func postOut(_ post: AulaPost) -> JSONObject {

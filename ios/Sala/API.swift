@@ -88,6 +88,39 @@ struct CalendarEvent: Decodable, Sendable, Hashable, Identifiable {
     func covers(_ ymd: String) -> Bool { startDate <= ymd && ymd <= endDate }
 }
 
+/// A row of `GET /contacts/groups`: one of a child's groups (API.md "Contacts").
+struct ContactGroup: Decodable, Sendable, Hashable, Identifiable {
+    var id: Int
+    var name: String
+    var child: String
+}
+
+/// `GET /contacts/groups/{id}`. Other families' data: keep it in view state only, never cache or log it.
+struct GroupContacts: Decodable, Sendable {
+    struct Child: Decodable, Sendable, Identifiable {
+        var id: Int
+        var name: String
+        var guardians: [Contact]
+    }
+    var children: [Child]
+    var staff: [Contact]
+}
+
+/// No id: Aula may not give guardians one.
+struct Contact: Decodable, Sendable, Hashable {
+    struct Phone: Decodable, Sendable, Hashable {
+        var label: String
+        var number: String
+    }
+    var name: String
+    var relation: String?
+    /// False when the person doesn't let Aula show you their details.
+    var shared: Bool
+    var phones: [Phone]
+    var email: String?
+    var address: String?
+}
+
 struct Photo: Decodable, Sendable, Equatable, Identifiable {
     var id: Int
     /// Ids for `GET /attachments/{id}`: a small size for the grid, the original for the viewer and saving.
@@ -394,6 +427,9 @@ struct APIClient: Sendable {
     func calendar(month: String) async throws -> [CalendarEvent] { try await send("GET", "/calendar?month=\(month)") }
 
     /// `page` is 1-based. Empty means no more.
+    func contactGroups() async throws -> [ContactGroup] { try await send("GET", "/contacts/groups") }
+    func groupContacts(_ group: Int) async throws -> GroupContacts { try await send("GET", "/contacts/groups/\(group)") }
+
     func albums(page: Int) async throws -> [Album] { try await send("GET", "/albums?page=\(page)") }
     func photos(album: Int, page: Int) async throws -> [Photo] { try await send("GET", "/albums/\(album)/photos?page=\(page)") }
 

@@ -38,6 +38,9 @@ struct RootView: View {
                     Tab("Gallery", systemImage: "photo.on.rectangle", value: AppTab.gallery) {
                         GalleryView()
                     }
+                    Tab("Contacts", systemImage: "person.2", value: AppTab.contacts) {
+                        ContactsView()
+                    }
                 }
             }
         }

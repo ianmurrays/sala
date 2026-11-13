@@ -134,6 +134,30 @@ Nullable here: `opensAt`, `closesAt`, `current.time`, `current.by`.
 - A photo's `date` is when it was uploaded.
 - Aula's image URLs are signed and expire; listing the album again refreshes the ones Sala fetches.
 
+## Contacts
+
+Aula's contact book (Kontaktbog). Other families' personal data: the app keeps it only while the screen is open, and never logs or caches it.
+
+`GET /contacts/groups` → the groups of each child (class, kindergarten room), one entry per child and group:
+```json
+[{"id": 77, "name": "Stue", "child": "Oskar"}]
+```
+`GET /contacts/groups/{id}` → who is in the group, sorted by name as Aula sorts:
+```json
+{"children": [{"id": 3001, "name": "Ida Jensen", "guardians": [Contact]}],
+ "staff": [Contact]}
+```
+`Contact`:
+```json
+{"name": "Mette Jensen", "relation": "Mor", "shared": true,
+ "phones": [{"label": "Mobile", "number": "+45 12 34 56 78"}], "email": "mette@example.dk", "address": "Bøgevej 3, 2100 København Ø"}
+```
+- `shared` is false when the person doesn't let Aula show their contact details to you; then `phones` is empty and `email` and `address` are null. A missing phone, e-mail or address is normal: parents choose what they share.
+- `phones[].label` is `Home`, `Mobile` or `Work` (for a group home: `Primary`, `Secondary`; no home number).
+- `relation` is the guardian's relation to the child as Aula writes it ("Mor", "Far"), null for staff and when Aula has none.
+- `id` is not a number → `400`. A group Aula won't show → `502`.
+- Nullable: `relation`, `email`, `address`.
+
 ## Messages
 
 `GET /threads` →
