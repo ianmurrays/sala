@@ -56,6 +56,7 @@ enum CalendarSync {
             let n = try await run(client)
             lastSync = Date()
             status = "Synced \(n) events at \(Fmt.format(Date(), "HHmm"))"
+        } catch is CancellationError {
         } catch {
             status = "Sync failed: \(error.localizedDescription)"
         }
@@ -72,6 +73,8 @@ enum CalendarSync {
             for e in try await client.calendar(month: String(format: "%04d-%02d", c.year!, c.month!)) { wanted[e.id] = e }
         }
 
+        // Turned off while the months loaded: disable() already removed the calendar; don't make a new one.
+        guard enabled else { throw CancellationError() }
         let store = EKEventStore()
         let calendar = try ownCalendar(store)
         let end = cal.date(byAdding: .month, value: months, to: first)!
