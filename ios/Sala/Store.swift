@@ -50,13 +50,18 @@ final class Store {
     // More posts after the `/today` ones (`/posts?page=2`, …), appended to `today.posts`.
     private(set) var morePosts = Paging(next: 2)
 
-    // Translation: buttons only when the server has it on. Translations are kept per original text;
-    // `showing` holds the ids ("post-9", "thread-123") switched to translations.
-    private(set) var canTranslate = false
-    private var translations: [String: String] = [:]
-    private var showing: Set<String> = []
-    private(set) var translating: Set<String> = []
-    private(set) var translateErrors: [String: String] = [:]
+    // AI (AI.swift): translate or summarize one message or post on a tap. Results are cached per action,
+    // option, prompt and text, in memory and in `aiCacheFile`; `aiShowing` says what each id ("post-9", "message-12") shows.
+    /// Settings → AI is set and can run; refreshed by `refreshAI()`.
+    private(set) var aiOn = AI.isOn
+    private(set) var aiShowing: [String: AI.Action] = [:]
+    /// SHA-256 of `aiKey` -> the result. Kept on disk too, so a repeat tap after a relaunch is free.
+    private var aiCache: [String: String] = Store.loadAICache()
+    /// Bumped by `logout()`, so an answer that arrives afterwards is dropped, not written back to disk.
+    private var aiSession = 0
+    private static let aiCacheFile = URL.cachesDirectory.appending(path: "ai-results.json")
+    private(set) var aiBusy: Set<String> = []
+    private(set) var aiErrors: [String: String] = [:]
 
     // Navigation (the Messages tab pushes and clears `pendingThreadID`)
     var selectedTab: AppTab = .today
@@ -84,6 +89,10 @@ final class Store {
     /// Forgets the Aula session and everything shown from it.
     func logout() async {
         await Aula.shared.logout()
+        aiSession += 1
+        aiCache = [:]
+        aiShowing = [:]
+        try? FileManager.default.removeItem(at: Self.aiCacheFile)  // it holds Aula text
         Notifier.loggedOut()
         Config.clearWidgets()
         today = nil
@@ -125,7 +134,7 @@ final class Store {
             syncWidgets()
             morePosts.reset(next: 2)
             phase = .ready
-            Task { if let f = try? await c.features() { canTranslate = f.translate } }
+            refreshAI()
             Task { await CalendarSync.sync(c) }
             // Keeps the Messages tab badge current without holding up Today.
             Task {
@@ -478,48 +487,70 @@ final class Store {
         await loadMorePosts()
     }
 
-    // MARK: Translation
+    // MARK: AI
+
+    func refreshAI() { aiOn = AI.isOn }
+
+    /// Settings → AI saved. When the option, model, endpoint or a prompt changed, the shown translations and
+    /// summaries were made with the old settings: show the originals.
+    func aiSettingsChanged() {
+        let settings = AI.cacheKey(.translate, "") + AI.cacheKey(.summarize, "")
+        if settings != aiSettings {
+            aiSettings = settings
+            aiShowing = [:]
+            aiErrors = [:]
+        }
+        refreshAI()
+    }
+    @ObservationIgnored private var aiSettings = AI.cacheKey(.translate, "") + AI.cacheKey(.summarize, "")
+
+    private func aiKey(_ action: AI.Action, _ text: String) -> String { AI.cacheKey(action, text) }
+
+    // ponytail: one JSON file rewritten per result, no size cap; prune by age if it grows past a few MB.
+    private static func loadAICache() -> [String: String] {
+        (try? JSONDecoder().decode([String: String].self, from: Data(contentsOf: aiCacheFile))) ?? [:]
+    }
+
+    private func saveAICache() {
+        try? JSONEncoder().encode(aiCache).write(to: Self.aiCacheFile, options: [.atomic, .completeFileProtection])
+    }
 
     /// `text`, or its translation while `id` shows translations.
     func display(_ text: String, in id: String) -> String {
-        showing.contains(id) ? translations[text] ?? text : text
+        aiShowing[id] == .translate ? aiCache[aiKey(.translate, text)] ?? text : text
     }
 
-    /// True while `id` shows translations and every non-empty text of it has one (a new message may not).
-    func isTranslated(_ id: String, texts: [String]) -> Bool {
-        showing.contains(id) && untranslated(texts).isEmpty
+    /// The summary of `text` while `id` shows it.
+    func summary(of text: String, in id: String) -> String? {
+        aiShowing[id] == .summarize ? aiCache[aiKey(.summarize, text)] : nil
     }
 
-    private func untranslated(_ texts: [String]) -> [String] {
-        Array(Set(texts.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && translations[$0] == nil }))
-    }
+    func showOriginal(_ id: String) { aiShowing[id] = nil }
 
-    /// Translate / Show original for one post or thread. Only texts not translated before are sent.
-    func toggleTranslation(_ id: String, texts: [String]) async {
-        if isTranslated(id, texts: texts) { showing.remove(id); return }
-        guard !translating.contains(id) else { return }
-        translateErrors[id] = nil
-        let missing = untranslated(texts)
-        if !missing.isEmpty {
-            translating.insert(id)
-            defer { translating.remove(id) }
-            let c = client
-            let result = await Task {
-                var out: [String] = []
-                for start in stride(from: 0, to: missing.count, by: 50) {  // the server takes 50 per request
-                    out += try await c.translate(Array(missing[start..<min(start + 50, missing.count)]))
+    /// Runs `action` on each text not done before (a post's title and body), then shows the results.
+    func runAI(_ action: AI.Action, id: String, texts: [String]) async {
+        guard !aiBusy.contains(id) else { return }
+        aiErrors[id] = nil
+        // Keys from the settings at the tap: a change during the call must not file the answer under the new ones.
+        let todo = Dictionary(texts.filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }.map { (aiKey(action, $0), $0) },
+                              uniquingKeysWith: { a, _ in a }).filter { aiCache[$0.key] == nil }
+        let session = aiSession
+        if !todo.isEmpty {
+            aiBusy.insert(id)
+            defer { aiBusy.remove(id) }
+            do {
+                for (key, text) in todo {
+                    let result = try await AI.run(action, text)
+                    guard session == aiSession else { return }  // logged out meanwhile: keep nothing
+                    aiCache[key] = result
+                    saveAICache()
                 }
-                return out
-            }.result
-            switch result {
-            case .success(let out):
-                for (text, english) in zip(missing, out) { translations[text] = english }
-            case .failure(let error):
-                if handle(error) != nil { translateErrors[id] = "Couldn't translate. Try again." }
+            } catch {
+                if session == aiSession { aiErrors[id] = error.localizedDescription }
                 return
             }
         }
-        showing.insert(id)
+        aiShowing[id] = action
     }
 
     func openThread(_ id: String?) {

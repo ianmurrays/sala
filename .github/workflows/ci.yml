@@ -15,7 +15,7 @@ jobs:
       - run: docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:v8.24.3 git --no-banner -v /repo
 
   ios:
-    runs-on: macos-26
+    runs-on: xcode-27  # public preview image; the only GitHub runner with the iOS 27 SDK
     defaults:
       run:
         working-directory: ios

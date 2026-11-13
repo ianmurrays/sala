@@ -13,6 +13,7 @@
 		10223E66B9848359D3498E7D /* AulaHTML.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576FF229BD737BAC27D4C865 /* AulaHTML.swift */; };
 		1741679355FAA673C58359E4 /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DDF8360879C8CE3785836C4 /* MessagesView.swift */; };
 		17DDD958DBF614ACB3FFBEA5 /* SalaShared.swift in Sources */ = {isa = PBXBuildFile; fileRef = B052EF3B3E1998CE1C0471B2 /* SalaShared.swift */; };
+		1AB56BC931C759C9BF112B30 /* AI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24BFD3094CA410383A2C1DE /* AI.swift */; };
 		20236C6207C35135B3F6C994 /* DemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E209E5AD92DD925E7216C0 /* DemoTests.swift */; };
 		246B663D497DB08CB122FB6A /* AttachmentOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F700FF859455055509BB54 /* AttachmentOpener.swift */; };
 		2C955713614AFF3C207032A2 /* AulaJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86D5BEBD3FFA87799B35B7B8 /* AulaJSON.swift */; };
@@ -21,6 +22,7 @@
 		324E4223F05466BB205FF488 /* AulaClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80889885B76F5717A9DECCF3 /* AulaClient.swift */; };
 		33D2456955E8E5BF978F98F6 /* AulaMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED58131D48315A4E399D297 /* AulaMapping.swift */; };
 		3593FECD2B5F90E892AE593A /* StillSick.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18E6F59015D2651602B6C5CF /* StillSick.swift */; };
+		35C8CBE94415744492C5AB66 /* AI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24BFD3094CA410383A2C1DE /* AI.swift */; };
 		3F6D633A7E45D2EA5BFD494C /* AulaHTML.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576FF229BD737BAC27D4C865 /* AulaHTML.swift */; };
 		3FC18EAF711CF3DFE0363161 /* AulaSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 221AEB48EB17EA103A3910A8 /* AulaSession.swift */; };
 		5626E9B5BFA97AFE0AF7AFE2 /* SalaWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 2CCD051E3BB3DC75F5359EEA /* SalaWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -55,6 +57,7 @@
 		C800C72A1D83C8901E63FA8F /* AulaClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80889885B76F5717A9DECCF3 /* AulaClient.swift */; };
 		CA81CF8070A2EA71B4FEC2B3 /* DemoAula.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE445DD73380489DB25D15C /* DemoAula.swift */; };
 		D6A0D98FAA2E17ECEEEDDE3E /* DemoAula.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE445DD73380489DB25D15C /* DemoAula.swift */; };
+		D9BF1F7D445469ABD6FDAE6B /* AITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CA66B8BF92936FC3B3F64C /* AITests.swift */; };
 		E39CA54108D4CCA7DDB101A5 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CB0076E020A5A87CD637FD /* SearchView.swift */; };
 		E657D7775BAD8D02259880F0 /* HTMLEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F54721032189D28F2ECDD8D /* HTMLEntities.swift */; };
 		E8AF275F830BEFC95BA2294C /* SalaShared.swift in Sources */ = {isa = PBXBuildFile; fileRef = B052EF3B3E1998CE1C0471B2 /* SalaShared.swift */; };
@@ -123,9 +126,11 @@
 		9F54721032189D28F2ECDD8D /* HTMLEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLEntities.swift; sourceTree = "<group>"; };
 		A31531B782C08B051F900B8C /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		B052EF3B3E1998CE1C0471B2 /* SalaShared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalaShared.swift; sourceTree = "<group>"; };
+		B24BFD3094CA410383A2C1DE /* AI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AI.swift; sourceTree = "<group>"; };
 		B6F700FF859455055509BB54 /* AttachmentOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentOpener.swift; sourceTree = "<group>"; };
 		B9DCDEC490BACA3926522E1C /* GalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryView.swift; sourceTree = "<group>"; };
 		C0CB0076E020A5A87CD637FD /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
+		C4CA66B8BF92936FC3B3F64C /* AITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AITests.swift; sourceTree = "<group>"; };
 		C61D4DFB892FB869F494631E /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		CBDA4ACCCAD7122465646C4E /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayView.swift; sourceTree = "<group>"; };
 		D0474C37C635EB4FEE0B2FA3 /* AulaRoutes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AulaRoutes.swift; sourceTree = "<group>"; };
@@ -212,6 +217,7 @@
 		B9AA4C248691C0FADF95F2E0 /* SalaTests */ = {
 			isa = PBXGroup;
 			children = (
+				C4CA66B8BF92936FC3B3F64C /* AITests.swift */,
 				39E209E5AD92DD925E7216C0 /* DemoTests.swift */,
 				447EEC8A5735180FD82A3D1C /* GoldenTests.swift */,
 				180CB3C2AEF650334616AEF4 /* PushTests.swift */,
@@ -222,6 +228,7 @@
 		FDDDB6EC11BDFB38844E0380 /* Sala */ = {
 			isa = PBXGroup;
 			children = (
+				B24BFD3094CA410383A2C1DE /* AI.swift */,
 				A31531B782C08B051F900B8C /* API.swift */,
 				9903F67A12513B2524572FCC /* AppLock.swift */,
 				E0E0A3B6F2E75335F323F6C7 /* Assets.xcassets */,
@@ -368,6 +375,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				35C8CBE94415744492C5AB66 /* AI.swift in Sources */,
 				633CE8662528E0F7C29DDB32 /* API.swift in Sources */,
 				A697E81107D0F782E86B6C30 /* AppLock.swift in Sources */,
 				246B663D497DB08CB122FB6A /* AttachmentOpener.swift in Sources */,
@@ -408,6 +416,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1AB56BC931C759C9BF112B30 /* AI.swift in Sources */,
+				D9BF1F7D445469ABD6FDAE6B /* AITests.swift in Sources */,
 				8144705DE169CC5DCD47115A /* API.swift in Sources */,
 				C800C72A1D83C8901E63FA8F /* AulaClient.swift in Sources */,
 				6E8B33639C44D7560FE81219 /* AulaDates.swift in Sources */,
@@ -626,7 +636,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -686,7 +696,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;

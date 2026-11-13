@@ -3,7 +3,7 @@ import Foundation
 // The old server's routes (server/sala/app.py) as one entry point: the method, path (with query)
 // and JSON body `APIClient` sends, answered with API.md's JSON. Errors come out as the `APIError`
 // the server's status codes used to map to. `/auth/*` and `/debug/*` are gone (the login runs on the
-// phone); translation is off.
+// phone). Translation and summaries aren't routes: they run in AI.swift.
 
 extension Aula {
     /// `verb` + `path` (+ query) + JSON body -> the answer's JSON.
@@ -56,7 +56,7 @@ extension Aula {
     // MARK: routing
 
     private enum Route {
-        case today, features, translate, pickup(String), sick(String), holiday(String), absences, posts, save(String)
+        case today, pickup(String), sick(String), holiday(String), absences, posts, save(String)
         case albums, photos(String), search, calendar, contactGroups, contactGroup(String)
         case attachment(String), threads, thread(String), reply(String), folders, folder(String)
     }
@@ -66,8 +66,6 @@ extension Aula {
         case 1:
             switch s[0] {
             case "today": return (.today, ["GET"])
-            case "features": return (.features, ["GET"])
-            case "translate": return (.translate, ["POST"])
             case "absences": return (.absences, ["POST"])
             case "posts": return (.posts, ["GET"])
             case "albums": return (.albums, ["GET"])
@@ -113,13 +111,6 @@ extension Aula {
         switch (route, verb) {
         case (.today, _):
             return try await today()
-
-        case (.features, _):
-            return ["translate": false]
-
-        case (.translate, _):
-            // Translation was the server's (Claude API key); off on the phone, checked before the body.
-            throw APIError.notFound
 
         case let (.pickup(id), "GET"):
             let childId = try Input.pathInt(id, "child_id")

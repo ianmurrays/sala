@@ -24,6 +24,7 @@
 - **Gallery**: albums and photos.
 - **Search**: Aula's search across messages, posts and photos, from the search button in the tab bar.
 - **Contacts**: Aula's contact book for each child's groups, from the button next to Settings on Today, with call, text, e-mail and Add to Contacts.
+- **Translate and summarize** (off by default): a Translate or Summarize button on each message and post, into the iPhone's language. Settings → AI picks where it runs: Apple's model on the phone (nothing leaves it), or your own OpenAI-compatible endpoint or Anthropic API key. The prompts are editable.
 - **Widget**: status, pickup time and closing time on the Home Screen.
 
 Sala has no server. The app talks to Aula directly from the phone, and you log in with MitID inside the app. Your Aula session stays in the device's Keychain.
@@ -32,7 +33,7 @@ The Aula calls began as a Swift port of a small Python server built on [`aula`](
 
 ## Building
 
-Requires Xcode with the iOS 26 SDK and [XcodeGen](https://github.com/yonaskolb/XcodeGen).
+Requires Xcode with the iOS 27 SDK (the app needs iOS 27) and [XcodeGen](https://github.com/yonaskolb/XcodeGen).
 
 1. Copy `ios/Config/Local.example.xcconfig` to `ios/Config/Local.xcconfig` (gitignored) and set your `DEVELOPMENT_TEAM` and a `SALA_BUNDLE_ID` your team can register. A free personal team works: the app and widget share data through a keychain access group, not an app group. Simulator builds need this too, since an unsigned build has no Keychain access.
 2. Open `ios/Sala.xcodeproj` and run, or install on a connected phone with `ios/scripts/install-device.sh "<device name>"`.

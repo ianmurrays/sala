@@ -375,21 +375,6 @@ struct AbsenceRequest: Encodable, Sendable {
 
 struct OkResponse: Decodable, Sendable { var ok: Bool }
 
-/// `GET /features`.
-struct Features: Decodable, Sendable {
-    var translate: Bool
-
-    enum CodingKeys: String, CodingKey { case translate }
-
-    init(from decoder: Decoder) throws {
-        let c = try decoder.container(keyedBy: CodingKeys.self)
-        translate = try c.decodeIfPresent(Bool.self, forKey: .translate) ?? false
-    }
-}
-
-/// `POST /translate` body and answer: one text per entry, same order.
-struct TranslateTexts: Codable, Sendable { var texts: [String] }
-
 extension KeyedDecodingContainer {
     /// Accepts a JSON string or number (ids whose type the contract doesn't pin down), or null.
     func decodeLenientString(_ key: Key) throws -> String? {
@@ -490,13 +475,6 @@ struct APIClient: Sendable {
     }
     func addAbsence(_ request: AbsenceRequest) async throws {
         let _: OkResponse = try await send("POST", "/absences", body: request)
-    }
-
-    func features() async throws -> Features { try await send("GET", "/features") }
-    /// At most 50 texts per call (API.md).
-    func translate(_ texts: [String]) async throws -> [String] {
-        let r: TranslateTexts = try await send("POST", "/translate", body: TranslateTexts(texts: texts))
-        return r.texts
     }
 
     private static let pictureCache = URL.cachesDirectory.appending(path: "pictures", directoryHint: .isDirectory)

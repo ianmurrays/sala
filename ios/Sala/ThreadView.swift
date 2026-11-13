@@ -25,7 +25,6 @@ struct ThreadView: View {
         var threadID: String?
     }
 
-    private var translationID: String { "thread-\(threadID)" }
     private var summary: ThreadSummary? { store.threads?.first { $0.id == threadID } }
     private var title: String { thread?.subject ?? summary?.subject ?? "" }
     private var participants: Int? { summary.map(\.participants).flatMap { $0 > 0 ? $0 : nil } }
@@ -70,7 +69,7 @@ struct ThreadView: View {
                     VStack(alignment: .leading, spacing: 18) {
                         if let banner { BannerView(text: banner) { self.banner = nil } }
                         ForEach(thread.messages) { message in
-                            MessageBubble(message: message, text: store.display(message.text, in: translationID),
+                            MessageBubble(message: message, text: store.display(message.text, in: "message-\(message.id)"),
                                           downloading: attachments.downloading) { open($0) }
                                 .id(message.id)
                         }
@@ -88,17 +87,6 @@ struct ThreadView: View {
                 }
                 .safeAreaInset(edge: .bottom) {
                     if thread.canReply { composer(thread) }
-                }
-                // Pinned: the thread opens scrolled to the bottom, so a first row would be off-screen.
-                .safeAreaInset(edge: .top) {
-                    if store.canTranslate, thread.messages.contains(where: { !$0.text.isEmpty }) {
-                        TranslateButton(id: translationID, texts: thread.messages.map(\.text))
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 6)
-                            .glassEffect(.regular, in: .capsule)
-                            .frame(maxWidth: .infinity)
-                            .padding(.top, 4)
-                    }
                 }
             }
         } else if let loadError {
@@ -319,7 +307,7 @@ struct AudiencePicker: View {
 
 struct MessageBubble: View {
     let message: Message
-    /// The message text as shown (its translation while the thread shows translations).
+    /// The message text as shown (its translation while the message shows one).
     let text: String
     let downloading: String?
     let open: (Attachment) -> Void
@@ -348,6 +336,9 @@ struct MessageBubble: View {
                         .font(.body)
                         .textSelection(.enabled)
                         .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                if !message.fromMe {
+                    AIActions(id: "message-\(message.id)", translate: [message.text], summarize: message.text)
                 }
                 ForEach(Array(message.attachments.enumerated()), id: \.offset) { _, attachment in
                     AttachmentRow(attachment: attachment, downloading: downloading) { open(attachment) }

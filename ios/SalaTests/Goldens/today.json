@@ -4537,34 +4537,6 @@
    "writes": []
   },
   {
-   "note": "",
-   "verb": "GET",
-   "path": "/features",
-   "body": null,
-   "status": 200,
-   "response": {
-    "translate": false
-   },
-   "aula": [],
-   "writes": []
-  },
-  {
-   "note": "translation is off on the phone",
-   "verb": "POST",
-   "path": "/translate",
-   "body": {
-    "texts": [
-     "Hej"
-    ]
-   },
-   "status": 404,
-   "response": {
-    "error": "not_enabled"
-   },
-   "aula": [],
-   "writes": []
-  },
-  {
    "note": "unknown route",
    "verb": "GET",
    "path": "/nope",
