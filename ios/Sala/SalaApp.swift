@@ -46,6 +46,7 @@ struct RootView: View {
         }
         .task { await store.load() }
         .onOpenURL { store.handleDeepLink($0) }
+        .onChange(of: scenePhase, initial: true) { _, phase in AppLock.shared.scenePhaseChanged(phase) }
         .onChange(of: scenePhase) { _, phase in
             guard phase == .active, store.phase != .needsLogin, store.phase != .loading else { return }
             Task { await store.load() }

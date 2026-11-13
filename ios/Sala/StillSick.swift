@@ -126,6 +126,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         #if DEBUG
         StillSick.selfCheck()
+        AppLock.selfCheck()
         #endif
         // Must be set before launch finishes, or a response that launched the app is lost.
         UNUserNotificationCenter.current().delegate = self
