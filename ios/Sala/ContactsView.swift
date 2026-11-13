@@ -78,14 +78,14 @@ private struct GroupContactsView: View {
                         if child.guardians.isEmpty {
                             Text("No guardians listed").foregroundStyle(.secondary)
                         }
-                        ForEach(child.guardians, id: \.self) { ContactRow(contact: $0) }
+                        ForEach(Array(child.guardians.enumerated()), id: \.offset) { ContactRow(contact: $1) }
                     }
                     // The A–Z index: a letter on the first child with that initial.
                     .sectionIndexLabel(i > 0 && Self.initial(children[i - 1].name) == Self.initial(child.name) ? nil : Self.initial(child.name))
                 }
                 if !staff.isEmpty {
                     Section("Staff") {
-                        ForEach(staff, id: \.self) { ContactRow(contact: $0) }
+                        ForEach(Array(staff.enumerated()), id: \.offset) { ContactRow(contact: $1) }
                     }
                     .sectionIndexLabel("#")
                 }
