@@ -228,7 +228,8 @@ private struct AlbumView: View {
 }
 
 /// Swipe between an album's photos, Photos style: title and date on top, a filmstrip below.
-/// Swiping down closes it (the zoom transition's own gesture); a tap hides the chrome.
+/// Swiping down closes it (the zoom transition's own gesture); a tap hides the chrome;
+/// pinch or double-tap zooms.
 private struct PhotoViewer: View {
     let photos: Paged<Photo>
     let title: String
@@ -237,6 +238,7 @@ private struct PhotoViewer: View {
     @Environment(\.dismiss) private var dismiss
     @State private var saving = false
     @State private var chrome = true
+    @State private var zoomed = false
     @State private var message: String?
 
     var body: some View {
@@ -245,19 +247,25 @@ private struct PhotoViewer: View {
         NavigationStack {
             TabView(selection: $current) {
                 ForEach(items) { photo in
-                    // The cached thumbnail stands in while the original loads.
-                    GalleryImage(id: photo.image, cache: false) {
-                        GalleryImage(id: photo.thumbnail, cache: true).scaledToFit()
+                    Zoomable(active: photo.id == current, zoomed: $zoomed) {
+                        withAnimation { chrome.toggle() }
+                    } content: {
+                        // The cached thumbnail stands in while the original loads.
+                        GalleryImage(id: photo.image, cache: false) {
+                            GalleryImage(id: photo.thumbnail, cache: true).scaledToFit()
+                        }
+                        .scaledToFit()
+                        .environment(store)
                     }
-                    .scaledToFit()
                     .tag(photo.id)
                     .onAppear { if photo.id == items.last?.id { Task { await photos.load(store) } } }
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
+            // Zoomed in, a pan moves within the photo instead of paging or closing.
+            .scrollDisabled(zoomed)
             .background(.black)
             .ignoresSafeArea()
-            .onTapGesture { withAnimation { chrome.toggle() } }
             .safeAreaInset(edge: .bottom) {
                 if chrome { Filmstrip(items: items, current: $current) }
             }
@@ -287,7 +295,89 @@ private struct PhotoViewer: View {
             .toolbarVisibility(chrome ? .visible : .hidden, for: .navigationBar, .bottomBar)
             .toast($message)
         }
+        .interactiveDismissDisabled(zoomed)
         .colorScheme(.dark)
+    }
+}
+
+/// Pinch or double-tap to zoom `content`, Photos style. `onTap` runs on a single tap, once it can't be a double-tap.
+/// SwiftUI has no zoomable scroll view, hence UIKit. Leaving the page (`active` false) zooms back out.
+private struct Zoomable<Content: View>: UIViewRepresentable {
+    let active: Bool
+    @Binding var zoomed: Bool
+    let onTap: () -> Void
+    @ViewBuilder let content: Content
+
+    func makeCoordinator() -> Coordinator { Coordinator(host: UIHostingController(rootView: content)) }
+
+    func makeUIView(context: Context) -> ZoomScrollView {
+        let c = context.coordinator
+        c.host.safeAreaRegions = []
+        c.host.view.backgroundColor = .clear
+        let scroll = ZoomScrollView(content: c.host.view)
+        scroll.delegate = c
+        scroll.maximumZoomScale = 4
+        scroll.showsVerticalScrollIndicator = false
+        scroll.showsHorizontalScrollIndicator = false
+        scroll.contentInsetAdjustmentBehavior = .never
+        let double = UITapGestureRecognizer(target: c, action: #selector(Coordinator.doubleTap))
+        double.numberOfTapsRequired = 2
+        let single = UITapGestureRecognizer(target: c, action: #selector(Coordinator.singleTap))
+        single.require(toFail: double)
+        scroll.addGestureRecognizer(double)
+        scroll.addGestureRecognizer(single)
+        return scroll
+    }
+
+    func updateUIView(_ scroll: ZoomScrollView, context: Context) {
+        context.coordinator.parent = self
+        context.coordinator.host.rootView = content
+        if !active, scroll.zoomScale != 1 { scroll.setZoomScale(1, animated: false) }
+    }
+
+    final class Coordinator: NSObject, UIScrollViewDelegate {
+        let host: UIHostingController<Content>
+        var parent: Zoomable?
+        init(host: UIHostingController<Content>) { self.host = host }
+
+        func viewForZooming(in scroll: UIScrollView) -> UIView? { host.view }
+
+        func scrollViewDidZoom(_ scroll: UIScrollView) {
+            let zoomed = scroll.zoomScale > 1
+            // Also called from updateUIView, where SwiftUI state mustn't change.
+            DispatchQueue.main.async { [parent] in if parent?.zoomed != zoomed { parent?.zoomed = zoomed } }
+        }
+
+        @objc func doubleTap(_ tap: UITapGestureRecognizer) {
+            guard let scroll = tap.view as? UIScrollView else { return }
+            if scroll.zoomScale > 1 { return scroll.setZoomScale(1, animated: true) }
+            let point = tap.location(in: host.view)
+            let size = CGSize(width: scroll.bounds.width / 3, height: scroll.bounds.height / 3)
+            scroll.zoom(to: CGRect(x: point.x - size.width / 2, y: point.y - size.height / 2,
+                                   width: size.width, height: size.height), animated: true)
+        }
+
+        @objc func singleTap() { parent?.onTap() }
+    }
+}
+
+/// Keeps the zoomed view the size of the page while zoomed out.
+// ponytail: the view spans the page, not just the photo, so a zoomed-in landscape photo pans into its black bars.
+// Size it to the image's aspect ratio if that bothers anyone.
+private final class ZoomScrollView: UIScrollView {
+    private let content: UIView
+    init(content: UIView) {
+        self.content = content
+        super.init(frame: .zero)
+        addSubview(content)
+    }
+    required init?(coder: NSCoder) { fatalError() }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        guard zoomScale == 1 else { return }
+        content.frame = bounds
+        contentSize = bounds.size
     }
 }
 
