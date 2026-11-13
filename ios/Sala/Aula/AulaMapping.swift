@@ -942,8 +942,8 @@ extension Aula {
     /// From the portal bundle (app.*.js, the guardian's absence list, LOAD_VACATION_ANNOUCEMENTS_BY_CHILDREN
     /// in 0.*.js: GET `?method=presence.getVacationAnnouncementsByChildren` with `childIds`). The list
     /// reads `data` as [{child, vacationAnnouncements: [{vacationId, startDate, endDate, description,
-    /// isEditable}]}], and `vacationId` is the calendar event's id. Shape from the portal's template only,
-    /// not yet seen in live traffic. Dates are read as written, like the calendar's all-day stamps.
+    /// isEditable}]}], and `vacationId` is the calendar event's id. Live shape:
+    /// docs/aula-shapes/presence.getVacationAnnouncementsByChildren.json (dates are plain "YYYY-MM-DD").
     func absences(_ profile: AulaProfile) async throws -> [RegisteredAbsence] {
         let today = AulaTime.today()
         let r = try await get("presence.getVacationAnnouncementsByChildren", Self.ids("childIds[]", profile.children.map(\.id)))
