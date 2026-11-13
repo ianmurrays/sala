@@ -1,0 +1,344 @@
+{
+ "docTypeCount": [
+  {
+   "count": "int",
+   "key": "str",
+   "name": "str"
+  }
+ ],
+ "from": "int",
+ "groupTypeCount": [],
+ "mediaResults": [
+  {
+   "albumDescription": "str",
+   "albumId": "int",
+   "albumTitle": "str",
+   "allowsComments": "bool",
+   "canViewComments": "bool",
+   "commentCount": "int",
+   "conversionStatus": "str",
+   "creator": {
+    "id": "int",
+    "institutionRole": "null",
+    "mainGroup": "null",
+    "metadata": "str",
+    "name": "str",
+    "profilePicture": "null",
+    "relations": [],
+    "shortName": "str"
+   },
+   "currentUserCanDelete": "bool",
+   "currentUserCanEditMetaData": "bool",
+   "currentUserCanEditTags": "bool",
+   "currentUserCanReport": "bool",
+   "description": "str",
+   "docId": "str",
+   "docType": "Media",
+   "extraSmallThumbnailUrl": "str",
+   "file": {
+    "bucket": "str",
+    "created": "str",
+    "id": "int",
+    "key": "str",
+    "name": "str",
+    "scanningStatus": "str",
+    "url": "str"
+   },
+   "id": "int",
+   "isUploadPending": "bool",
+   "largeThumbnailUrl": "str",
+   "mediaType": "str",
+   "mediumThumbnailUrl": "str",
+   "score": "int",
+   "smallThumbnailUrl": "str",
+   "tags": [
+    {
+     "id": "int",
+     "institutionRole": "null",
+     "mainGroup": "null",
+     "metadata": "str",
+     "name": "str",
+     "profilePicture": {
+      "bucket": "str",
+      "created": "str",
+      "id": "int",
+      "key": "str",
+      "name": "str",
+      "scanningStatus": "str",
+      "url": "str"
+     },
+     "relations": [],
+     "shortName": "null"
+    }
+   ],
+   "thumbnailUrl": "str",
+   "title": "str"
+  }
+ ],
+ "profileTypeCount": [
+  {
+   "count": "int",
+   "key": "str",
+   "name": "str"
+  }
+ ],
+ "query": "str",
+ "results": [
+  {
+   "allowComments": "bool",
+   "attachments": [
+    {
+     "creator": {
+      "id": "int",
+      "institutionCode": "str",
+      "institutionName": "str",
+      "institutionRole": "str",
+      "mainGroup": "null",
+      "metadata": "str",
+      "name": "str",
+      "profileId": "int",
+      "profilePicture": "null",
+      "role": "str",
+      "shortName": "str"
+     },
+     "currentUserCanReport": "bool",
+     "document": "null",
+     "file": "null",
+     "id": "int",
+     "link": "null",
+     "media": {
+      "album": "null",
+      "allowsComments": "bool",
+      "canViewComments": "bool",
+      "commentCount": "int",
+      "conversionStatus": "str",
+      "creator": {
+       "id": "int",
+       "institutionCode": "str",
+       "institutionName": "str",
+       "institutionRole": "str",
+       "mainGroup": "null",
+       "metadata": "str",
+       "name": "str",
+       "profileId": "int",
+       "profilePicture": "null",
+       "role": "str",
+       "shortName": "str"
+      },
+      "currentUserCanDelete": "bool",
+      "currentUserCanEditMetaData": "bool",
+      "currentUserCanEditTags": "bool",
+      "currentUserCanReport": "bool",
+      "description": "null",
+      "duration": "null",
+      "extraSmallThumbnailUrl": "str",
+      "file": {
+       "bucket": "str",
+       "created": "str",
+       "id": "int",
+       "key": "str",
+       "name": "str",
+       "scanningStatus": "str",
+       "url": "str"
+      },
+      "hasVideoThumbnail": "bool",
+      "id": "int",
+      "isDeleted": "bool",
+      "isUploadPending": "null",
+      "largeThumbnailUrl": "str",
+      "mediaType": "str",
+      "mediumThumbnailUrl": "str",
+      "smallThumbnailUrl": "str",
+      "tags": [],
+      "thumbnailUrl": "str",
+      "title": "null"
+     },
+     "name": "str",
+     "status": "str"
+    }
+   ],
+   "commentCount": "int",
+   "content": "str",
+   "creator": {
+    "firstName": "str",
+    "fullName": "str",
+    "gender": "str",
+    "id": "int",
+    "institution": {
+     "administrativeAuthority": {
+      "id": "int",
+      "institutionCodes": [],
+      "name": "str"
+     },
+     "institutionCode": "str",
+     "institutionName": "str",
+     "municipalityCode": "str",
+     "municipalityName": "str",
+     "type": "str"
+    },
+    "lastName": "str",
+    "mailBoxId": "int",
+    "mainGroupName": "null",
+    "metadata": "str",
+    "profileId": "int",
+    "profilePicture": {
+     "bucket": "str",
+     "id": "int",
+     "isImageScalingPending": "bool",
+     "key": "str",
+     "scanningStatus": "str",
+     "url": "str"
+    },
+    "role": "str",
+    "shortName": "str",
+    "uniPersonId": "int"
+   },
+   "description": "null",
+   "docId": "str",
+   "docType": "Post",
+   "editedAt": "str",
+   "expireAt": "str",
+   "id": "str",
+   "importantFrom": "str",
+   "importantTo": "str",
+   "isExpired": "bool",
+   "isImportant": "bool",
+   "isPublished": "bool",
+   "pendingMedia": "bool",
+   "publishAt": "str",
+   "relatedProfiles": [
+    {
+     "firstName": "str",
+     "fullName": "str",
+     "gender": "str",
+     "id": "int",
+     "institution": {
+      "administrativeAuthority": {
+       "id": "int",
+       "institutionCodes": [],
+       "name": "str"
+      },
+      "institutionCode": "str",
+      "institutionName": "str",
+      "municipalityCode": "str",
+      "municipalityName": "str",
+      "type": "str"
+     },
+     "lastName": "str",
+     "mailBoxId": "int",
+     "mainGroupName": "str",
+     "metadata": "str",
+     "profileId": "int",
+     "profilePicture": {
+      "bucket": "str",
+      "id": "int",
+      "isImageScalingPending": "bool",
+      "key": "str",
+      "scanningStatus": "str",
+      "url": "str"
+     },
+     "role": "str",
+     "shortName": "str",
+     "uniPersonId": "int"
+    }
+   ],
+   "score": "int",
+   "sharedWithGroups": [
+    {
+     "allowMembersToBeShown": "bool",
+     "id": "int",
+     "institutionCode": "str",
+     "institutionName": "str",
+     "isDeactivated": "bool",
+     "mainGroup": "bool",
+     "name": "str",
+     "portalRoles": [
+      "str"
+     ],
+     "shortName": "str"
+    }
+   ],
+   "timestamp": "str",
+   "title": "str"
+  },
+  {
+   "description": "null",
+   "docId": "str",
+   "docType": "Profile",
+   "firstName": "str",
+   "gender": "str",
+   "id": "str",
+   "institutionCode": "str",
+   "institutionName": "str",
+   "institutionRole": "str",
+   "institutionType": "str",
+   "lastName": "str",
+   "mainGroup": {
+    "id": "int",
+    "institutionCode": "null",
+    "institutionName": "null",
+    "name": "str"
+   },
+   "metadata": "str",
+   "municipalityCode": "str",
+   "municipalityName": "str",
+   "name": "str",
+   "portalRole": "str",
+   "profileId": "str",
+   "profilePicture": {
+    "bucket": "str",
+    "id": "int",
+    "isImageScalingPending": "bool",
+    "key": "str",
+    "scanningStatus": "str",
+    "url": "str"
+   },
+   "relations": [
+    {
+     "aulaEmail": "str",
+     "firstName": "str",
+     "id": "int",
+     "lastName": "str",
+     "mainGroup": {
+      "id": "int",
+      "institutionCode": "null",
+      "institutionName": "null",
+      "name": "str"
+     },
+     "metadata": "null",
+     "profileId": "int",
+     "relationType": "str"
+    }
+   ],
+   "roleDefinitions": [],
+   "score": "int",
+   "shortName": "str",
+   "title": "str",
+   "uniLoginId": "null"
+  },
+  {
+   "author": "str",
+   "description": "null",
+   "docId": "str",
+   "docType": "ThreadMessage",
+   "folderId": "null",
+   "id": "str",
+   "latestMessageSendTime": "str",
+   "mailBoxOwner": {
+    "id": "int",
+    "mailBoxOwnerType": "str"
+   },
+   "message": "str",
+   "messageId": "str",
+   "messageType": "str",
+   "metadata": "str",
+   "score": "int",
+   "stepUpRequired": "bool",
+   "subscriptionId": "int",
+   "threadId": "int",
+   "title": "str"
+  }
+ ],
+ "size": "int",
+ "totalSize": "int"
+}
