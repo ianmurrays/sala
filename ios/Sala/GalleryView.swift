@@ -1,3 +1,4 @@
+import AVKit
 import Photos
 import SwiftUI
 
@@ -163,6 +164,11 @@ struct AlbumView: View {
                 .overlay { GalleryImage(id: photo.thumbnail, cache: true).scaledToFill() }
                 .clipped()
                 .overlay { if selected { Color.white.opacity(0.25) } }
+                .overlay(alignment: .bottomLeading) {
+                    if photo.video != nil {
+                        Image(systemName: "play.fill").font(.caption).foregroundStyle(.white).shadow(radius: 2).padding(6)
+                    }
+                }
                 .overlay(alignment: .bottomTrailing) {
                     if selected {
                         Image(systemName: "checkmark.circle.fill")
@@ -177,7 +183,7 @@ struct AlbumView: View {
         .buttonStyle(.plain)
         .matchedTransitionSource(id: photo.id, in: zoom)
         .id(photo.id)
-        .accessibilityLabel("Photo \(index + 1)")
+        .accessibilityLabel(photo.video == nil ? "Photo \(index + 1)" : "Video \(index + 1)")
         .accessibilityAddTraits(selected ? .isSelected : [])
         .onAppear { if last { Task { await photos.load(store) } } }
     }
@@ -244,6 +250,8 @@ private struct PhotoViewer: View {
     @State private var saving = false
     @State private var chrome = true
     @State private var zoomed = false
+    /// The bars' and filmstrip's room, which the pager hides from its pages.
+    @State private var insets = EdgeInsets()
     @State private var message: String?
 
     var body: some View {
@@ -252,27 +260,21 @@ private struct PhotoViewer: View {
         NavigationStack {
             TabView(selection: $current) {
                 ForEach(items) { photo in
-                    Zoomable(active: photo.id == current, zoomed: $zoomed) {
-                        withAnimation { chrome.toggle() }
-                    } content: {
-                        // The cached thumbnail stands in while the original loads.
-                        GalleryImage(id: photo.image, cache: false) {
-                            GalleryImage(id: photo.thumbnail, cache: true).scaledToFit()
-                        }
-                        .scaledToFit()
-                        .environment(store)
-                    }
-                    .tag(photo.id)
-                    .onAppear { if photo.id == items.last?.id { Task { await photos.load(store) } } }
+                    page(photo, items: items)
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             // Zoomed in, a pan moves within the photo instead of paging or closing.
             .scrollDisabled(zoomed)
             // The filmstrip can jump away from a zoomed page before it reports zooming out.
-            .onChange(of: current) { zoomed = false }
+            .onChange(of: current) {
+                zoomed = false
+                // A video page has no tap to bring hidden bars back (the player takes taps), so show them.
+                if photos.items?.first(where: { $0.id == current })?.video != nil { chrome = true }
+            }
             .background(.black)
             .ignoresSafeArea()
+            .onGeometryChange(for: EdgeInsets.self, of: \.safeAreaInsets) { insets = $0 }
             .safeAreaInset(edge: .bottom) {
                 if chrome { Filmstrip(items: items, current: $current) }
             }
@@ -304,6 +306,98 @@ private struct PhotoViewer: View {
         }
         .interactiveDismissDisabled(zoomed)
         .colorScheme(.dark)
+    }
+
+    @ViewBuilder private func page(_ photo: Photo, items: [Photo]) -> some View {
+        Group {
+            if let video = photo.video {
+                VideoPage(video: video, still: photo.image, thumbnail: photo.thumbnail, active: photo.id == current, insets: insets)
+            } else {
+                Zoomable(active: photo.id == current, zoomed: $zoomed) {
+                    withAnimation { chrome.toggle() }
+                } content: {
+                    // The cached thumbnail stands in while the original loads.
+                    GalleryImage(id: photo.image, cache: false) {
+                        GalleryImage(id: photo.thumbnail, cache: true).scaledToFit()
+                    }
+                    .scaledToFit()
+                    .environment(store)
+                }
+            }
+        }
+        .tag(photo.id)
+        .onAppear { if photo.id == items.last?.id { Task { await photos.load(store) } } }
+    }
+}
+
+/// A video in the viewer: its still with a play button; a tap downloads the mp4 and plays it.
+/// Paging away pauses it.
+private struct VideoPage: View {
+    let video: String
+    let still: String?
+    let thumbnail: String?
+    let active: Bool
+    let insets: EdgeInsets
+    @Environment(Store.self) private var store
+    @State private var player: AVPlayer?
+    @State private var loading = false
+    @State private var failed: String?
+    @State private var load: Task<Void, Never>?
+
+    var body: some View {
+        ZStack {
+            if let player {
+                // Keeps the player's controls clear of the bars and filmstrip.
+                VideoPlayer(player: player).padding(insets)
+            } else {
+                GalleryImage(id: still, cache: false) {
+                    GalleryImage(id: thumbnail, cache: true).scaledToFit()
+                }
+                .scaledToFit()
+                Button {
+                    load = Task { await play() }
+                } label: {
+                    if loading {
+                        ProgressView().controlSize(.large).padding(24)
+                    } else {
+                        Image(systemName: "play.fill").font(.largeTitle).padding(24)
+                    }
+                }
+                .glassEffect(in: .circle)
+                .disabled(loading)
+                .accessibilityLabel("Play video")
+                if let failed {
+                    Text(failed).font(.subheadline).padding(.horizontal, 16).padding(.vertical, 10)
+                        .glassEffect().frame(maxHeight: .infinity, alignment: .bottom).padding(.bottom, 120)
+                }
+            }
+        }
+        // Paging away also drops a download still under way, so it can't start playing off screen.
+        .onChange(of: active) { if !active { load?.cancel(); player?.pause() } }
+        .onDisappear {
+            load?.cancel()
+            player?.pause()
+            // Lets music or a podcast that the video interrupted resume. Fails harmlessly while another page plays.
+            try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        }
+    }
+
+    private func play() async {
+        // Plays sound with the ring switch on silent, as Photos does.
+        try? AVAudioSession.sharedInstance().setCategory(.playback)
+        loading = true
+        failed = nil
+        defer { loading = false }
+        do {
+            let file = try await store.client.video(video)
+            guard !Task.isCancelled else { return }
+            let p = AVPlayer(url: file)
+            player = p
+            p.play()
+        } catch {
+            guard !Task.isCancelled else { return }
+            if let msg = store.handle(error) { failed = "Couldn't load the video. \(msg)" }
+        }
     }
 }
 
@@ -435,13 +529,17 @@ private struct Filmstrip: View {
     for (i, photo) in photos.enumerated() {
         progress(i)
         do {
-            try await addToPhotos(try await store.client.picture(photo.image))
+            if let video = photo.video {
+                try await addVideoToPhotos(try await store.client.video(video))
+            } else if let image = photo.image {
+                try await addToPhotos(try await store.client.picture(image))
+            }
         } catch {
             guard let msg = store.handle(error) else { return nil }
             return i == 0 ? "Couldn't save. \(msg)" : "Saved \(i) of \(photos.count). \(msg)"
         }
     }
-    return photos.count == 1 ? "Saved to Photos" : "Saved \(photos.count) photos to Photos"
+    return photos.count == 1 ? "Saved to Photos" : "Saved \(photos.count) items to Photos"
 }
 
 /// Outside the main actor: PhotoKit runs the change block on its own queue, and a block
@@ -449,6 +547,12 @@ private struct Filmstrip: View {
 nonisolated private func addToPhotos(_ data: Data) async throws {
     try await PHPhotoLibrary.shared().performChanges {
         PHAssetCreationRequest.forAsset().addResource(with: .photo, data: data, options: nil)
+    }
+}
+
+nonisolated private func addVideoToPhotos(_ file: URL) async throws {
+    try await PHPhotoLibrary.shared().performChanges {
+        PHAssetCreationRequest.forAsset().addResource(with: .video, fileURL: file, options: nil)
     }
 }
 

@@ -31,7 +31,7 @@ final class DemoTransport: AulaTransport, @unchecked Sendable {
         guard url.host == "www.aula.dk", url.path.hasPrefix("/api/") else {
             // Files (attachments, pictures): one placeholder per kind.
             if request.httpMethod ?? "GET" == "GET", Aula.fileURLAllowed(url) {
-                let ext = url.pathExtension.lowercased() == "pdf" ? "pdf" : "png"
+                let ext = ["pdf", "mp4"].contains(url.pathExtension.lowercased()) ? url.pathExtension.lowercased() : "png"
                 return reply(200, try Data(contentsOf: dir.appending(path: "_files/placeholder.\(ext)")))
             }
             lock.withLock { _missing.append("\(request.httpMethod ?? "GET") \(url)") }

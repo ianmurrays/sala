@@ -496,7 +496,7 @@
    "writes": []
   },
   {
-   "note": "photos come from mediaResults; videos are left out",
+   "note": "photos come from mediaResults; videos still converting are left out",
    "verb": "GET",
    "path": "/search?q=b%C3%A5l%20%26%20co%2B1&type=photos",
    "body": null,
@@ -631,9 +631,9 @@
           "url": "https://media-prod.aula.dk/gallery/foto1.jpg?sig=1",
           "created": "2026-11-11T10:00:00+01:00"
          },
-         "smallThumbnailUrl": "https://media-prod.aula.dk/gallery/foto1-small.jpg?sig=2",
          "thumbnailUrl": null,
-         "score": 0
+         "score": 0,
+         "conversionStatus": "processing"
         }
        ]
       }
@@ -643,7 +643,7 @@
    "writes": []
   },
   {
-   "note": "an Aula page that is all videos is skipped, so an empty list still means no more",
+   "note": "an Aula page that is all converting videos is skipped, so an empty list still means no more",
    "verb": "GET",
    "path": "/search?q=b%C3%A5l%20%26%20co%2B1&type=photos&page=2",
    "body": null,
@@ -761,9 +761,9 @@
           "url": "https://media-prod.aula.dk/gallery/foto1.jpg?sig=1",
           "created": "2026-11-11T10:00:00+01:00"
          },
-         "smallThumbnailUrl": "https://media-prod.aula.dk/gallery/foto1-small.jpg?sig=2",
          "thumbnailUrl": null,
-         "score": 0
+         "score": 0,
+         "conversionStatus": "processing"
         }
        ]
       }

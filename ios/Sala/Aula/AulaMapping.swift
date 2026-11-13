@@ -1171,21 +1171,29 @@ extension Aula {
         return (J.list(J.getIn(data, "results")) ?? []).compactMap(photoOut)
     }
 
-    /// One gallery.getMedia result (also a search.findGeneric Media result) as a Photo; nil for videos.
+    /// One gallery.getMedia result (also a search.findGeneric Media result) as a Photo.
+    /// A video's `image` is its still (Aula's thumbnails are frames of it) and `video` the mp4.
     func photoOut(_ p: Any) -> JSONObject? {
-        // ponytail: videos are left out; show them when someone misses them
         guard J.dict(p) != nil, let id = J.int(J.get(p, "id", default: nil)),
-              J.get(p, "mediaType", default: nil) as? String == "image",
-              let image = pictureId(J.getIn(p, "file.url"), register: true) else { return nil }
+              let file = pictureId(J.getIn(p, "file.url"), register: true) else { return nil }
         // Live sizes (one photo): large 900x1200, medium 600x800, small 300x400 (~55 kB), extraSmall 150x200.
         // Small fills a third of a phone's width at 3x.
-        let thumb = J.or(J.get(p, "smallThumbnailUrl", default: nil), J.get(p, "thumbnailUrl", default: nil))
-        return [
-            "id": id,
-            "thumbnail": pictureId(thumb, register: true) ?? image,
-            "image": image,
-            "date": J.out(AulaTime.iso(J.getIn(p, "file.created"))),
-        ]
+        let thumb = pictureId(J.or(J.get(p, "smallThumbnailUrl", default: nil), J.get(p, "thumbnailUrl", default: nil)), register: true)
+        var out: JSONObject = ["id": id, "date": J.out(AulaTime.iso(J.getIn(p, "file.created")))]
+        switch J.get(p, "mediaType", default: nil) as? String {
+        case "image":
+            out["thumbnail"] = thumb ?? file
+            out["image"] = file
+        case "video":
+            // The portal skips playing these too (conversionStatus completed|processing|failed).
+            guard !["processing", "failed"].contains(J.get(p, "conversionStatus", default: nil) as? String) else { return nil }
+            // The portal shows the large thumbnail as the still, when there is one.
+            out["thumbnail"] = thumb
+            out["image"] = pictureId(J.get(p, "largeThumbnailUrl", default: nil), register: true) ?? thumb
+            out["video"] = file
+        default: return nil
+        }
+        return out
     }
 
     // MARK: search
@@ -1239,7 +1247,7 @@ extension Aula {
         default:
             out["photos"] = (J.list(J.get(data, "mediaResults", default: nil)) ?? []).compactMap(photoOut)
         }
-        // An Aula page whose hits were all left out (videos, threadless messages) would read as the end
+        // An Aula page whose hits were all left out (converting videos, threadless messages) would read as the end
         // to the client, so answer the next Aula page instead; the client drops the repeats by id.
         // ponytail: at most 5 pages skipped in one call; a longer run of left-out hits still ends the list.
         let raw = (J.list(J.get(data, "mediaResults", default: nil)) ?? []).count + results.count

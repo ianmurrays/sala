@@ -21,7 +21,7 @@
 - **Holidays**: register holidays and days off, change or cancel them, and answer the institution's holiday requests (and change an answer until the deadline).
 - **Calendar**: Aula's calendar, optionally synced to the iOS Calendar.
 - **Messages**: threads, replies (to everyone or only the sender), and your own folders.
-- **Gallery**: albums and photos.
+- **Gallery**: albums with their photos and videos; save either to Photos.
 - **Search**: Aula's search across messages, posts and photos, from the search button in the tab bar.
 - **Contacts**: Aula's contact book for each child's groups, from the button next to Settings on Today, with call, text, e-mail and Add to Contacts.
 - **Translate and summarize** (off by default): a Translate or Summarize button on each message and post, into the iPhone's language. Settings → AI picks where it runs: Apple's model on the phone (nothing leaves it), or your own OpenAI-compatible endpoint or Anthropic API key. The prompts are editable.

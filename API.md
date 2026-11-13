@@ -142,11 +142,11 @@ Open one with `GET /holiday-requests/{id}`; `POST` changes the answer until the 
 ```
 `GET /albums/{id}/photos?page=N` → the photos in one album, newest first, 60 per page:
 ```json
-[{"id": 8001, "thumbnail": "9f86d0…", "image": "2c26b4…", "date": "timestamp|null"}]
+[{"id": 8001, "thumbnail": "9f86d0…", "image": "2c26b4…", "video": "a1b2c3…|null", "date": "timestamp|null"}]
 ```
 - `page` is 1-based (default 1, at most 100, else `400`). An empty list means there are no more.
 - `cover`, `thumbnail` and `image` are ids for `GET /attachments/{id}`, stable across loads like profile pictures, so the client can cache them. `thumbnail` is Aula's small size (300×400 for a 1200×1600 photo, about 55 kB); `image` is the original, for the viewer and for saving. `thumbnail` is the same id as `image` when Aula has no thumbnail.
-- Videos are left out, so a page can hold fewer than 60 photos. A page of nothing but videos comes back empty, and the client stops there (rare enough to accept).
+- A video has `video`, the id of its mp4 (`GET /attachments/{id}`); its `image` is a still from it (Aula's large thumbnail), and `thumbnail` and `image` are absent when Aula has no still. Videos Aula is still converting or failed to convert (`conversionStatus` `processing` or `failed`) are left out, so a page can hold fewer than 60. A page of nothing but such videos comes back empty, and the client stops there (rare enough to accept).
 - Page 1 starts with Aula's album of photos the child is tagged in: `"tagged": true`, `id` 0 (Aula gives it none), title from Aula. `GET /albums/0/photos` lists it.
 - A photo's `date` is when it was uploaded.
 - Aula's image URLs are signed and expire; listing the album again refreshes the ones Sala fetches.
@@ -164,7 +164,7 @@ Open one with `GET /holiday-requests/{id}`; `POST` changes the answer until the 
 - `q` is trimmed; empty → `400`. `type` defaults to `messages`; anything else → `400`. `page` is 1-based (default 1, at most 100, else `400`). An empty list means there are no more. Order is Aula's.
 - `messages`: `id` is the matching message, `threadId` its thread (open it with `GET /threads/{id}`), `date` when that message was sent (Aula names it `latestMessageSendTime`; live it matched the message `findMessage` returns for the thread). A result's thread may not be in `/threads`, so `PATCH /threads/{id}` can answer `409` for it.
 - `posts`: the `Post` shape of `/posts`, except `saved` is always `false` (Aula's search doesn't say); saving isn't offered from search.
-- `photos`: the `Photo` shape of the gallery; videos are left out, as in albums.
+- `photos`: the `Photo` shape of the gallery, videos included as in albums.
 - Calendar events, people, groups and files are not searched: Aula's search found no events in the searches tried, and people are in Contacts.
 
 ## Contacts
