@@ -5,16 +5,6 @@ on:
   pull_request:
 
 jobs:
-  server:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: server
-    steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
-      - run: uv run pytest -q
-
   secrets:
     runs-on: ubuntu-latest
     steps:
@@ -36,5 +26,7 @@ jobs:
         run: |
           xcodegen generate
           git diff --exit-code -- Sala.xcodeproj || { echo "::error::Sala.xcodeproj is out of date: run xcodegen generate in ios/ and commit it"; exit 1; }
-      - name: Simulator build
-        run: xcodebuild -project Sala.xcodeproj -scheme Sala -destination 'generic/platform=iOS Simulator' -quiet build
+      - name: Build and test on a simulator
+        run: |
+          sim=$(xcrun simctl list devices available | grep -m1 -oE 'iPhone[^(]+' | sed 's/ *$//')
+          xcodebuild -project Sala.xcodeproj -scheme Sala -destination "platform=iOS Simulator,name=$sim" -quiet test

@@ -1,10 +1,10 @@
 import Foundation
 import XCTest
 
-// The Swift port of the server's routes against recordings of the server itself
-// (server/tests/export_goldens.py): each step's Aula traffic is replayed by `GoldenTransport`,
-// and the Swift answer, error and writes must equal the server's. Re-export the goldens with
-// `cd server && uv run python tests/export_goldens.py` whenever the fake or mapping.py changes.
+// The Swift port of the old server's routes against recordings of the server itself, made on its
+// fake Aula before it was removed (git history: server/tests/export_goldens.py). Each step's Aula
+// traffic is replayed by `GoldenTransport`, and the Swift answer, error and writes must equal the
+// recorded ones. The goldens are frozen: a deliberate route change means editing its golden by hand.
 
 private let goldensDir = URL(fileURLWithPath: #filePath).deletingLastPathComponent().appendingPathComponent("Goldens")
 private let profileMethods: Set<String> = ["profiles.getProfilesByLogin", "profiles.getProfileContext"]

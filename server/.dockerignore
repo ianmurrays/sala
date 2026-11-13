@@ -1,6 +1,0 @@
-*
-!pyproject.toml
-!uv.lock
-!.python-version
-!sala/
-**/__pycache__
