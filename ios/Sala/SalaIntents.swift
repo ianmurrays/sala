@@ -56,16 +56,26 @@ struct SetPickupIntent: AppIntent {
     @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
         let options = try await IntentFailure.mapping { try await APIClient().pickupOptions(child: child.id) }
-        let c = Fmt.copenhagen.dateComponents([.hour, .minute], from: time)
+        // The phone's zone, like the clock the user read the time from (PickupSheet sends what it shows too).
+        let c = Calendar.current.dateComponents([.hour, .minute], from: time)
         let minutes = (c.hour ?? 0) * 60 + (c.minute ?? 0)
-        if let open = Fmt.minutes(options.opensAt), let close = Fmt.minutes(options.closesAt), !(open...close).contains(minutes) {
-            throw IntentFailure.message("Pick a time between \(Fmt.hhmm(open)) and \(Fmt.hhmm(close)).")
+        if let open = Fmt.minutes(options.opensAt), minutes < open {
+            throw IntentFailure.message("\(child.name)'s institution opens at \(Fmt.hhmm(open)).")
+        }
+        if let close = Fmt.minutes(options.closesAt), minutes > close {
+            throw IntentFailure.message("\(child.name)'s institution closes at \(Fmt.hhmm(close)).")
         }
         let hhmm = Fmt.hhmm(minutes)
+        let asked = by?.trimmingCharacters(in: .whitespaces).nilIfEmpty
+        // A name Aula lists, or the only one containing what was said; anything else asks.
+        let matches = asked.map { a in
+            options.people.filter { $0.localizedCaseInsensitiveCompare(a) == .orderedSame }.nilIfEmpty
+                ?? options.people.filter { $0.localizedCaseInsensitiveContains(a) }
+        } ?? []
         let person: String
-        if let by, let match = options.people.first(where: { $0.localizedCaseInsensitiveContains(by) }) {
-            person = match
-        } else if by == nil, let current = options.current?.by, options.people.contains(current) {
+        if matches.count == 1 {
+            person = matches[0]
+        } else if asked == nil, let current = options.current?.by, options.people.contains(current) {
             person = current
         } else if options.people.isEmpty {
             throw IntentFailure.message("Aula lists no one who can pick up \(child.name).")
@@ -144,6 +154,10 @@ struct SalaShortcuts: AppShortcutsProvider {
             "Open \(\.$screen) in \(.applicationName)",
         ], shortTitle: "Open Sala", systemImageName: "arrow.up.forward.app")
     }
+}
+
+private extension Collection {
+    var nilIfEmpty: Self? { isEmpty ? nil : self }
 }
 
 private struct StatusSnippet: View {
