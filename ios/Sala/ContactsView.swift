@@ -7,6 +7,7 @@ import SwiftUI
 /// screen's state: no cache, no logging.
 struct ContactsView: View {
     @Environment(Store.self) private var store
+    @Environment(\.dismiss) private var dismiss
     @State private var groups: [ContactGroup]?
     @State private var error: String?
 
@@ -34,6 +35,7 @@ struct ContactsView: View {
                 }
             }
             .navigationTitle("Contacts")
+            .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
             .refreshable { await load() }
             .task { if groups == nil { await load() } }
             .navigationDestination(for: ContactGroup.self) { GroupContactsView(group: $0) }
