@@ -345,9 +345,16 @@ private struct Zoomable<Content: View>: UIViewRepresentable {
         func viewForZooming(in scroll: UIScrollView) -> UIView? { host.view }
 
         func scrollViewDidZoom(_ scroll: UIScrollView) {
+            // A pinch-in bounces below 1x; keep the photo centred instead of shrinking into the corner.
+            if scroll.zoomScale < 1 { host.view.center = CGPoint(x: scroll.bounds.midX, y: scroll.bounds.midY) }
             let zoomed = scroll.zoomScale > 1
             // Also called from updateUIView, where SwiftUI state mustn't change.
             DispatchQueue.main.async { [parent] in if parent?.zoomed != zoomed { parent?.zoomed = zoomed } }
+        }
+
+        /// A pinch let go just above 1x looks unzoomed but would still block paging and swipe-down: snap it back.
+        func scrollViewDidEndZooming(_ scroll: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
+            if scale > 1, scale < 1.1 { scroll.setZoomScale(1, animated: true) }
         }
 
         @objc func doubleTap(_ tap: UITapGestureRecognizer) {
@@ -365,7 +372,7 @@ private struct Zoomable<Content: View>: UIViewRepresentable {
 
 /// Keeps the zoomed view the size of the page while zoomed out.
 // ponytail: the view spans the page, not just the photo, so a zoomed-in landscape photo pans into its black bars.
-// Size it to the image's aspect ratio if that bothers anyone.
+// Sizing it to the image's aspect ratio fixes that and double-tap aim: issue #24.
 private final class ZoomScrollView: UIScrollView {
     private let content: UIView
     init(content: UIView) {
