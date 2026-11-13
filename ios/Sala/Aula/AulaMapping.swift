@@ -584,6 +584,85 @@ extension Aula {
         return items.enumerated().sorted { ($0.element.0, $0.offset) < ($1.element.0, $1.offset) }.prefix(limit).map(\.element.1)
     }
 
+    // MARK: calendar
+
+    /// `GET /calendar?month=`. Events from the portal's calendar call, one month at a time (Aula refuses
+    /// longer ranges), plus the institution's birthdays. Field names from live captures
+    /// (docs/aula-shapes/calendar.getEventsByProfileIdsAndResourceIds.json).
+    func calendar(_ profile: AulaProfile, year: Int, month: Int) async throws -> [JSONObject] {
+        guard let first = Day(year, month, 1) else { throw MapError.badRequest("month is out of range") }
+        let next = month == 12 ? Day(year + 1, 1, 1)! : Day(year, month + 1, 1)!
+        let last = next.adding(-1)
+        let names = Dictionary(profile.children.map { ($0.id, $0.name ?? "") }, uniquingKeysWith: { a, _ in a })
+        var out: [JSONObject] = []
+
+        func item(_ id: String, _ kind: String, _ title: Any?, _ subtitle: Any?, _ start: Day, _ end: Day, _ times: (String, String)? = nil) -> JSONObject {
+            ["id": id, "kind": kind, "title": J.pyStr(J.or(title, "")), "subtitle": J.out(subtitle.flatMap { Self.nonEmpty(J.pyStr($0)) }),
+             "startDate": start.iso, "endDate": end.iso, "startTime": J.out(times?.0), "endTime": J.out(times?.1)]
+        }
+        // Copenhagen day and HH:mm of an Aula timestamp.
+        func local(_ v: Any?) -> (Day, String)? {
+            guard let st = AulaTime.parse(v) else { return nil }
+            let l = AulaTime.local(st.epoch)
+            return (l.day, String(format: "%02d:%02d", l.seconds / 3600, l.seconds / 60 % 60))
+        }
+
+        for e in try await getEvents(profile.institutionProfileIds, from: first, to: next) {
+            guard let id = J.int(J.get(e, "id")) else { continue }
+            let type = J.str(J.get(e, "type")) ?? ""
+            let key = "event-\(id)-\(Self.date(J.get(e, "startDateTime"))?.iso ?? "")"
+            if type == "presence_holiday" {
+                // All-day stamps are midnight and 23:59 UTC: read their dates as written, not in Copenhagen.
+                guard let s = Self.date(J.get(e, "startDateTime")), let end = Self.date(J.get(e, "endDateTime")) else { continue }
+                let who = (J.list(J.get(e, "belongsToProfiles")) ?? []).compactMap { J.int($0).flatMap { names[$0] } }.filter { !$0.isEmpty }
+                out.append(item(key, "absence", J.get(e, "title"), who.isEmpty ? nil : who.joined(separator: ", "), s, end))
+            } else if let slots = J.list(J.getIn(e, "timeSlot.timeSlots")) {
+                // The booked slot: our child's (or our own) answer points into that day's timeSlotIndexes.
+                let ours = Set(profile.institutionProfileIds)
+                var booked: (Day, String, String)?
+                for case let slot as JSONObject in slots {
+                    for case let a as JSONObject in J.list(J.get(slot, "answers")) ?? [] {
+                        guard let who = J.int(J.get(a, "concerningProfileId")), ours.contains(who),
+                              let i = J.int(J.get(a, "selectedTimeSlotIndex")),
+                              let idx = J.list(J.get(slot, "timeSlotIndexes")), idx.indices.contains(i),
+                              let s = local(J.get(idx[i], "startTime")), let end = local(J.get(idx[i], "endTime")) else { continue }
+                        booked = (s.0, s.1, end.1)
+                    }
+                }
+                if let (d, s, end) = booked {
+                    out.append(item(key, "meeting", J.get(e, "title"), J.get(e, "institutionName"), d, d, (s, end)))
+                } else if let s = local(J.get(e, "startDateTime")), let end = local(J.get(e, "endDateTime")) {
+                    out.append(item(key, "meeting", J.get(e, "title"), "Not booked", s.0, end.0))
+                }
+            } else if J.truthy(J.get(e, "allDay")) {
+                guard let s = Self.date(J.get(e, "startDateTime")), let end = Self.date(J.get(e, "endDateTime")) else { continue }
+                out.append(item(key, "event", J.get(e, "title"), J.get(e, "institutionName"), s, end))
+            } else if let s = local(J.get(e, "startDateTime")), let end = local(J.get(e, "endDateTime")) {
+                out.append(item(key, "event", J.get(e, "title"), J.get(e, "institutionName"), s.0, end.0, (s.1, end.1)))
+            }
+        }
+
+        let codes = Set(profile.children.compactMap { Self.nonEmpty($0.institutionCode) }).sorted()
+        if !codes.isEmpty {
+            let start = AulaTime.combine(first, endOfDay: false)
+            let end = AulaTime.combine(last, endOfDay: true)
+            let rows = try await opt("birthdays") { try await getBirthdayEvents(codes, start: start, end: end) } ?? []
+            for case let row as JSONObject in rows {
+                guard let born = Self.date(J.get(row, "birthday")), let name = J.str(J.get(row, "name")) else { continue }
+                let d = born.replacing(year: year) ?? Day(year, 3, 1)!  // 29 Feb
+                guard first <= d, d <= last else { continue }
+                let id = "birthday-\(J.pyStr(J.get(row, "institutionProfileId")))-\(year)"
+                out.append(item(id, "birthday", "\(name)'s birthday", J.get(row, "mainGroupName"), d, d))
+            }
+        }
+
+        // Only what touches the month: a meeting's booked slot can fall outside the window that matched it.
+        out = out.filter { ($0["startDate"] as! String) <= last.iso && ($0["endDate"] as! String) >= first.iso }
+        // By date, all-day first, then by time; stable otherwise.
+        func key(_ o: JSONObject) -> String { "\(o["startDate"]!) \((o["startTime"] as? String) ?? "") \(o["endDate"]!)" }
+        return out.enumerated().sorted { (key($0.element), $0.offset) < (key($1.element), $1.offset) }.map(\.element)
+    }
+
     // MARK: holidays
 
     static func weekdays(_ start: Day, _ end: Day) -> [Day] {

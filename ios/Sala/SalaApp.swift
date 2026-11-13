@@ -28,6 +28,9 @@ struct RootView: View {
                     Tab("Today", systemImage: "sun.max", value: AppTab.today) {
                         TodayView()
                     }
+                    Tab("Calendar", systemImage: "calendar", value: AppTab.calendar) {
+                        CalendarView()
+                    }
                     Tab("Messages", systemImage: "bubble.left.and.bubble.right", value: AppTab.messages) {
                         MessagesView()
                     }

@@ -31,6 +31,8 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>Sala keeps a Sala calendar up to date with Aula's events, and removes the ones Aula drops.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Sala saves photos from the gallery to your library.</string>
 	<key>SalaKeychainGroup</key>

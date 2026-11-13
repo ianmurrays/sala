@@ -70,6 +70,24 @@ struct Album: Decodable, Sendable, Hashable, Identifiable {
     var tagged: Bool
 }
 
+/// One item of `GET /calendar` (API.md "Calendar").
+struct CalendarEvent: Decodable, Sendable, Hashable, Identifiable {
+    enum Kind: String, Decodable, Sendable { case absence, meeting, birthday, event }
+    var id: String
+    var kind: Kind
+    var title: String
+    var subtitle: String?
+    /// `YYYY-MM-DD`, `endDate` inclusive.
+    var startDate: String
+    var endDate: String
+    /// `HH:mm` in Copenhagen; both nil for an all-day item.
+    var startTime: String?
+    var endTime: String?
+
+    var allDay: Bool { startTime == nil }
+    func covers(_ ymd: String) -> Bool { startDate <= ymd && ymd <= endDate }
+}
+
 struct Photo: Decodable, Sendable, Equatable, Identifiable {
     var id: Int
     /// Ids for `GET /attachments/{id}`: a small size for the grid, the original for the viewer and saving.
@@ -371,6 +389,9 @@ struct APIClient: Sendable {
         let r: SavedResponse = try await send(saved ? "POST" : "DELETE", "/posts/\(post)/save")
         return r.saved
     }
+
+    /// `month` is `YYYY-MM`.
+    func calendar(month: String) async throws -> [CalendarEvent] { try await send("GET", "/calendar?month=\(month)") }
 
     /// `page` is 1-based. Empty means no more.
     func albums(page: Int) async throws -> [Album] { try await send("GET", "/albums?page=\(page)") }

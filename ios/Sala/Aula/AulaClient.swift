@@ -176,6 +176,21 @@ extension Aula {
         return J.get(r, "data", default: [Any]()) as? [Any] ?? []
     }
 
+    /// The portal's calendar (0.*.js LOAD_EVENTS_BY_PROFILEID: POST `{instProfileIds, resourceIds, start, end}`,
+    /// dates as moment "YYYY-MM-DD HH:mm:ss.SSSSZ"). Live, Aula refuses a 60-day range (403, subCode 0) and
+    /// answers 31 days, so callers ask for one month at a time.
+    func getEvents(_ ids: [Int], from: Day, to: Day) async throws -> [JSONObject] {
+        // "2026-11-01T00:00:00+01:00" -> "2026-11-01 00:00:00.0000+01:00"
+        func moment(_ d: Day) -> String {
+            let s = AulaTime.combine(d, endOfDay: false)
+            return s.prefix(10) + " " + s.dropFirst(11).prefix(8) + ".0000" + s.dropFirst(19)
+        }
+        let r = try await post("calendar.getEventsByProfileIdsAndResourceIds", [
+            "instProfileIds": ids, "resourceIds": [Int](), "start": moment(from), "end": moment(to),
+        ] as JSONObject)
+        return (J.list(r["data"]) ?? []).compactMap { $0 as? JSONObject }
+    }
+
     // MARK: posts
 
     func getPosts(_ institutionProfileIds: [Int], page: Int = 1, limit: Int = 10) async throws -> [AulaPost] {
