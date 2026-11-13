@@ -1,0 +1,51 @@
+[
+ {
+  "answer": {
+   "data": [
+    {
+     "creationDate": "2026-11-13T10:40:22+01:00",
+     "id": null,
+     "thumbnailsUrls": [
+      "https://fake-files.aula.dk/files/gallery/6002-0-small.png?Expires=1&Signature=40"
+     ],
+     "title": "Billeder af dit barn"
+    },
+    {
+     "creationDate": "2026-11-13T10:40:22+01:00",
+     "id": 6001,
+     "thumbnailsUrls": [
+      "https://fake-files.aula.dk/files/gallery/6001-0-small.png?Expires=1&Signature=41"
+     ],
+     "title": "Skovtur"
+    },
+    {
+     "creationDate": "2026-11-06T10:40:22+01:00",
+     "id": 6002,
+     "thumbnailsUrls": [
+      "https://fake-files.aula.dk/files/gallery/6002-0-small.png?Expires=1&Signature=42"
+     ],
+     "title": "Juleklip"
+    }
+   ],
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {
+   "index": "0"
+  }
+ },
+ {
+  "answer": {
+   "data": [],
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {
+   "index": "20"
+  }
+ }
+]

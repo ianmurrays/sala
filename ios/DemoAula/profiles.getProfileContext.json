@@ -1,0 +1,17 @@
+[
+ {
+  "answer": {
+   "data": {
+    "institutionProfile": {
+     "id": 1001
+    },
+    "institutions": []
+   },
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {}
+ }
+]

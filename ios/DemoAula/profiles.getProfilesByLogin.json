@@ -1,0 +1,45 @@
+[
+ {
+  "answer": {
+   "data": {
+    "profiles": [
+     {
+      "children": [
+       {
+        "hasCustodyOrExtendedAccess": true,
+        "id": 2001,
+        "institutionProfile": {
+         "institutionCode": "999001",
+         "institutionName": "Børnehuset",
+         "metadata": "Stue"
+        },
+        "name": "Oskar",
+        "profileId": 601,
+        "profilePicture": {
+         "id": 77,
+         "url": "https://fake-files.aula.dk/files/profile.png?sig=2"
+        },
+        "userId": "oskar01"
+       }
+      ],
+      "displayName": "Jonas Hansen",
+      "institutionProfiles": [
+       {
+        "id": 1001,
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset",
+        "role": "guardian"
+       }
+      ],
+      "profileId": 501
+     }
+    ]
+   },
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {}
+ }
+]

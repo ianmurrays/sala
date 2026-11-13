@@ -21,6 +21,10 @@ targets:
     sources:
       - path: Sala
       - path: Shared
+      # Demo mode's fake Aula (Sala/Aula/DemoAula.swift); debug builds only.
+      - path: DemoAula
+        type: folder
+        buildPhase: resources
     dependencies:
       - target: SalaWidget
     scheme:
@@ -39,6 +43,9 @@ targets:
         SWIFT_STRICT_CONCURRENCY: complete
         ENABLE_PREVIEWS: YES
         GENERATE_INFOPLIST_FILE: NO
+      configs:
+        Release:
+          EXCLUDED_SOURCE_FILE_NAMES: DemoAula
     info:
       path: Sala/Info.plist
       properties:

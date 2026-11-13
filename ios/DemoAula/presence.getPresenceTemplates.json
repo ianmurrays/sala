@@ -1,0 +1,39 @@
+[
+ {
+  "answer": {
+   "data": {
+    "presenceWeekTemplates": [
+     {
+      "dayTemplates": [
+       {
+        "activityType": 0,
+        "byDate": "2026-11-13",
+        "comment": "Har madpakke med",
+        "dayOfWeek": 5,
+        "entryTime": "07:45",
+        "exitTime": "16:00",
+        "exitWith": "Jonas Hansen (Far)",
+        "id": 7001,
+        "isOnVacation": false,
+        "repeatFromDate": "2026-09-14",
+        "repeatPattern": "weekly",
+        "repeatToDate": null,
+        "spareTimeActivity": null
+       }
+      ],
+      "institutionProfile": {
+       "id": 2001,
+       "institutionCode": "999001",
+       "name": "Oskar"
+      }
+     }
+    ]
+   },
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {}
+ }
+]

@@ -1,0 +1,5694 @@
+[
+ {
+  "answer": {
+   "data": {
+    "moreMessagesExist": true,
+    "threads": [
+     {
+      "creator": {
+       "answerDirectlyName": "Mette Lund",
+       "fullName": "Mette Lund",
+       "mailBoxOwner": {
+        "id": 1502,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11502
+       },
+       "metadata": "Pædagog, Stue"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9102,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": null,
+      "latestMessage": {
+       "id": "m9102-1",
+       "sendDateTime": "2026-11-13T09:40:21+01:00",
+       "text": {
+        "html": "<p>Hej! Oskar har glemt sin blå hue her i dag. Den ligger i hans garderobe.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": false,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Mette Lund",
+        "fullName": "Mette Lund",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1502,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11502
+        },
+        "metadata": "Pædagog, Stue",
+        "profilePicture": {
+         "id": 77,
+         "url": "https://fake-files.aula.dk/files/profile.png?sig=0"
+        },
+        "shortName": "ML"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Oskar har glemt sin hue",
+      "subscriptionId": 509102,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Anne Holm",
+       "fullName": "Anne Holm",
+       "mailBoxOwner": {
+        "id": 1501,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11501
+       },
+       "metadata": "Leder"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9101,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": null,
+      "latestMessage": {
+       "id": "m9101-4",
+       "sendDateTime": "2026-11-13T08:40:21+01:00",
+       "text": {
+        "html": "<p>Ja, søskende er meget velkomne. Vi har legetøj i fællesrummet.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": false,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Anne Holm",
+        "fullName": "Anne Holm",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1501,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11501
+        },
+        "metadata": "Leder",
+        "profilePicture": null,
+        "shortName": "AH"
+       },
+       {
+        "answerDirectlyName": "Mette Lund",
+        "fullName": "Mette Lund",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1502,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11502
+        },
+        "metadata": "Pædagog, Stue",
+        "profilePicture": {
+         "id": 77,
+         "url": "https://fake-files.aula.dk/files/profile.png?sig=0"
+        },
+        "shortName": "ML"
+       },
+       {
+        "answerDirectlyName": "Kasper Berg",
+        "fullName": "Kasper Berg",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1503,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11503
+        },
+        "metadata": "Pædagogmedhjælper, Stue",
+        "profilePicture": null,
+        "shortName": "KB"
+       },
+       {
+        "answerDirectlyName": "Forælder 1",
+        "fullName": "Forælder 1",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1601,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11601
+        },
+        "metadata": "Barn 1 (Mor)",
+        "profilePicture": null,
+        "shortName": "F1"
+       },
+       {
+        "answerDirectlyName": "Forælder 2",
+        "fullName": "Forælder 2",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1602,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11602
+        },
+        "metadata": "Barn 2 (Mor)",
+        "profilePicture": null,
+        "shortName": "F2"
+       },
+       {
+        "answerDirectlyName": "Forælder 3",
+        "fullName": "Forælder 3",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1603,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11603
+        },
+        "metadata": "Barn 3 (Mor)",
+        "profilePicture": null,
+        "shortName": "F3"
+       },
+       {
+        "answerDirectlyName": "Forælder 4",
+        "fullName": "Forælder 4",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1604,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11604
+        },
+        "metadata": "Barn 4 (Mor)",
+        "profilePicture": null,
+        "shortName": "F4"
+       },
+       {
+        "answerDirectlyName": "Forælder 5",
+        "fullName": "Forælder 5",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1605,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11605
+        },
+        "metadata": "Barn 5 (Mor)",
+        "profilePicture": null,
+        "shortName": "F5"
+       },
+       {
+        "answerDirectlyName": "Forælder 6",
+        "fullName": "Forælder 6",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1606,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11606
+        },
+        "metadata": "Barn 6 (Mor)",
+        "profilePicture": null,
+        "shortName": "F6"
+       },
+       {
+        "answerDirectlyName": "Forælder 7",
+        "fullName": "Forælder 7",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1607,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11607
+        },
+        "metadata": "Barn 7 (Mor)",
+        "profilePicture": null,
+        "shortName": "F7"
+       },
+       {
+        "answerDirectlyName": "Forælder 8",
+        "fullName": "Forælder 8",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1608,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11608
+        },
+        "metadata": "Barn 8 (Mor)",
+        "profilePicture": null,
+        "shortName": "F8"
+       },
+       {
+        "answerDirectlyName": "Forælder 9",
+        "fullName": "Forælder 9",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1609,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11609
+        },
+        "metadata": "Barn 9 (Mor)",
+        "profilePicture": null,
+        "shortName": "F9"
+       },
+       {
+        "answerDirectlyName": "Forælder 10",
+        "fullName": "Forælder 10",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1610,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11610
+        },
+        "metadata": "Barn 10 (Mor)",
+        "profilePicture": null,
+        "shortName": "F1"
+       },
+       {
+        "answerDirectlyName": "Forælder 11",
+        "fullName": "Forælder 11",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1611,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11611
+        },
+        "metadata": "Barn 11 (Mor)",
+        "profilePicture": null,
+        "shortName": "F1"
+       },
+       {
+        "answerDirectlyName": "Forælder 12",
+        "fullName": "Forælder 12",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1612,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11612
+        },
+        "metadata": "Barn 12 (Mor)",
+        "profilePicture": null,
+        "shortName": "F1"
+       },
+       {
+        "answerDirectlyName": "Forælder 13",
+        "fullName": "Forælder 13",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1613,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11613
+        },
+        "metadata": "Barn 13 (Mor)",
+        "profilePicture": null,
+        "shortName": "F1"
+       },
+       {
+        "answerDirectlyName": "Forælder 14",
+        "fullName": "Forælder 14",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1614,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11614
+        },
+        "metadata": "Barn 14 (Mor)",
+        "profilePicture": null,
+        "shortName": "F1"
+       },
+       {
+        "answerDirectlyName": "Forælder 15",
+        "fullName": "Forælder 15",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1615,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11615
+        },
+        "metadata": "Barn 15 (Mor)",
+        "profilePicture": null,
+        "shortName": "F1"
+       },
+       {
+        "answerDirectlyName": "Forælder 16",
+        "fullName": "Forælder 16",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1616,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11616
+        },
+        "metadata": "Barn 16 (Mor)",
+        "profilePicture": null,
+        "shortName": "F1"
+       },
+       {
+        "answerDirectlyName": "Forælder 17",
+        "fullName": "Forælder 17",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1617,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11617
+        },
+        "metadata": "Barn 17 (Mor)",
+        "profilePicture": null,
+        "shortName": "F1"
+       },
+       {
+        "answerDirectlyName": "Forælder 18",
+        "fullName": "Forælder 18",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1618,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11618
+        },
+        "metadata": "Barn 18 (Mor)",
+        "profilePicture": null,
+        "shortName": "F1"
+       },
+       {
+        "answerDirectlyName": "Forælder 19",
+        "fullName": "Forælder 19",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1619,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11619
+        },
+        "metadata": "Barn 19 (Mor)",
+        "profilePicture": null,
+        "shortName": "F1"
+       },
+       {
+        "answerDirectlyName": "Forælder 20",
+        "fullName": "Forælder 20",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1620,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11620
+        },
+        "metadata": "Barn 20 (Mor)",
+        "profilePicture": null,
+        "shortName": "F2"
+       },
+       {
+        "answerDirectlyName": "Forælder 21",
+        "fullName": "Forælder 21",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1621,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11621
+        },
+        "metadata": "Barn 21 (Mor)",
+        "profilePicture": null,
+        "shortName": "F2"
+       },
+       {
+        "answerDirectlyName": "Forælder 22",
+        "fullName": "Forælder 22",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1622,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11622
+        },
+        "metadata": "Barn 22 (Mor)",
+        "profilePicture": null,
+        "shortName": "F2"
+       },
+       {
+        "answerDirectlyName": "Forælder 23",
+        "fullName": "Forælder 23",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1623,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11623
+        },
+        "metadata": "Barn 23 (Mor)",
+        "profilePicture": null,
+        "shortName": "F2"
+       },
+       {
+        "answerDirectlyName": "Forælder 24",
+        "fullName": "Forælder 24",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1624,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11624
+        },
+        "metadata": "Barn 24 (Mor)",
+        "profilePicture": null,
+        "shortName": "F2"
+       },
+       {
+        "answerDirectlyName": "Forælder 25",
+        "fullName": "Forælder 25",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1625,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11625
+        },
+        "metadata": "Barn 25 (Mor)",
+        "profilePicture": null,
+        "shortName": "F2"
+       },
+       {
+        "answerDirectlyName": "Forælder 26",
+        "fullName": "Forælder 26",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1626,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11626
+        },
+        "metadata": "Barn 26 (Mor)",
+        "profilePicture": null,
+        "shortName": "F2"
+       },
+       {
+        "answerDirectlyName": "Forælder 27",
+        "fullName": "Forælder 27",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1627,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11627
+        },
+        "metadata": "Barn 27 (Mor)",
+        "profilePicture": null,
+        "shortName": "F2"
+       },
+       {
+        "answerDirectlyName": "Forælder 28",
+        "fullName": "Forælder 28",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1628,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11628
+        },
+        "metadata": "Barn 28 (Mor)",
+        "profilePicture": null,
+        "shortName": "F2"
+       },
+       {
+        "answerDirectlyName": "Forælder 29",
+        "fullName": "Forælder 29",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1629,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11629
+        },
+        "metadata": "Barn 29 (Mor)",
+        "profilePicture": null,
+        "shortName": "F2"
+       },
+       {
+        "answerDirectlyName": "Forælder 30",
+        "fullName": "Forælder 30",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1630,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11630
+        },
+        "metadata": "Barn 30 (Mor)",
+        "profilePicture": null,
+        "shortName": "F3"
+       },
+       {
+        "answerDirectlyName": "Forælder 31",
+        "fullName": "Forælder 31",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1631,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11631
+        },
+        "metadata": "Barn 31 (Mor)",
+        "profilePicture": null,
+        "shortName": "F3"
+       },
+       {
+        "answerDirectlyName": "Forælder 32",
+        "fullName": "Forælder 32",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1632,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11632
+        },
+        "metadata": "Barn 32 (Mor)",
+        "profilePicture": null,
+        "shortName": "F3"
+       },
+       {
+        "answerDirectlyName": "Forælder 33",
+        "fullName": "Forælder 33",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1633,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11633
+        },
+        "metadata": "Barn 33 (Mor)",
+        "profilePicture": null,
+        "shortName": "F3"
+       },
+       {
+        "answerDirectlyName": "Forælder 34",
+        "fullName": "Forælder 34",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1634,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11634
+        },
+        "metadata": "Barn 34 (Mor)",
+        "profilePicture": null,
+        "shortName": "F3"
+       },
+       {
+        "answerDirectlyName": "Forælder 35",
+        "fullName": "Forælder 35",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1635,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11635
+        },
+        "metadata": "Barn 35 (Mor)",
+        "profilePicture": null,
+        "shortName": "F3"
+       },
+       {
+        "answerDirectlyName": "Forælder 36",
+        "fullName": "Forælder 36",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1636,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11636
+        },
+        "metadata": "Barn 36 (Mor)",
+        "profilePicture": null,
+        "shortName": "F3"
+       },
+       {
+        "answerDirectlyName": "Forælder 37",
+        "fullName": "Forælder 37",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1637,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11637
+        },
+        "metadata": "Barn 37 (Mor)",
+        "profilePicture": null,
+        "shortName": "F3"
+       },
+       {
+        "answerDirectlyName": "Forælder 38",
+        "fullName": "Forælder 38",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1638,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11638
+        },
+        "metadata": "Barn 38 (Mor)",
+        "profilePicture": null,
+        "shortName": "F3"
+       },
+       {
+        "answerDirectlyName": "Forælder 39",
+        "fullName": "Forælder 39",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1639,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11639
+        },
+        "metadata": "Barn 39 (Mor)",
+        "profilePicture": null,
+        "shortName": "F3"
+       },
+       {
+        "answerDirectlyName": "Forælder 40",
+        "fullName": "Forælder 40",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1640,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11640
+        },
+        "metadata": "Barn 40 (Mor)",
+        "profilePicture": null,
+        "shortName": "F4"
+       },
+       {
+        "answerDirectlyName": "Forælder 41",
+        "fullName": "Forælder 41",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1641,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11641
+        },
+        "metadata": "Barn 41 (Mor)",
+        "profilePicture": null,
+        "shortName": "F4"
+       },
+       {
+        "answerDirectlyName": "Forælder 42",
+        "fullName": "Forælder 42",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1642,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11642
+        },
+        "metadata": "Barn 42 (Mor)",
+        "profilePicture": null,
+        "shortName": "F4"
+       },
+       {
+        "answerDirectlyName": "Forælder 43",
+        "fullName": "Forælder 43",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1643,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11643
+        },
+        "metadata": "Barn 43 (Mor)",
+        "profilePicture": null,
+        "shortName": "F4"
+       },
+       {
+        "answerDirectlyName": "Forælder 44",
+        "fullName": "Forælder 44",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1644,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11644
+        },
+        "metadata": "Barn 44 (Mor)",
+        "profilePicture": null,
+        "shortName": "F4"
+       },
+       {
+        "answerDirectlyName": "Forælder 45",
+        "fullName": "Forælder 45",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1645,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11645
+        },
+        "metadata": "Barn 45 (Mor)",
+        "profilePicture": null,
+        "shortName": "F4"
+       },
+       {
+        "answerDirectlyName": "Forælder 46",
+        "fullName": "Forælder 46",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1646,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11646
+        },
+        "metadata": "Barn 46 (Mor)",
+        "profilePicture": null,
+        "shortName": "F4"
+       },
+       {
+        "answerDirectlyName": "Forælder 47",
+        "fullName": "Forælder 47",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1647,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11647
+        },
+        "metadata": "Barn 47 (Mor)",
+        "profilePicture": null,
+        "shortName": "F4"
+       },
+       {
+        "answerDirectlyName": "Forælder 48",
+        "fullName": "Forælder 48",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1648,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11648
+        },
+        "metadata": "Barn 48 (Mor)",
+        "profilePicture": null,
+        "shortName": "F4"
+       },
+       {
+        "answerDirectlyName": "Forælder 49",
+        "fullName": "Forælder 49",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1649,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11649
+        },
+        "metadata": "Barn 49 (Mor)",
+        "profilePicture": null,
+        "shortName": "F4"
+       },
+       {
+        "answerDirectlyName": "Forælder 50",
+        "fullName": "Forælder 50",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1650,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11650
+        },
+        "metadata": "Barn 50 (Mor)",
+        "profilePicture": null,
+        "shortName": "F5"
+       },
+       {
+        "answerDirectlyName": "Forælder 51",
+        "fullName": "Forælder 51",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1651,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11651
+        },
+        "metadata": "Barn 51 (Mor)",
+        "profilePicture": null,
+        "shortName": "F5"
+       },
+       {
+        "answerDirectlyName": "Forælder 52",
+        "fullName": "Forælder 52",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1652,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11652
+        },
+        "metadata": "Barn 52 (Mor)",
+        "profilePicture": null,
+        "shortName": "F5"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Forældremøde i Stue",
+      "subscriptionId": 509101,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Mette Lund",
+       "fullName": "Mette Lund",
+       "mailBoxOwner": {
+        "id": 1502,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11502
+       },
+       "metadata": "Pædagog, Stue"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9105,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9105-2",
+      "latestMessage": {
+       "id": "m9105-2",
+       "sendDateTime": "2026-11-12T12:40:21+01:00",
+       "text": {
+        "html": "<p>Dejligt, tak for besked!</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Mette Lund",
+        "fullName": "Mette Lund",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1502,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11502
+        },
+        "metadata": "Pædagog, Stue",
+        "profilePicture": {
+         "id": 77,
+         "url": "https://fake-files.aula.dk/files/profile.png?sig=0"
+        },
+        "shortName": "ML"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Tak for i dag",
+      "subscriptionId": 509105,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Kasper Berg",
+       "fullName": "Kasper Berg",
+       "mailBoxOwner": {
+        "id": 1503,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11503
+       },
+       "metadata": "Pædagogmedhjælper, Stue"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9103,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9103-1",
+      "latestMessage": {
+       "id": "m9103-1",
+       "sendDateTime": "2026-11-12T06:40:21+01:00",
+       "text": {
+        "html": "<p>Vi holder julefrokost for børnene d. 18. december. Børnene må gerne komme i nissetøj.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": true,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Anne Holm",
+        "fullName": "Anne Holm",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1501,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11501
+        },
+        "metadata": "Leder",
+        "profilePicture": null,
+        "shortName": "AH"
+       },
+       {
+        "answerDirectlyName": "Mette Lund",
+        "fullName": "Mette Lund",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1502,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11502
+        },
+        "metadata": "Pædagog, Stue",
+        "profilePicture": {
+         "id": 77,
+         "url": "https://fake-files.aula.dk/files/profile.png?sig=0"
+        },
+        "shortName": "ML"
+       },
+       {
+        "answerDirectlyName": "Kasper Berg",
+        "fullName": "Kasper Berg",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1503,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11503
+        },
+        "metadata": "Pædagogmedhjælper, Stue",
+        "profilePicture": null,
+        "shortName": "KB"
+       },
+       {
+        "answerDirectlyName": "Forælder 1",
+        "fullName": "Forælder 1",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1601,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11601
+        },
+        "metadata": "Barn 1 (Mor)",
+        "profilePicture": null,
+        "shortName": "F1"
+       },
+       {
+        "answerDirectlyName": "Forælder 2",
+        "fullName": "Forælder 2",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1602,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11602
+        },
+        "metadata": "Barn 2 (Mor)",
+        "profilePicture": null,
+        "shortName": "F2"
+       },
+       {
+        "answerDirectlyName": "Forælder 3",
+        "fullName": "Forælder 3",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1603,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11603
+        },
+        "metadata": "Barn 3 (Mor)",
+        "profilePicture": null,
+        "shortName": "F3"
+       },
+       {
+        "answerDirectlyName": "Forælder 4",
+        "fullName": "Forælder 4",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1604,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11604
+        },
+        "metadata": "Barn 4 (Mor)",
+        "profilePicture": null,
+        "shortName": "F4"
+       },
+       {
+        "answerDirectlyName": "Forælder 5",
+        "fullName": "Forælder 5",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1605,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11605
+        },
+        "metadata": "Barn 5 (Mor)",
+        "profilePicture": null,
+        "shortName": "F5"
+       },
+       {
+        "answerDirectlyName": "Forælder 6",
+        "fullName": "Forælder 6",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1606,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11606
+        },
+        "metadata": "Barn 6 (Mor)",
+        "profilePicture": null,
+        "shortName": "F6"
+       },
+       {
+        "answerDirectlyName": "Forælder 7",
+        "fullName": "Forælder 7",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1607,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11607
+        },
+        "metadata": "Barn 7 (Mor)",
+        "profilePicture": null,
+        "shortName": "F7"
+       },
+       {
+        "answerDirectlyName": "Forælder 8",
+        "fullName": "Forælder 8",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1608,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11608
+        },
+        "metadata": "Barn 8 (Mor)",
+        "profilePicture": null,
+        "shortName": "F8"
+       },
+       {
+        "answerDirectlyName": "Forælder 9",
+        "fullName": "Forælder 9",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1609,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11609
+        },
+        "metadata": "Barn 9 (Mor)",
+        "profilePicture": null,
+        "shortName": "F9"
+       },
+       {
+        "answerDirectlyName": "Forælder 10",
+        "fullName": "Forælder 10",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1610,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11610
+        },
+        "metadata": "Barn 10 (Mor)",
+        "profilePicture": null,
+        "shortName": "F1"
+       },
+       {
+        "answerDirectlyName": "Forælder 11",
+        "fullName": "Forælder 11",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1611,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11611
+        },
+        "metadata": "Barn 11 (Mor)",
+        "profilePicture": null,
+        "shortName": "F1"
+       },
+       {
+        "answerDirectlyName": "Forælder 12",
+        "fullName": "Forælder 12",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1612,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11612
+        },
+        "metadata": "Barn 12 (Mor)",
+        "profilePicture": null,
+        "shortName": "F1"
+       },
+       {
+        "answerDirectlyName": "Forælder 13",
+        "fullName": "Forælder 13",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1613,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11613
+        },
+        "metadata": "Barn 13 (Mor)",
+        "profilePicture": null,
+        "shortName": "F1"
+       },
+       {
+        "answerDirectlyName": "Forælder 14",
+        "fullName": "Forælder 14",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1614,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11614
+        },
+        "metadata": "Barn 14 (Mor)",
+        "profilePicture": null,
+        "shortName": "F1"
+       },
+       {
+        "answerDirectlyName": "Forælder 15",
+        "fullName": "Forælder 15",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1615,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11615
+        },
+        "metadata": "Barn 15 (Mor)",
+        "profilePicture": null,
+        "shortName": "F1"
+       },
+       {
+        "answerDirectlyName": "Forælder 16",
+        "fullName": "Forælder 16",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1616,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11616
+        },
+        "metadata": "Barn 16 (Mor)",
+        "profilePicture": null,
+        "shortName": "F1"
+       },
+       {
+        "answerDirectlyName": "Forælder 17",
+        "fullName": "Forælder 17",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1617,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11617
+        },
+        "metadata": "Barn 17 (Mor)",
+        "profilePicture": null,
+        "shortName": "F1"
+       },
+       {
+        "answerDirectlyName": "Forælder 18",
+        "fullName": "Forælder 18",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1618,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11618
+        },
+        "metadata": "Barn 18 (Mor)",
+        "profilePicture": null,
+        "shortName": "F1"
+       },
+       {
+        "answerDirectlyName": "Forælder 19",
+        "fullName": "Forælder 19",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1619,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11619
+        },
+        "metadata": "Barn 19 (Mor)",
+        "profilePicture": null,
+        "shortName": "F1"
+       },
+       {
+        "answerDirectlyName": "Forælder 20",
+        "fullName": "Forælder 20",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1620,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11620
+        },
+        "metadata": "Barn 20 (Mor)",
+        "profilePicture": null,
+        "shortName": "F2"
+       },
+       {
+        "answerDirectlyName": "Forælder 21",
+        "fullName": "Forælder 21",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1621,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11621
+        },
+        "metadata": "Barn 21 (Mor)",
+        "profilePicture": null,
+        "shortName": "F2"
+       },
+       {
+        "answerDirectlyName": "Forælder 22",
+        "fullName": "Forælder 22",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1622,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11622
+        },
+        "metadata": "Barn 22 (Mor)",
+        "profilePicture": null,
+        "shortName": "F2"
+       },
+       {
+        "answerDirectlyName": "Forælder 23",
+        "fullName": "Forælder 23",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1623,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11623
+        },
+        "metadata": "Barn 23 (Mor)",
+        "profilePicture": null,
+        "shortName": "F2"
+       },
+       {
+        "answerDirectlyName": "Forælder 24",
+        "fullName": "Forælder 24",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1624,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11624
+        },
+        "metadata": "Barn 24 (Mor)",
+        "profilePicture": null,
+        "shortName": "F2"
+       },
+       {
+        "answerDirectlyName": "Forælder 25",
+        "fullName": "Forælder 25",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1625,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11625
+        },
+        "metadata": "Barn 25 (Mor)",
+        "profilePicture": null,
+        "shortName": "F2"
+       },
+       {
+        "answerDirectlyName": "Forælder 26",
+        "fullName": "Forælder 26",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1626,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11626
+        },
+        "metadata": "Barn 26 (Mor)",
+        "profilePicture": null,
+        "shortName": "F2"
+       },
+       {
+        "answerDirectlyName": "Forælder 27",
+        "fullName": "Forælder 27",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1627,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11627
+        },
+        "metadata": "Barn 27 (Mor)",
+        "profilePicture": null,
+        "shortName": "F2"
+       },
+       {
+        "answerDirectlyName": "Forælder 28",
+        "fullName": "Forælder 28",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1628,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11628
+        },
+        "metadata": "Barn 28 (Mor)",
+        "profilePicture": null,
+        "shortName": "F2"
+       },
+       {
+        "answerDirectlyName": "Forælder 29",
+        "fullName": "Forælder 29",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1629,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11629
+        },
+        "metadata": "Barn 29 (Mor)",
+        "profilePicture": null,
+        "shortName": "F2"
+       },
+       {
+        "answerDirectlyName": "Forælder 30",
+        "fullName": "Forælder 30",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1630,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11630
+        },
+        "metadata": "Barn 30 (Mor)",
+        "profilePicture": null,
+        "shortName": "F3"
+       },
+       {
+        "answerDirectlyName": "Forælder 31",
+        "fullName": "Forælder 31",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1631,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11631
+        },
+        "metadata": "Barn 31 (Mor)",
+        "profilePicture": null,
+        "shortName": "F3"
+       },
+       {
+        "answerDirectlyName": "Forælder 32",
+        "fullName": "Forælder 32",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1632,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11632
+        },
+        "metadata": "Barn 32 (Mor)",
+        "profilePicture": null,
+        "shortName": "F3"
+       },
+       {
+        "answerDirectlyName": "Forælder 33",
+        "fullName": "Forælder 33",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1633,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11633
+        },
+        "metadata": "Barn 33 (Mor)",
+        "profilePicture": null,
+        "shortName": "F3"
+       },
+       {
+        "answerDirectlyName": "Forælder 34",
+        "fullName": "Forælder 34",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1634,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11634
+        },
+        "metadata": "Barn 34 (Mor)",
+        "profilePicture": null,
+        "shortName": "F3"
+       },
+       {
+        "answerDirectlyName": "Forælder 35",
+        "fullName": "Forælder 35",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1635,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11635
+        },
+        "metadata": "Barn 35 (Mor)",
+        "profilePicture": null,
+        "shortName": "F3"
+       },
+       {
+        "answerDirectlyName": "Forælder 36",
+        "fullName": "Forælder 36",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1636,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11636
+        },
+        "metadata": "Barn 36 (Mor)",
+        "profilePicture": null,
+        "shortName": "F3"
+       },
+       {
+        "answerDirectlyName": "Forælder 37",
+        "fullName": "Forælder 37",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1637,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11637
+        },
+        "metadata": "Barn 37 (Mor)",
+        "profilePicture": null,
+        "shortName": "F3"
+       },
+       {
+        "answerDirectlyName": "Forælder 38",
+        "fullName": "Forælder 38",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1638,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11638
+        },
+        "metadata": "Barn 38 (Mor)",
+        "profilePicture": null,
+        "shortName": "F3"
+       },
+       {
+        "answerDirectlyName": "Forælder 39",
+        "fullName": "Forælder 39",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1639,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11639
+        },
+        "metadata": "Barn 39 (Mor)",
+        "profilePicture": null,
+        "shortName": "F3"
+       },
+       {
+        "answerDirectlyName": "Forælder 40",
+        "fullName": "Forælder 40",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1640,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11640
+        },
+        "metadata": "Barn 40 (Mor)",
+        "profilePicture": null,
+        "shortName": "F4"
+       },
+       {
+        "answerDirectlyName": "Forælder 41",
+        "fullName": "Forælder 41",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1641,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11641
+        },
+        "metadata": "Barn 41 (Mor)",
+        "profilePicture": null,
+        "shortName": "F4"
+       },
+       {
+        "answerDirectlyName": "Forælder 42",
+        "fullName": "Forælder 42",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1642,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11642
+        },
+        "metadata": "Barn 42 (Mor)",
+        "profilePicture": null,
+        "shortName": "F4"
+       },
+       {
+        "answerDirectlyName": "Forælder 43",
+        "fullName": "Forælder 43",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1643,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11643
+        },
+        "metadata": "Barn 43 (Mor)",
+        "profilePicture": null,
+        "shortName": "F4"
+       },
+       {
+        "answerDirectlyName": "Forælder 44",
+        "fullName": "Forælder 44",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1644,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11644
+        },
+        "metadata": "Barn 44 (Mor)",
+        "profilePicture": null,
+        "shortName": "F4"
+       },
+       {
+        "answerDirectlyName": "Forælder 45",
+        "fullName": "Forælder 45",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1645,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11645
+        },
+        "metadata": "Barn 45 (Mor)",
+        "profilePicture": null,
+        "shortName": "F4"
+       },
+       {
+        "answerDirectlyName": "Forælder 46",
+        "fullName": "Forælder 46",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1646,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11646
+        },
+        "metadata": "Barn 46 (Mor)",
+        "profilePicture": null,
+        "shortName": "F4"
+       },
+       {
+        "answerDirectlyName": "Forælder 47",
+        "fullName": "Forælder 47",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1647,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11647
+        },
+        "metadata": "Barn 47 (Mor)",
+        "profilePicture": null,
+        "shortName": "F4"
+       },
+       {
+        "answerDirectlyName": "Forælder 48",
+        "fullName": "Forælder 48",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1648,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11648
+        },
+        "metadata": "Barn 48 (Mor)",
+        "profilePicture": null,
+        "shortName": "F4"
+       },
+       {
+        "answerDirectlyName": "Forælder 49",
+        "fullName": "Forælder 49",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1649,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11649
+        },
+        "metadata": "Barn 49 (Mor)",
+        "profilePicture": null,
+        "shortName": "F4"
+       },
+       {
+        "answerDirectlyName": "Forælder 50",
+        "fullName": "Forælder 50",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1650,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11650
+        },
+        "metadata": "Barn 50 (Mor)",
+        "profilePicture": null,
+        "shortName": "F5"
+       },
+       {
+        "answerDirectlyName": "Forælder 51",
+        "fullName": "Forælder 51",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1651,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11651
+        },
+        "metadata": "Barn 51 (Mor)",
+        "profilePicture": null,
+        "shortName": "F5"
+       },
+       {
+        "answerDirectlyName": "Forælder 52",
+        "fullName": "Forælder 52",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1652,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11652
+        },
+        "metadata": "Barn 52 (Mor)",
+        "profilePicture": null,
+        "shortName": "F5"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Julefrokost for børnene",
+      "subscriptionId": 509103,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Anne Holm",
+       "fullName": "Anne Holm",
+       "mailBoxOwner": {
+        "id": 1501,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11501
+       },
+       "metadata": "Leder"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9104,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9104-1",
+      "latestMessage": {
+       "id": "m9104-1",
+       "sendDateTime": "2026-11-10T07:40:21+01:00",
+       "text": {
+        "html": "<p>Fra januar overgår vi til ny madordning. Se tilmelding i vedhæftede fil.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": true,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Anne Holm",
+        "fullName": "Anne Holm",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1501,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11501
+        },
+        "metadata": "Leder",
+        "profilePicture": null,
+        "shortName": "AH"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Ny madordning fra januar",
+      "subscriptionId": 509104,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Anne Holm",
+       "fullName": "Anne Holm",
+       "mailBoxOwner": {
+        "id": 1501,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11501
+       },
+       "metadata": "Leder"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9060,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9060-1",
+      "latestMessage": {
+       "id": "m9060-1",
+       "sendDateTime": "2026-11-10T02:40:21+01:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 40.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Anne Holm",
+        "fullName": "Anne Holm",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1501,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11501
+        },
+        "metadata": "Leder",
+        "profilePicture": null,
+        "shortName": "AH"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 40",
+      "subscriptionId": 509060,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Mette Lund",
+       "fullName": "Mette Lund",
+       "mailBoxOwner": {
+        "id": 1502,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11502
+       },
+       "metadata": "Pædagog, Stue"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9059,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9059-1",
+      "latestMessage": {
+       "id": "m9059-1",
+       "sendDateTime": "2026-11-09T06:40:21+01:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 39.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Mette Lund",
+        "fullName": "Mette Lund",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1502,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11502
+        },
+        "metadata": "Pædagog, Stue",
+        "profilePicture": {
+         "id": 77,
+         "url": "https://fake-files.aula.dk/files/profile.png?sig=0"
+        },
+        "shortName": "ML"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 39",
+      "subscriptionId": 509059,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Kasper Berg",
+       "fullName": "Kasper Berg",
+       "mailBoxOwner": {
+        "id": 1503,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11503
+       },
+       "metadata": "Pædagogmedhjælper, Stue"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9058,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9058-1",
+      "latestMessage": {
+       "id": "m9058-1",
+       "sendDateTime": "2026-11-08T10:40:21+01:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 38.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Kasper Berg",
+        "fullName": "Kasper Berg",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1503,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11503
+        },
+        "metadata": "Pædagogmedhjælper, Stue",
+        "profilePicture": null,
+        "shortName": "KB"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 38",
+      "subscriptionId": 509058,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Anne Holm",
+       "fullName": "Anne Holm",
+       "mailBoxOwner": {
+        "id": 1501,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11501
+       },
+       "metadata": "Leder"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9057,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9057-1",
+      "latestMessage": {
+       "id": "m9057-1",
+       "sendDateTime": "2026-11-07T14:40:21+01:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 37.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Anne Holm",
+        "fullName": "Anne Holm",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1501,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11501
+        },
+        "metadata": "Leder",
+        "profilePicture": null,
+        "shortName": "AH"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 37",
+      "subscriptionId": 509057,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Mette Lund",
+       "fullName": "Mette Lund",
+       "mailBoxOwner": {
+        "id": 1502,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11502
+       },
+       "metadata": "Pædagog, Stue"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9056,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9056-1",
+      "latestMessage": {
+       "id": "m9056-1",
+       "sendDateTime": "2026-11-06T18:40:21+01:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 36.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Mette Lund",
+        "fullName": "Mette Lund",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1502,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11502
+        },
+        "metadata": "Pædagog, Stue",
+        "profilePicture": {
+         "id": 77,
+         "url": "https://fake-files.aula.dk/files/profile.png?sig=0"
+        },
+        "shortName": "ML"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 36",
+      "subscriptionId": 509056,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Kasper Berg",
+       "fullName": "Kasper Berg",
+       "mailBoxOwner": {
+        "id": 1503,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11503
+       },
+       "metadata": "Pædagogmedhjælper, Stue"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9055,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9055-1",
+      "latestMessage": {
+       "id": "m9055-1",
+       "sendDateTime": "2026-11-05T22:40:21+01:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 35.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Kasper Berg",
+        "fullName": "Kasper Berg",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1503,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11503
+        },
+        "metadata": "Pædagogmedhjælper, Stue",
+        "profilePicture": null,
+        "shortName": "KB"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 35",
+      "subscriptionId": 509055,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Anne Holm",
+       "fullName": "Anne Holm",
+       "mailBoxOwner": {
+        "id": 1501,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11501
+       },
+       "metadata": "Leder"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9054,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9054-1",
+      "latestMessage": {
+       "id": "m9054-1",
+       "sendDateTime": "2026-11-05T02:40:21+01:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 34.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Anne Holm",
+        "fullName": "Anne Holm",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1501,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11501
+        },
+        "metadata": "Leder",
+        "profilePicture": null,
+        "shortName": "AH"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 34",
+      "subscriptionId": 509054,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Mette Lund",
+       "fullName": "Mette Lund",
+       "mailBoxOwner": {
+        "id": 1502,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11502
+       },
+       "metadata": "Pædagog, Stue"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9053,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9053-1",
+      "latestMessage": {
+       "id": "m9053-1",
+       "sendDateTime": "2026-11-04T06:40:21+01:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 33.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Mette Lund",
+        "fullName": "Mette Lund",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1502,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11502
+        },
+        "metadata": "Pædagog, Stue",
+        "profilePicture": {
+         "id": 77,
+         "url": "https://fake-files.aula.dk/files/profile.png?sig=0"
+        },
+        "shortName": "ML"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 33",
+      "subscriptionId": 509053,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Kasper Berg",
+       "fullName": "Kasper Berg",
+       "mailBoxOwner": {
+        "id": 1503,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11503
+       },
+       "metadata": "Pædagogmedhjælper, Stue"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9052,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9052-1",
+      "latestMessage": {
+       "id": "m9052-1",
+       "sendDateTime": "2026-11-03T10:40:21+01:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 32.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Kasper Berg",
+        "fullName": "Kasper Berg",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1503,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11503
+        },
+        "metadata": "Pædagogmedhjælper, Stue",
+        "profilePicture": null,
+        "shortName": "KB"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 32",
+      "subscriptionId": 509052,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Anne Holm",
+       "fullName": "Anne Holm",
+       "mailBoxOwner": {
+        "id": 1501,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11501
+       },
+       "metadata": "Leder"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9051,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9051-1",
+      "latestMessage": {
+       "id": "m9051-1",
+       "sendDateTime": "2026-11-02T14:40:21+01:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 31.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Anne Holm",
+        "fullName": "Anne Holm",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1501,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11501
+        },
+        "metadata": "Leder",
+        "profilePicture": null,
+        "shortName": "AH"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 31",
+      "subscriptionId": 509051,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Mette Lund",
+       "fullName": "Mette Lund",
+       "mailBoxOwner": {
+        "id": 1502,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11502
+       },
+       "metadata": "Pædagog, Stue"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9050,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9050-1",
+      "latestMessage": {
+       "id": "m9050-1",
+       "sendDateTime": "2026-11-01T18:40:21+01:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 30.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Mette Lund",
+        "fullName": "Mette Lund",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1502,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11502
+        },
+        "metadata": "Pædagog, Stue",
+        "profilePicture": {
+         "id": 77,
+         "url": "https://fake-files.aula.dk/files/profile.png?sig=0"
+        },
+        "shortName": "ML"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 30",
+      "subscriptionId": 509050,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Kasper Berg",
+       "fullName": "Kasper Berg",
+       "mailBoxOwner": {
+        "id": 1503,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11503
+       },
+       "metadata": "Pædagogmedhjælper, Stue"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9049,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9049-1",
+      "latestMessage": {
+       "id": "m9049-1",
+       "sendDateTime": "2026-10-31T22:40:21+01:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 29.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Kasper Berg",
+        "fullName": "Kasper Berg",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1503,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11503
+        },
+        "metadata": "Pædagogmedhjælper, Stue",
+        "profilePicture": null,
+        "shortName": "KB"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 29",
+      "subscriptionId": 509049,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Anne Holm",
+       "fullName": "Anne Holm",
+       "mailBoxOwner": {
+        "id": 1501,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11501
+       },
+       "metadata": "Leder"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9048,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9048-1",
+      "latestMessage": {
+       "id": "m9048-1",
+       "sendDateTime": "2026-10-31T02:40:21+01:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 28.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Anne Holm",
+        "fullName": "Anne Holm",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1501,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11501
+        },
+        "metadata": "Leder",
+        "profilePicture": null,
+        "shortName": "AH"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 28",
+      "subscriptionId": 509048,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Mette Lund",
+       "fullName": "Mette Lund",
+       "mailBoxOwner": {
+        "id": 1502,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11502
+       },
+       "metadata": "Pædagog, Stue"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9047,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9047-1",
+      "latestMessage": {
+       "id": "m9047-1",
+       "sendDateTime": "2026-10-30T06:40:21+01:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 27.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Mette Lund",
+        "fullName": "Mette Lund",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1502,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11502
+        },
+        "metadata": "Pædagog, Stue",
+        "profilePicture": {
+         "id": 77,
+         "url": "https://fake-files.aula.dk/files/profile.png?sig=0"
+        },
+        "shortName": "ML"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 27",
+      "subscriptionId": 509047,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Kasper Berg",
+       "fullName": "Kasper Berg",
+       "mailBoxOwner": {
+        "id": 1503,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11503
+       },
+       "metadata": "Pædagogmedhjælper, Stue"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9046,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9046-1",
+      "latestMessage": {
+       "id": "m9046-1",
+       "sendDateTime": "2026-10-29T10:40:21+01:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 26.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Kasper Berg",
+        "fullName": "Kasper Berg",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1503,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11503
+        },
+        "metadata": "Pædagogmedhjælper, Stue",
+        "profilePicture": null,
+        "shortName": "KB"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 26",
+      "subscriptionId": 509046,
+      "subscriptionType": "Unbundled"
+     }
+    ]
+   },
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {
+   "page": "0"
+  }
+ },
+ {
+  "answer": {
+   "data": {
+    "moreMessagesExist": true,
+    "threads": [
+     {
+      "creator": {
+       "answerDirectlyName": "Anne Holm",
+       "fullName": "Anne Holm",
+       "mailBoxOwner": {
+        "id": 1501,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11501
+       },
+       "metadata": "Leder"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9045,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9045-1",
+      "latestMessage": {
+       "id": "m9045-1",
+       "sendDateTime": "2026-10-28T14:40:22+01:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 25.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Anne Holm",
+        "fullName": "Anne Holm",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1501,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11501
+        },
+        "metadata": "Leder",
+        "profilePicture": null,
+        "shortName": "AH"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 25",
+      "subscriptionId": 509045,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Mette Lund",
+       "fullName": "Mette Lund",
+       "mailBoxOwner": {
+        "id": 1502,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11502
+       },
+       "metadata": "Pædagog, Stue"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9044,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9044-1",
+      "latestMessage": {
+       "id": "m9044-1",
+       "sendDateTime": "2026-10-27T18:40:22+01:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 24.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Mette Lund",
+        "fullName": "Mette Lund",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1502,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11502
+        },
+        "metadata": "Pædagog, Stue",
+        "profilePicture": {
+         "id": 77,
+         "url": "https://fake-files.aula.dk/files/profile.png?sig=0"
+        },
+        "shortName": "ML"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 24",
+      "subscriptionId": 509044,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Kasper Berg",
+       "fullName": "Kasper Berg",
+       "mailBoxOwner": {
+        "id": 1503,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11503
+       },
+       "metadata": "Pædagogmedhjælper, Stue"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9043,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9043-1",
+      "latestMessage": {
+       "id": "m9043-1",
+       "sendDateTime": "2026-10-26T22:40:22+01:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 23.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Kasper Berg",
+        "fullName": "Kasper Berg",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1503,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11503
+        },
+        "metadata": "Pædagogmedhjælper, Stue",
+        "profilePicture": null,
+        "shortName": "KB"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 23",
+      "subscriptionId": 509043,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Anne Holm",
+       "fullName": "Anne Holm",
+       "mailBoxOwner": {
+        "id": 1501,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11501
+       },
+       "metadata": "Leder"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9042,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9042-1",
+      "latestMessage": {
+       "id": "m9042-1",
+       "sendDateTime": "2026-10-26T02:40:22+01:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 22.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Anne Holm",
+        "fullName": "Anne Holm",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1501,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11501
+        },
+        "metadata": "Leder",
+        "profilePicture": null,
+        "shortName": "AH"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 22",
+      "subscriptionId": 509042,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Mette Lund",
+       "fullName": "Mette Lund",
+       "mailBoxOwner": {
+        "id": 1502,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11502
+       },
+       "metadata": "Pædagog, Stue"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9041,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9041-1",
+      "latestMessage": {
+       "id": "m9041-1",
+       "sendDateTime": "2026-10-25T06:40:22+01:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 21.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Mette Lund",
+        "fullName": "Mette Lund",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1502,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11502
+        },
+        "metadata": "Pædagog, Stue",
+        "profilePicture": {
+         "id": 77,
+         "url": "https://fake-files.aula.dk/files/profile.png?sig=0"
+        },
+        "shortName": "ML"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 21",
+      "subscriptionId": 509041,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Kasper Berg",
+       "fullName": "Kasper Berg",
+       "mailBoxOwner": {
+        "id": 1503,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11503
+       },
+       "metadata": "Pædagogmedhjælper, Stue"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9040,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9040-1",
+      "latestMessage": {
+       "id": "m9040-1",
+       "sendDateTime": "2026-10-24T10:40:22+02:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 20.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Kasper Berg",
+        "fullName": "Kasper Berg",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1503,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11503
+        },
+        "metadata": "Pædagogmedhjælper, Stue",
+        "profilePicture": null,
+        "shortName": "KB"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 20",
+      "subscriptionId": 509040,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Anne Holm",
+       "fullName": "Anne Holm",
+       "mailBoxOwner": {
+        "id": 1501,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11501
+       },
+       "metadata": "Leder"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9039,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9039-1",
+      "latestMessage": {
+       "id": "m9039-1",
+       "sendDateTime": "2026-10-23T14:40:22+02:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 19.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Anne Holm",
+        "fullName": "Anne Holm",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1501,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11501
+        },
+        "metadata": "Leder",
+        "profilePicture": null,
+        "shortName": "AH"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 19",
+      "subscriptionId": 509039,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Mette Lund",
+       "fullName": "Mette Lund",
+       "mailBoxOwner": {
+        "id": 1502,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11502
+       },
+       "metadata": "Pædagog, Stue"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9038,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9038-1",
+      "latestMessage": {
+       "id": "m9038-1",
+       "sendDateTime": "2026-10-22T18:40:22+02:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 18.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Mette Lund",
+        "fullName": "Mette Lund",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1502,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11502
+        },
+        "metadata": "Pædagog, Stue",
+        "profilePicture": {
+         "id": 77,
+         "url": "https://fake-files.aula.dk/files/profile.png?sig=0"
+        },
+        "shortName": "ML"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 18",
+      "subscriptionId": 509038,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Kasper Berg",
+       "fullName": "Kasper Berg",
+       "mailBoxOwner": {
+        "id": 1503,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11503
+       },
+       "metadata": "Pædagogmedhjælper, Stue"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9037,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9037-1",
+      "latestMessage": {
+       "id": "m9037-1",
+       "sendDateTime": "2026-10-21T22:40:22+02:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 17.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Kasper Berg",
+        "fullName": "Kasper Berg",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1503,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11503
+        },
+        "metadata": "Pædagogmedhjælper, Stue",
+        "profilePicture": null,
+        "shortName": "KB"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 17",
+      "subscriptionId": 509037,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Anne Holm",
+       "fullName": "Anne Holm",
+       "mailBoxOwner": {
+        "id": 1501,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11501
+       },
+       "metadata": "Leder"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9036,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9036-1",
+      "latestMessage": {
+       "id": "m9036-1",
+       "sendDateTime": "2026-10-21T02:40:22+02:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 16.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Anne Holm",
+        "fullName": "Anne Holm",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1501,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11501
+        },
+        "metadata": "Leder",
+        "profilePicture": null,
+        "shortName": "AH"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 16",
+      "subscriptionId": 509036,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Mette Lund",
+       "fullName": "Mette Lund",
+       "mailBoxOwner": {
+        "id": 1502,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11502
+       },
+       "metadata": "Pædagog, Stue"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9035,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9035-1",
+      "latestMessage": {
+       "id": "m9035-1",
+       "sendDateTime": "2026-10-20T06:40:22+02:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 15.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Mette Lund",
+        "fullName": "Mette Lund",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1502,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11502
+        },
+        "metadata": "Pædagog, Stue",
+        "profilePicture": {
+         "id": 77,
+         "url": "https://fake-files.aula.dk/files/profile.png?sig=0"
+        },
+        "shortName": "ML"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 15",
+      "subscriptionId": 509035,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Kasper Berg",
+       "fullName": "Kasper Berg",
+       "mailBoxOwner": {
+        "id": 1503,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11503
+       },
+       "metadata": "Pædagogmedhjælper, Stue"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9034,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9034-1",
+      "latestMessage": {
+       "id": "m9034-1",
+       "sendDateTime": "2026-10-19T10:40:22+02:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 14.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Kasper Berg",
+        "fullName": "Kasper Berg",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1503,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11503
+        },
+        "metadata": "Pædagogmedhjælper, Stue",
+        "profilePicture": null,
+        "shortName": "KB"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 14",
+      "subscriptionId": 509034,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Anne Holm",
+       "fullName": "Anne Holm",
+       "mailBoxOwner": {
+        "id": 1501,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11501
+       },
+       "metadata": "Leder"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9033,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9033-1",
+      "latestMessage": {
+       "id": "m9033-1",
+       "sendDateTime": "2026-10-18T14:40:22+02:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 13.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Anne Holm",
+        "fullName": "Anne Holm",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1501,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11501
+        },
+        "metadata": "Leder",
+        "profilePicture": null,
+        "shortName": "AH"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 13",
+      "subscriptionId": 509033,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Mette Lund",
+       "fullName": "Mette Lund",
+       "mailBoxOwner": {
+        "id": 1502,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11502
+       },
+       "metadata": "Pædagog, Stue"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9032,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9032-1",
+      "latestMessage": {
+       "id": "m9032-1",
+       "sendDateTime": "2026-10-17T18:40:22+02:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 12.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Mette Lund",
+        "fullName": "Mette Lund",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1502,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11502
+        },
+        "metadata": "Pædagog, Stue",
+        "profilePicture": {
+         "id": 77,
+         "url": "https://fake-files.aula.dk/files/profile.png?sig=0"
+        },
+        "shortName": "ML"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 12",
+      "subscriptionId": 509032,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Kasper Berg",
+       "fullName": "Kasper Berg",
+       "mailBoxOwner": {
+        "id": 1503,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11503
+       },
+       "metadata": "Pædagogmedhjælper, Stue"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9031,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9031-1",
+      "latestMessage": {
+       "id": "m9031-1",
+       "sendDateTime": "2026-10-16T22:40:22+02:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 11.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Kasper Berg",
+        "fullName": "Kasper Berg",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1503,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11503
+        },
+        "metadata": "Pædagogmedhjælper, Stue",
+        "profilePicture": null,
+        "shortName": "KB"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 11",
+      "subscriptionId": 509031,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Anne Holm",
+       "fullName": "Anne Holm",
+       "mailBoxOwner": {
+        "id": 1501,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11501
+       },
+       "metadata": "Leder"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9030,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9030-1",
+      "latestMessage": {
+       "id": "m9030-1",
+       "sendDateTime": "2026-10-16T02:40:22+02:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 10.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Anne Holm",
+        "fullName": "Anne Holm",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1501,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11501
+        },
+        "metadata": "Leder",
+        "profilePicture": null,
+        "shortName": "AH"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 10",
+      "subscriptionId": 509030,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Mette Lund",
+       "fullName": "Mette Lund",
+       "mailBoxOwner": {
+        "id": 1502,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11502
+       },
+       "metadata": "Pædagog, Stue"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9029,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9029-1",
+      "latestMessage": {
+       "id": "m9029-1",
+       "sendDateTime": "2026-10-15T06:40:22+02:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 9.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Mette Lund",
+        "fullName": "Mette Lund",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1502,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11502
+        },
+        "metadata": "Pædagog, Stue",
+        "profilePicture": {
+         "id": 77,
+         "url": "https://fake-files.aula.dk/files/profile.png?sig=0"
+        },
+        "shortName": "ML"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 9",
+      "subscriptionId": 509029,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Kasper Berg",
+       "fullName": "Kasper Berg",
+       "mailBoxOwner": {
+        "id": 1503,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11503
+       },
+       "metadata": "Pædagogmedhjælper, Stue"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9028,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9028-1",
+      "latestMessage": {
+       "id": "m9028-1",
+       "sendDateTime": "2026-10-14T10:40:22+02:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 8.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Kasper Berg",
+        "fullName": "Kasper Berg",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1503,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11503
+        },
+        "metadata": "Pædagogmedhjælper, Stue",
+        "profilePicture": null,
+        "shortName": "KB"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 8",
+      "subscriptionId": 509028,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Anne Holm",
+       "fullName": "Anne Holm",
+       "mailBoxOwner": {
+        "id": 1501,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11501
+       },
+       "metadata": "Leder"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9027,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9027-1",
+      "latestMessage": {
+       "id": "m9027-1",
+       "sendDateTime": "2026-10-13T14:40:22+02:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 7.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Anne Holm",
+        "fullName": "Anne Holm",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1501,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11501
+        },
+        "metadata": "Leder",
+        "profilePicture": null,
+        "shortName": "AH"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 7",
+      "subscriptionId": 509027,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Mette Lund",
+       "fullName": "Mette Lund",
+       "mailBoxOwner": {
+        "id": 1502,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11502
+       },
+       "metadata": "Pædagog, Stue"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9026,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9026-1",
+      "latestMessage": {
+       "id": "m9026-1",
+       "sendDateTime": "2026-10-12T18:40:22+02:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 6.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Mette Lund",
+        "fullName": "Mette Lund",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1502,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11502
+        },
+        "metadata": "Pædagog, Stue",
+        "profilePicture": {
+         "id": 77,
+         "url": "https://fake-files.aula.dk/files/profile.png?sig=0"
+        },
+        "shortName": "ML"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 6",
+      "subscriptionId": 509026,
+      "subscriptionType": "Unbundled"
+     }
+    ]
+   },
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {
+   "page": "1"
+  }
+ },
+ {
+  "answer": {
+   "data": {
+    "moreMessagesExist": false,
+    "threads": [
+     {
+      "creator": {
+       "answerDirectlyName": "Kasper Berg",
+       "fullName": "Kasper Berg",
+       "mailBoxOwner": {
+        "id": 1503,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11503
+       },
+       "metadata": "Pædagogmedhjælper, Stue"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9025,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9025-1",
+      "latestMessage": {
+       "id": "m9025-1",
+       "sendDateTime": "2026-10-11T22:40:22+02:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 5.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Kasper Berg",
+        "fullName": "Kasper Berg",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1503,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11503
+        },
+        "metadata": "Pædagogmedhjælper, Stue",
+        "profilePicture": null,
+        "shortName": "KB"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 5",
+      "subscriptionId": 509025,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Anne Holm",
+       "fullName": "Anne Holm",
+       "mailBoxOwner": {
+        "id": 1501,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11501
+       },
+       "metadata": "Leder"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9024,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9024-1",
+      "latestMessage": {
+       "id": "m9024-1",
+       "sendDateTime": "2026-10-11T02:40:22+02:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 4.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Anne Holm",
+        "fullName": "Anne Holm",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1501,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11501
+        },
+        "metadata": "Leder",
+        "profilePicture": null,
+        "shortName": "AH"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 4",
+      "subscriptionId": 509024,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Mette Lund",
+       "fullName": "Mette Lund",
+       "mailBoxOwner": {
+        "id": 1502,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11502
+       },
+       "metadata": "Pædagog, Stue"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9023,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9023-1",
+      "latestMessage": {
+       "id": "m9023-1",
+       "sendDateTime": "2026-10-10T06:40:22+02:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 3.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Mette Lund",
+        "fullName": "Mette Lund",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1502,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11502
+        },
+        "metadata": "Pædagog, Stue",
+        "profilePicture": {
+         "id": 77,
+         "url": "https://fake-files.aula.dk/files/profile.png?sig=0"
+        },
+        "shortName": "ML"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 3",
+      "subscriptionId": 509023,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Kasper Berg",
+       "fullName": "Kasper Berg",
+       "mailBoxOwner": {
+        "id": 1503,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11503
+       },
+       "metadata": "Pædagogmedhjælper, Stue"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9022,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9022-1",
+      "latestMessage": {
+       "id": "m9022-1",
+       "sendDateTime": "2026-10-09T10:40:22+02:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 2.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Kasper Berg",
+        "fullName": "Kasper Berg",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1503,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11503
+        },
+        "metadata": "Pædagogmedhjælper, Stue",
+        "profilePicture": null,
+        "shortName": "KB"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 2",
+      "subscriptionId": 509022,
+      "subscriptionType": "Unbundled"
+     },
+     {
+      "creator": {
+       "answerDirectlyName": "Anne Holm",
+       "fullName": "Anne Holm",
+       "mailBoxOwner": {
+        "id": 1501,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11501
+       },
+       "metadata": "Leder"
+      },
+      "folderId": null,
+      "folderType": "normal",
+      "id": 9021,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9021-1",
+      "latestMessage": {
+       "id": "m9021-1",
+       "sendDateTime": "2026-10-08T14:40:22+02:00",
+       "text": {
+        "html": "<p>Lidt praktisk info, besked 1.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Anne Holm",
+        "fullName": "Anne Holm",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1501,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11501
+        },
+        "metadata": "Leder",
+        "profilePicture": null,
+        "shortName": "AH"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Info fra Stue nr. 1",
+      "subscriptionId": 509021,
+      "subscriptionType": "Unbundled"
+     }
+    ]
+   },
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {
+   "page": "2"
+  }
+ },
+ {
+  "answer": {
+   "data": {
+    "moreMessagesExist": false,
+    "threads": [
+     {
+      "creator": {
+       "answerDirectlyName": "Anne Holm",
+       "fullName": "Anne Holm",
+       "mailBoxOwner": {
+        "id": 1501,
+        "isDeactivated": false,
+        "mailBoxOwnerType": "institutionProfile",
+        "portalRole": "employee",
+        "profileId": 11501
+       },
+       "metadata": "Leder"
+      },
+      "folderId": 71,
+      "folderType": "normal",
+      "id": 9106,
+      "institutionCode": "999001",
+      "isArchived": false,
+      "lastReadMessageId": "m9106-1",
+      "latestMessage": {
+       "id": "m9106-1",
+       "sendDateTime": "2026-11-09T16:40:22+01:00",
+       "text": {
+        "html": "<p>Information om skolestart for de ældste børn.</p>"
+       }
+      },
+      "leaveTime": null,
+      "mailBoxOwner": {
+       "id": 1001,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "marked": false,
+      "muted": false,
+      "read": true,
+      "recipients": [
+       {
+        "answerDirectlyName": "Jonas Hansen",
+        "fullName": "Jonas Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1001,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11001
+        },
+        "metadata": "Oskar (Far)",
+        "profilePicture": null,
+        "shortName": "JH"
+       },
+       {
+        "answerDirectlyName": "Maria Hansen",
+        "fullName": "Maria Hansen",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1002,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "guardian",
+         "profileId": 11002
+        },
+        "metadata": "Oskar (Mor)",
+        "profilePicture": null,
+        "shortName": "MH"
+       },
+       {
+        "answerDirectlyName": "Anne Holm",
+        "fullName": "Anne Holm",
+        "leaveTime": null,
+        "mailBoxOwner": {
+         "id": 1501,
+         "isDeactivated": false,
+         "mailBoxOwnerType": "institutionProfile",
+         "portalRole": "employee",
+         "profileId": 11501
+        },
+        "metadata": "Leder",
+        "profilePicture": null,
+        "shortName": "AH"
+       }
+      ],
+      "sensitive": false,
+      "subject": "Skolestart til august",
+      "subscriptionId": 509106,
+      "subscriptionType": "Unbundled"
+     }
+    ]
+   },
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {
+   "folderId": "71",
+   "page": "0"
+  }
+ },
+ {
+  "answer": {
+   "data": {
+    "moreMessagesExist": false,
+    "threads": []
+   },
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {
+   "page": "3"
+  }
+ }
+]

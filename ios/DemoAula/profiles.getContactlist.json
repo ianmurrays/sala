@@ -1,0 +1,469 @@
+[
+ {
+  "answer": {
+   "data": [
+    {
+     "address": {
+      "postalCode": 1000,
+      "postalDistrict": "København K",
+      "street": "Hemmelig 1"
+     },
+     "currentUserCanViewContactInformation": true,
+     "firstName": "Alma",
+     "fullName": "Alma Barn",
+     "homePhoneNumber": "99 99 99 99",
+     "id": 3001,
+     "lastName": "Barn",
+     "relations": [],
+     "role": "child",
+     "userHasGivenConsentToShowContactInformation": true
+    },
+    {
+     "address": {
+      "postalCode": 1000,
+      "postalDistrict": "København K",
+      "street": "Hemmelig 1"
+     },
+     "currentUserCanViewContactInformation": true,
+     "firstName": "Asta",
+     "fullName": "Asta Barn",
+     "homePhoneNumber": "99 99 99 99",
+     "id": 3002,
+     "lastName": "Barn",
+     "relations": [],
+     "role": "child",
+     "userHasGivenConsentToShowContactInformation": true
+    },
+    {
+     "address": {
+      "postalCode": 1000,
+      "postalDistrict": "København K",
+      "street": "Hemmelig 1"
+     },
+     "currentUserCanViewContactInformation": true,
+     "firstName": "Bertram",
+     "fullName": "Bertram Barn",
+     "homePhoneNumber": "99 99 99 99",
+     "id": 3003,
+     "lastName": "Barn",
+     "relations": [],
+     "role": "child",
+     "userHasGivenConsentToShowContactInformation": true
+    },
+    {
+     "address": {
+      "postalCode": 1000,
+      "postalDistrict": "København K",
+      "street": "Hemmelig 1"
+     },
+     "currentUserCanViewContactInformation": true,
+     "firstName": "Carl",
+     "fullName": "Carl Barn",
+     "homePhoneNumber": "99 99 99 99",
+     "id": 3004,
+     "lastName": "Barn",
+     "relations": [],
+     "role": "child",
+     "userHasGivenConsentToShowContactInformation": true
+    },
+    {
+     "address": {
+      "postalCode": 1000,
+      "postalDistrict": "København K",
+      "street": "Hemmelig 1"
+     },
+     "currentUserCanViewContactInformation": true,
+     "firstName": "Clara",
+     "fullName": "Clara Barn",
+     "homePhoneNumber": "99 99 99 99",
+     "id": 3005,
+     "lastName": "Barn",
+     "relations": [],
+     "role": "child",
+     "userHasGivenConsentToShowContactInformation": true
+    },
+    {
+     "address": {
+      "postalCode": 1000,
+      "postalDistrict": "København K",
+      "street": "Hemmelig 1"
+     },
+     "currentUserCanViewContactInformation": true,
+     "firstName": "Ella",
+     "fullName": "Ella Barn",
+     "homePhoneNumber": "99 99 99 99",
+     "id": 3006,
+     "lastName": "Barn",
+     "relations": [],
+     "role": "child",
+     "userHasGivenConsentToShowContactInformation": true
+    },
+    {
+     "address": {
+      "postalCode": 1000,
+      "postalDistrict": "København K",
+      "street": "Hemmelig 1"
+     },
+     "currentUserCanViewContactInformation": true,
+     "firstName": "Emil",
+     "fullName": "Emil Barn",
+     "homePhoneNumber": "99 99 99 99",
+     "id": 3007,
+     "lastName": "Barn",
+     "relations": [],
+     "role": "child",
+     "userHasGivenConsentToShowContactInformation": true
+    },
+    {
+     "address": {
+      "postalCode": 1000,
+      "postalDistrict": "København K",
+      "street": "Hemmelig 1"
+     },
+     "currentUserCanViewContactInformation": true,
+     "firstName": "Freja",
+     "fullName": "Freja Barn",
+     "homePhoneNumber": "99 99 99 99",
+     "id": 3008,
+     "lastName": "Barn",
+     "relations": [],
+     "role": "child",
+     "userHasGivenConsentToShowContactInformation": true
+    },
+    {
+     "address": {
+      "postalCode": 1000,
+      "postalDistrict": "København K",
+      "street": "Hemmelig 1"
+     },
+     "currentUserCanViewContactInformation": true,
+     "firstName": "Gustav",
+     "fullName": "Gustav Barn",
+     "homePhoneNumber": "99 99 99 99",
+     "id": 3009,
+     "lastName": "Barn",
+     "relations": [],
+     "role": "child",
+     "userHasGivenConsentToShowContactInformation": true
+    },
+    {
+     "address": {
+      "postalCode": 1000,
+      "postalDistrict": "København K",
+      "street": "Hemmelig 1"
+     },
+     "currentUserCanViewContactInformation": true,
+     "firstName": "Hugo",
+     "fullName": "Hugo Barn",
+     "homePhoneNumber": "99 99 99 99",
+     "id": 3010,
+     "lastName": "Barn",
+     "relations": [],
+     "role": "child",
+     "userHasGivenConsentToShowContactInformation": true
+    },
+    {
+     "address": {
+      "postalCode": 1000,
+      "postalDistrict": "København K",
+      "street": "Hemmelig 1"
+     },
+     "currentUserCanViewContactInformation": true,
+     "firstName": "Ida",
+     "fullName": "Ida Barn",
+     "homePhoneNumber": "99 99 99 99",
+     "id": 3011,
+     "lastName": "Barn",
+     "relations": [
+      {
+       "address": {
+        "postalCode": 2100,
+        "postalDistrict": "København Ø",
+        "street": "Bøgevej 3"
+       },
+       "contactType": "profile",
+       "email": "mette@example.dk",
+       "firstName": "Mette",
+       "fullName": "Mette Jensen",
+       "hasCustody": true,
+       "homePhoneNumber": "",
+       "id": 4001,
+       "lastName": "Jensen",
+       "mobilePhoneNumber": " +45 12 34 56 78 ",
+       "relation": "Mor",
+       "role": "guardian",
+       "userHasGivenConsentToShowContactInformation": true,
+       "workPhoneNumber": "33 44 55 66"
+      },
+      {
+       "address": {
+        "postalCode": 2100,
+        "postalDistrict": "København Ø",
+        "street": "Bøgevej 3"
+       },
+       "contactType": "profile",
+       "email": "lars@example.dk",
+       "firstName": "Lars",
+       "fullName": "Lars Jensen",
+       "lastName": "Jensen",
+       "mobilePhoneNumber": "20 30 40 50",
+       "relation": "Far",
+       "role": "guardian",
+       "userHasGivenConsentToShowContactInformation": false
+      }
+     ],
+     "role": "child",
+     "userHasGivenConsentToShowContactInformation": true
+    },
+    {
+     "address": {
+      "postalCode": 1000,
+      "postalDistrict": "København K",
+      "street": "Hemmelig 1"
+     },
+     "currentUserCanViewContactInformation": true,
+     "firstName": "Johan",
+     "fullName": "Johan Barn",
+     "homePhoneNumber": "99 99 99 99",
+     "id": 3012,
+     "lastName": "Barn",
+     "relations": [
+      {
+       "address": {
+        "postalCode": null,
+        "postalDistrict": null,
+        "street": "Ukendt"
+       },
+       "contactType": "groupHome",
+       "email": null,
+       "firstName": "Solsikken",
+       "fullName": null,
+       "homePhoneNumber": "11 11 11 11",
+       "id": 4003,
+       "lastName": "",
+       "mobilePhoneNumber": "22 22 22 22",
+       "relation": null,
+       "role": "guardian",
+       "userHasGivenConsentToShowContactInformation": true,
+       "workPhoneNumber": "33 33 33 33"
+      }
+     ],
+     "role": "child",
+     "userHasGivenConsentToShowContactInformation": true
+    },
+    {
+     "address": {
+      "postalCode": 1000,
+      "postalDistrict": "København K",
+      "street": "Hemmelig 1"
+     },
+     "currentUserCanViewContactInformation": true,
+     "firstName": "Karla",
+     "fullName": "Karla Barn",
+     "homePhoneNumber": "99 99 99 99",
+     "id": 3013,
+     "lastName": "Barn",
+     "relations": [],
+     "role": "child",
+     "userHasGivenConsentToShowContactInformation": true
+    },
+    {
+     "address": {
+      "postalCode": 1000,
+      "postalDistrict": "København K",
+      "street": "Hemmelig 1"
+     },
+     "currentUserCanViewContactInformation": true,
+     "firstName": "Lea",
+     "fullName": "Lea Barn",
+     "homePhoneNumber": "99 99 99 99",
+     "id": 3014,
+     "lastName": "Barn",
+     "relations": [],
+     "role": "child",
+     "userHasGivenConsentToShowContactInformation": true
+    },
+    {
+     "address": {
+      "postalCode": 1000,
+      "postalDistrict": "København K",
+      "street": "Hemmelig 1"
+     },
+     "currentUserCanViewContactInformation": true,
+     "firstName": "Liva",
+     "fullName": "Liva Barn",
+     "homePhoneNumber": "99 99 99 99",
+     "id": 3015,
+     "lastName": "Barn",
+     "relations": [],
+     "role": "child",
+     "userHasGivenConsentToShowContactInformation": true
+    },
+    {
+     "address": {
+      "postalCode": 1000,
+      "postalDistrict": "København K",
+      "street": "Hemmelig 1"
+     },
+     "currentUserCanViewContactInformation": true,
+     "firstName": "Malthe",
+     "fullName": "Malthe Barn",
+     "homePhoneNumber": "99 99 99 99",
+     "id": 3016,
+     "lastName": "Barn",
+     "relations": [],
+     "role": "child",
+     "userHasGivenConsentToShowContactInformation": true
+    },
+    {
+     "address": {
+      "postalCode": 1000,
+      "postalDistrict": "København K",
+      "street": "Hemmelig 1"
+     },
+     "currentUserCanViewContactInformation": true,
+     "firstName": "Noah",
+     "fullName": "Noah Barn",
+     "homePhoneNumber": "99 99 99 99",
+     "id": 3017,
+     "lastName": "Barn",
+     "relations": [],
+     "role": "child",
+     "userHasGivenConsentToShowContactInformation": true
+    },
+    {
+     "address": {
+      "postalCode": 1000,
+      "postalDistrict": "København K",
+      "street": "Hemmelig 1"
+     },
+     "currentUserCanViewContactInformation": true,
+     "firstName": "Olivia",
+     "fullName": "Olivia Barn",
+     "homePhoneNumber": "99 99 99 99",
+     "id": 3018,
+     "lastName": "Barn",
+     "relations": [],
+     "role": "child",
+     "userHasGivenConsentToShowContactInformation": true
+    },
+    {
+     "address": {
+      "postalCode": 1000,
+      "postalDistrict": "København K",
+      "street": "Hemmelig 1"
+     },
+     "currentUserCanViewContactInformation": true,
+     "firstName": "Sofie",
+     "fullName": "Sofie Barn",
+     "homePhoneNumber": "99 99 99 99",
+     "id": 3019,
+     "lastName": "Barn",
+     "relations": [],
+     "role": "child",
+     "userHasGivenConsentToShowContactInformation": true
+    },
+    {
+     "address": {
+      "postalCode": 1000,
+      "postalDistrict": "København K",
+      "street": "Hemmelig 1"
+     },
+     "currentUserCanViewContactInformation": true,
+     "firstName": "Viggo",
+     "fullName": "Viggo Barn",
+     "homePhoneNumber": "99 99 99 99",
+     "id": 3020,
+     "lastName": "Barn",
+     "relations": [],
+     "role": "child",
+     "userHasGivenConsentToShowContactInformation": true
+    }
+   ],
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {
+   "filter": "child",
+   "page": "1"
+  }
+ },
+ {
+  "answer": {
+   "data": [
+    {
+     "address": {
+      "postalCode": 1000,
+      "postalDistrict": "København K",
+      "street": "Hemmelig 1"
+     },
+     "currentUserCanViewContactInformation": true,
+     "firstName": "Walter",
+     "fullName": "Walter Barn",
+     "homePhoneNumber": "99 99 99 99",
+     "id": 3021,
+     "lastName": "Barn",
+     "relations": [],
+     "role": "child",
+     "userHasGivenConsentToShowContactInformation": true
+    }
+   ],
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {
+   "filter": "child",
+   "page": "2"
+  }
+ },
+ {
+  "answer": {
+   "data": [
+    {
+     "address": null,
+     "currentUserCanViewContactInformation": true,
+     "email": "pia@example.dk",
+     "firstName": "Pia",
+     "fullName": "Pia Pædagog",
+     "id": 5001,
+     "lastName": "Pædagog",
+     "role": "employee",
+     "userHasGivenConsentToShowContactInformation": true,
+     "workPhoneNumber": "70 70 70 70"
+    },
+    {
+     "currentUserCanViewContactInformation": false,
+     "email": "ole@example.dk",
+     "firstName": "Ole",
+     "fullName": "Ole Leder",
+     "id": 5002,
+     "lastName": "Leder",
+     "mobilePhoneNumber": "80 80 80 80",
+     "role": "employee",
+     "userHasGivenConsentToShowContactInformation": true
+    },
+    {
+     "firstName": "Kim",
+     "fullName": "Kim Køkken",
+     "id": 5003,
+     "lastName": "Køkken",
+     "mobilePhoneNumber": "90 90 90 90",
+     "role": "employee",
+     "userHasGivenConsentToShowContactInformation": true
+    }
+   ],
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {
+   "filter": "employee",
+   "page": "1"
+  }
+ }
+]

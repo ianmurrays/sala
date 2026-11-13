@@ -1,0 +1,54 @@
+[
+ {
+  "answer": {
+   "data": [
+    {
+     "child": {
+      "id": 2001,
+      "name": "Oskar"
+     },
+     "vacationRegistrations": [
+      {
+       "endDate": "2026-12-23",
+       "isEditable": true,
+       "isMissingAnswer": true,
+       "noteToGuardian": "Giv besked om Oskar holder fri.",
+       "responseDeadline": "2026-11-14",
+       "responseId": 5501,
+       "startDate": "2026-12-21",
+       "title": "Juleferie",
+       "vacationRegistrationId": 55
+      },
+      {
+       "endDate": "2027-02-20",
+       "isEditable": true,
+       "isMissingAnswer": true,
+       "isPresenceTimesRequired": true,
+       "noteToGuardian": "",
+       "responseDeadline": "2026-11-25",
+       "responseId": 5601,
+       "startDate": "2027-02-16",
+       "title": "Vinterferie",
+       "vacationRegistrationId": 56
+      },
+      {
+       "endDate": "2026-10-28",
+       "isEditable": false,
+       "isMissingAnswer": false,
+       "responseDeadline": "2026-10-14",
+       "responseId": 5401,
+       "startDate": "2026-10-24",
+       "title": "Efterårsferie",
+       "vacationRegistrationId": 54
+      }
+     ]
+    }
+   ],
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {}
+ }
+]

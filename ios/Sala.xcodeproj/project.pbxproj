@@ -13,6 +13,7 @@
 		10223E66B9848359D3498E7D /* AulaHTML.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576FF229BD737BAC27D4C865 /* AulaHTML.swift */; };
 		1741679355FAA673C58359E4 /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DDF8360879C8CE3785836C4 /* MessagesView.swift */; };
 		17DDD958DBF614ACB3FFBEA5 /* SalaShared.swift in Sources */ = {isa = PBXBuildFile; fileRef = B052EF3B3E1998CE1C0471B2 /* SalaShared.swift */; };
+		20236C6207C35135B3F6C994 /* DemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E209E5AD92DD925E7216C0 /* DemoTests.swift */; };
 		246B663D497DB08CB122FB6A /* AttachmentOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F700FF859455055509BB54 /* AttachmentOpener.swift */; };
 		2C955713614AFF3C207032A2 /* AulaJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86D5BEBD3FFA87799B35B7B8 /* AulaJSON.swift */; };
 		2FBE78824A0520905338300F /* AulaModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E941CB5BEFA754583F1501B /* AulaModels.swift */; };
@@ -29,6 +30,7 @@
 		633CE8662528E0F7C29DDB32 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31531B782C08B051F900B8C /* API.swift */; };
 		63AB0B45C45C47BCADC5E654 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7306B89AB0399C4EF4F98F6C /* SettingsView.swift */; };
 		646D9FE68988D4EF8CF9BE60 /* ContactsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03789688B9864A34F7E3DFD5 /* ContactsView.swift */; };
+		661ADD1A078F4F9BF7324C33 /* DemoAula in Resources */ = {isa = PBXBuildFile; fileRef = 5B202731BFAF92B14D963549 /* DemoAula */; };
 		69B5B68BFDA0BB9C081CE07E /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBDA4ACCCAD7122465646C4E /* TodayView.swift */; };
 		6AEB15E2A7D2D58E3AFBB7AC /* GalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DCDEC490BACA3926522E1C /* GalleryView.swift */; };
 		6E75E7B5960FC1B9B3ED9B82 /* PickupSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996EC5D2487693CC0C6083BE /* PickupSheet.swift */; };
@@ -51,6 +53,8 @@
 		C28A03DD2EA8C0879ADD256E /* HTMLEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F54721032189D28F2ECDD8D /* HTMLEntities.swift */; };
 		C6931429278AC39200B6AEC1 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7E6AB823A3C5EB7D36DDA80 /* Theme.swift */; };
 		C800C72A1D83C8901E63FA8F /* AulaClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80889885B76F5717A9DECCF3 /* AulaClient.swift */; };
+		CA81CF8070A2EA71B4FEC2B3 /* DemoAula.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE445DD73380489DB25D15C /* DemoAula.swift */; };
+		D6A0D98FAA2E17ECEEEDDE3E /* DemoAula.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE445DD73380489DB25D15C /* DemoAula.swift */; };
 		E39CA54108D4CCA7DDB101A5 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0CB0076E020A5A87CD637FD /* SearchView.swift */; };
 		E657D7775BAD8D02259880F0 /* HTMLEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F54721032189D28F2ECDD8D /* HTMLEntities.swift */; };
 		E8AF275F830BEFC95BA2294C /* SalaShared.swift in Sources */ = {isa = PBXBuildFile; fileRef = B052EF3B3E1998CE1C0471B2 /* SalaShared.swift */; };
@@ -100,11 +104,14 @@
 		2CCD051E3BB3DC75F5359EEA /* SalaWidget.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = SalaWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		355A0708F4F73D66AC8B9D6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		36463F642252A186DED991A0 /* Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Signing.xcconfig; sourceTree = "<group>"; };
+		39E209E5AD92DD925E7216C0 /* DemoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoTests.swift; sourceTree = "<group>"; };
 		3A62848569FE547E44876C3B /* SalaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalaApp.swift; sourceTree = "<group>"; };
 		447EEC8A5735180FD82A3D1C /* GoldenTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoldenTests.swift; sourceTree = "<group>"; };
 		4DDF8360879C8CE3785836C4 /* MessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesView.swift; sourceTree = "<group>"; };
 		576FF229BD737BAC27D4C865 /* AulaHTML.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AulaHTML.swift; sourceTree = "<group>"; };
 		59725711855BD756C7F555B5 /* Local.example.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Local.example.xcconfig; sourceTree = "<group>"; };
+		5B202731BFAF92B14D963549 /* DemoAula */ = {isa = PBXFileReference; lastKnownFileType = folder; path = DemoAula; sourceTree = SOURCE_ROOT; };
+		5CE445DD73380489DB25D15C /* DemoAula.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoAula.swift; sourceTree = "<group>"; };
 		7306B89AB0399C4EF4F98F6C /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		80889885B76F5717A9DECCF3 /* AulaClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AulaClient.swift; sourceTree = "<group>"; };
 		85A89BBCBDF52ACC866ED673 /* SalaWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SalaWidget.entitlements; sourceTree = "<group>"; };
@@ -145,6 +152,7 @@
 				10790638C025D213F72FB9FA /* AulaPush.swift */,
 				D0474C37C635EB4FEE0B2FA3 /* AulaRoutes.swift */,
 				221AEB48EB17EA103A3910A8 /* AulaSession.swift */,
+				5CE445DD73380489DB25D15C /* DemoAula.swift */,
 				9F54721032189D28F2ECDD8D /* HTMLEntities.swift */,
 			);
 			path = Aula;
@@ -182,6 +190,7 @@
 		576E8E9DAD3D74B01DDED165 = {
 			isa = PBXGroup;
 			children = (
+				5B202731BFAF92B14D963549 /* DemoAula */,
 				1BF7BA82603EFA58752070E1 /* Config */,
 				FDDDB6EC11BDFB38844E0380 /* Sala */,
 				B9AA4C248691C0FADF95F2E0 /* SalaTests */,
@@ -203,6 +212,7 @@
 		B9AA4C248691C0FADF95F2E0 /* SalaTests */ = {
 			isa = PBXGroup;
 			children = (
+				39E209E5AD92DD925E7216C0 /* DemoTests.swift */,
 				447EEC8A5735180FD82A3D1C /* GoldenTests.swift */,
 				180CB3C2AEF650334616AEF4 /* PushTests.swift */,
 			);
@@ -347,6 +357,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A1E0A0B6A8296DA131ED182A /* Assets.xcassets in Resources */,
+				661ADD1A078F4F9BF7324C33 /* DemoAula in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -373,6 +384,7 @@
 				FC66B88D8A36FBE3E23C3FFC /* CalendarSync.swift in Sources */,
 				8D567F5C240A1B747CA12ED0 /* CalendarView.swift in Sources */,
 				646D9FE68988D4EF8CF9BE60 /* ContactsView.swift in Sources */,
+				D6A0D98FAA2E17ECEEEDDE3E /* DemoAula.swift in Sources */,
 				323A697D102B8B8A9B1B322D /* FoldersView.swift in Sources */,
 				6AEB15E2A7D2D58E3AFBB7AC /* GalleryView.swift in Sources */,
 				C28A03DD2EA8C0879ADD256E /* HTMLEntities.swift in Sources */,
@@ -406,6 +418,8 @@
 				F98AAEDB2037F9F6760BCD54 /* AulaPush.swift in Sources */,
 				BB4F7D888ED1EF06093DC623 /* AulaRoutes.swift in Sources */,
 				3FC18EAF711CF3DFE0363161 /* AulaSession.swift in Sources */,
+				CA81CF8070A2EA71B4FEC2B3 /* DemoAula.swift in Sources */,
+				20236C6207C35135B3F6C994 /* DemoTests.swift in Sources */,
 				A32DA9BD3635FDD2C3886E4E /* GoldenTests.swift in Sources */,
 				E657D7775BAD8D02259880F0 /* HTMLEntities.swift in Sources */,
 				0F48B5FE9FAC1BE1692FF6BA /* PushTests.swift in Sources */,
@@ -478,6 +492,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				ENABLE_PREVIEWS = YES;
+				EXCLUDED_SOURCE_FILE_NAMES = DemoAula;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Sala/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

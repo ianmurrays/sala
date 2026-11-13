@@ -39,4 +39,5 @@ Live app logs (warnings for skipped parts, refusals): Console.app on the Mac, th
 ## Then change the code
 
 - Mapping and routes: `ios/Sala/Aula/AulaMapping.swift`, `AulaRoutes.swift`, `AulaClient.swift` (raw calls). The contract the views see: `API.md`; change it first.
+- Demo fixtures: add or update `ios/DemoAula/<method>.json` (invented data, the shape of the live answer) so demo mode and `DemoTests` cover the change. See `CLAUDE.md`.
 - Tests: `ios/SalaTests/GoldenTests.swift` replays `ios/SalaTests/Goldens/*.json` (recorded Aula answers plus the expected route output). They're frozen: a deliberate change means editing the golden's Aula answer and expected output by hand. Run `cd ios && xcodebuild test -project Sala.xcodeproj -scheme Sala -destination 'platform=iOS Simulator,name=<an iPhone simulator>'`.

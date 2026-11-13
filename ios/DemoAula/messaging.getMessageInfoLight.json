@@ -1,0 +1,39 @@
+[
+ {
+  "answer": {
+   "data": {
+    "isSensitive": false,
+    "message": {
+     "attachments": [],
+     "canReplyToMessage": true,
+     "id": "m9101-4",
+     "messageType": "Message",
+     "sendDateTime": "2026-11-13T08:40:22+01:00",
+     "sender": {
+      "answerDirectlyName": "Anne Holm",
+      "fullName": "Anne Holm",
+      "institutionCode": "999001",
+      "mailBoxOwner": {
+       "id": 1501,
+       "isDeactivated": false,
+       "mailBoxOwnerType": "institutionProfile"
+      },
+      "metadata": "Leder",
+      "profileId": 11501,
+      "role": "employee",
+      "shortName": "AH"
+     },
+     "text": {
+      "html": "<p>Ja, søskende er meget velkomne. Vi har legetøj i fællesrummet.</p>"
+     }
+    },
+    "subject": "Forældremøde i Stue"
+   },
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {}
+ }
+]

@@ -1,0 +1,43 @@
+[
+ {
+  "answer": {
+   "data": [
+    {
+     "checkInTime": "07:40",
+     "checkOutTime": null,
+     "comment": "Har madpakke med",
+     "entryTime": "07:45",
+     "exitTime": "16:00",
+     "exitWith": "Jonas Hansen (Far)",
+     "id": 88001,
+     "institutionProfile": {
+      "id": 2001,
+      "institutionCode": "999001",
+      "institutionName": "Børnehuset",
+      "name": "Oskar",
+      "profileId": 601,
+      "profilePicture": {
+       "id": 77,
+       "url": "https://fake-files.aula.dk/files/profile.png?sig=3"
+      },
+      "role": "child"
+     },
+     "location": null,
+     "mainGroup": {
+      "id": 3001,
+      "institutionCode": "999001",
+      "name": "Stue",
+      "shortName": "Stue"
+     },
+     "sleepIntervals": [],
+     "status": 3
+    }
+   ],
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {}
+ }
+]
