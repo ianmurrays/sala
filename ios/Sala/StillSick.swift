@@ -144,10 +144,10 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
                                             didReceive response: UNNotificationResponse) async {
         let info = response.notification.request.content.userInfo
         await handle(action: response.actionIdentifier, child: info["child"] as? Int,
-                     name: info["name"] as? String ?? "Your child")
+                     name: info["name"] as? String ?? "Your child", link: info["link"] as? String)
     }
 
-    private func handle(action: String, child: Int?, name: String) async {
+    private func handle(action: String, child: Int?, name: String, link: String?) async {
         switch action {
         case StillSick.stillSickAction:
             guard let child else { return }
@@ -160,7 +160,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
             // Aula already reset the status: nothing to send, just drop the card.
             if let child { store.dismissStillSick(child) }
         case UNNotificationDefaultActionIdentifier:
-            store.handleDeepLink(URL(string: "sala://today")!)
+            // Background refresh's notifications carry their link (sala://thread/<id>, sala://today).
+            store.handleDeepLink(link.flatMap(URL.init(string:)) ?? URL(string: "sala://today")!)
         default:
             break
         }

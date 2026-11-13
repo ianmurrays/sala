@@ -11,6 +11,7 @@ struct SalaApp: App {
                 .environment(delegate.store)
                 .tint(.salaAccent)
         }
+        .backgroundTask(.appRefresh(BackgroundRefresh.id)) { await BackgroundRefresh.run() }
     }
 }
 
@@ -51,6 +52,7 @@ struct RootView: View {
         .onOpenURL { store.handleDeepLink($0) }
         .onChange(of: scenePhase, initial: true) { _, phase in AppLock.shared.scenePhaseChanged(phase) }
         .onChange(of: scenePhase) { _, phase in
+            if phase == .background { BackgroundRefresh.schedule() }
             guard phase == .active, store.phase != .needsLogin, store.phase != .loading else { return }
             Task { await store.load() }
         }

@@ -20,6 +20,10 @@ struct SalaEntry: TimelineEntry {
 }
 
 struct Provider: TimelineProvider {
+    /// How long the app's snapshot is shown after it was fetched. Background refresh saves it a few times a day at best,
+    /// so past this the widget says "Open Sala" rather than show stale arrivals and pickups.
+    static let maxAge: TimeInterval = 3 * 3600
+
     func placeholder(in context: Context) -> SalaEntry { .sample }
 
     func getSnapshot(in context: Context, completion: @escaping @Sendable (SalaEntry) -> Void) {
@@ -34,11 +38,11 @@ struct Provider: TimelineProvider {
             let entry = Self.fallback(Shared.snapshot, now: now)
             let refresh = Self.nextRefresh(after: now)
             var entries = [entry]
-            // Data is shown for at most an hour after it was fetched, and never past its day,
+            // Data is shown for at most `maxAge` after it was fetched, and never past its day,
             // in case WidgetKit delays the next refresh.
             if entry.message == nil,
                let midnight = Shared.calendar.date(byAdding: .day, value: 1, to: Shared.calendar.startOfDay(for: now)) {
-                let expiry = min((entry.asOf ?? now).addingTimeInterval(3600), midnight)
+                let expiry = min((entry.asOf ?? now).addingTimeInterval(Self.maxAge), midnight)
                 entries.append(SalaEntry(date: expiry, message: "Open Sala"))
             }
             completion(Timeline(entries: entries, policy: .after(refresh)))
@@ -53,9 +57,9 @@ struct Provider: TimelineProvider {
         return SalaEntry(date: now, children: snapshot.children, asOf: asOf)
     }
 
-    /// The app's snapshot, only while it's under an hour old.
+    /// The app's snapshot, only while it's under `maxAge` old.
     static func fallback(_ snapshot: TodaySnapshot?, now: Date) -> SalaEntry {
-        guard let fetchedAt = snapshot?.fetchedAt, now.timeIntervalSince(fetchedAt) < 3600 else {
+        guard let fetchedAt = snapshot?.fetchedAt, now.timeIntervalSince(fetchedAt) < maxAge else {
             return SalaEntry(date: now, message: "Open Sala")
         }
         return entry(snapshot, now: now, asOf: fetchedAt)

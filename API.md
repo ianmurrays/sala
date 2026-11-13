@@ -192,7 +192,7 @@ Aula's contact book (Kontaktbog). Other families' personal data: the app keeps i
 
 ## Push
 
-Not built yet. The old server polled Aula and pushed through ntfy; without it, notifications will be best effort from background refresh. These were the server's rules, the spec to keep (titles only, never message or post bodies):
+Local notifications from iOS background refresh (`ios/Sala/BackgroundRefresh.swift`, rules in `ios/Sala/Aula/AulaPush.swift`), best effort: iOS decides when it runs. Turned on in Settings. These were the old server's rules (it pushed through ntfy), the spec to keep (titles only, never message or post bodies). Differences on the phone: "not from me" is the thread being unread (live `getThreads` rows carry no `latestMessage.sender`, and reading the thread could mark it read); there is no priority (a time-sensitive notification needs an entitlement); a reminder held until 07:00 is scheduled for 07:00; a deliberate logout does not notify.
 
 | Event | Title | Priority | Click |
 | --- | --- | --- | --- |

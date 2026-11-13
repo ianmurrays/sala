@@ -84,6 +84,7 @@ final class Store {
     /// Forgets the Aula session and everything shown from it.
     func logout() async {
         await Aula.shared.logout()
+        Notifier.loggedOut()
         Config.clearWidgets()
         today = nil
         threads = nil
@@ -120,6 +121,7 @@ final class Store {
             }
             today = t
             loadError = nil
+            Notifier.sessionWorks()
             syncWidgets()
             morePosts.reset(next: 2)
             phase = .ready
