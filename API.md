@@ -1,23 +1,10 @@
-# Sala API (server ⇄ iOS)
+# Sala API (routes ⇄ views)
 
-The contract between `server/` and `ios/`. Both sides follow this file; change it here first.
+The app has no server: `ios/Sala/Aula/AulaRoutes.swift` (`Aula.handle`) answers these routes in-process against Aula, and `ios/Sala/API.swift` (`APIClient`) calls them and decodes the answers. The routes are a port of the old Python server, so this file still reads like an HTTP API: paths, JSON bodies and status codes map one to one onto `APIError`. Change it here first.
 
-All endpoints need `Authorization: Bearer <SALA_TOKEN>`. Missing or wrong token → `401 {"error":"unauthorized"}`.
-When the Aula session is gone and a MitID login is needed → `503 {"error":"auth_required"}` (client shows the login screen, see `/auth/*`).
+No Aula session (no login yet, or Aula ended it) → `APIError.authRequired` (the app shows the MitID login, see `ios/Sala/LoginView.swift`).
 A write that makes no sense in today's state → `409 {"error":"conflict","message":"..."}`.
 Other upstream failures → `502 {"error":"upstream","message":"..."}`. JSON keys are camelCase. Dates are `YYYY-MM-DD`, timestamps ISO 8601 with offset, times `HH:mm`.
-
-## Auth (MitID, held by the server)
-
-`GET /auth/status` →
-```json
-{"state":"ok|needs_login|logging_in|error","otpCode":"123456|null","qr":[["0101…"],["1100…"]],"message":"string|null","since":"timestamp|null"}
-```
-- `needs_login`: no valid session; nothing running. Client offers "Log in with MitID".
-- `logging_in`: a MitID request was sent to the MitID app. `otpCode` is set when MitID asks the user to type a code into the app. `qr` is set while MitID wants its QR code scanned: two halves, each a list of rows of `"0"`/`"1"` modules. Show them alternating in one spot, about a second each, on a white background.
-- `error`: last login failed; `message` says why. The server never retries on its own.
-
-`POST /auth/login` → starts one login (single-flight; calling it again while `logging_in` is a no-op). Returns the status object.
 
 ## Today
 
@@ -61,7 +48,7 @@ Other upstream failures → `502 {"error":"upstream","message":"..."}`. JSON key
 {"id": "a1b2", "name": "Præsentation.pdf", "kind": "file|image|link", "url": "https://… (links only)"}
 ```
 - `file` / `image`: an Aula file; fetch it with `GET /attachments/{id}`. No `url`.
-- `link`: a cloud-drive link the author attached. `id` is null and `url` is the link; open it in the browser. The server never fetches it.
+- `link`: a cloud-drive link the author attached. `id` is null and `url` is the link; open it in the browser. Sala never fetches it.
 
 Profile pictures: `picture` (child, thread summary, message) and `authorPicture` (post) are opaque ids for `GET /attachments/{id}`, `null` when the person has no picture. Draw initials when it is `null` or the fetch fails. The id stays the same while the picture does (Aula's URL may be re-signed on every load), so the client can cache the image by id. `GET /attachments/{id}` sends `Cache-Control: private, max-age=604800` (a week).
 
@@ -111,7 +98,7 @@ Nullable here: `opensAt`, `closesAt`, `current.time`, `current.by`.
 `GET /posts?page=N` → `[Post]`, newest first, 10 per page. `page` is 1-based (default 1, at most 100, else `400`); page 1 is the `posts` of `/today`. An empty list means there are no more posts.
 
 `POST /posts/{id}/save` / `DELETE /posts/{id}/save` → `{"saved": true|false}`.
-`GET /attachments/{id}` → the file bytes with its `Content-Type` and `Content-Disposition: inline; filename=...`. `id` is an opaque server-issued id from a Post, Message, profile picture or the gallery; the server never fetches a client-supplied URL, only Aula file URLs on Aula's own hosts (https, `*.aula.dk`), and follows redirects only onto those hosts.
+`GET /attachments/{id}` → the file bytes with its `Content-Type` and `Content-Disposition: inline; filename=...`. `id` is an opaque id from a Post, Message, profile picture or the gallery (in Swift: `Aula.attachment(id)`); Sala never fetches a URL it wasn't given by Aula, only Aula file URLs on Aula's own hosts (https, `*.aula.dk`), and follows redirects only onto those hosts.
 
 ## Gallery
 
@@ -128,7 +115,7 @@ Nullable here: `opensAt`, `closesAt`, `current.time`, `current.by`.
 - Videos are left out, so a page can hold fewer than 60 photos. A page of nothing but videos comes back empty, and the client stops there (rare enough to accept).
 - Page 1 starts with Aula's album of photos the child is tagged in: `"tagged": true`, `id` 0 (Aula gives it none), title from Aula. `GET /albums/0/photos` lists it.
 - A photo's `date` is when it was uploaded.
-- Aula's image URLs are signed and expire; listing the album again refreshes the ones the server fetches.
+- Aula's image URLs are signed and expire; listing the album again refreshes the ones Sala fetches.
 
 ## Messages
 
@@ -142,7 +129,7 @@ Nullable here: `opensAt`, `closesAt`, `current.time`, `current.by`.
 `PATCH /threads/{id}` body with any of `{"muted":true,"starred":true,"folderId":71}` → the updated thread summary (same shape as in `/threads`).
 - `starred` is Aula's "marked". `folderId: null` moves the thread back to the inbox; a `folderId` that isn't one of `/folders` → `400`. An empty body → `400`.
 - Each field is its own Aula call, in the order muted, starred, folderId; if one fails (`502`) the ones before it are done.
-- The server acts on threads it has listed in `/threads` (it needs Aula's subscription id from the list row). A thread it hasn't listed since it started, and that isn't on the inbox's first page → `409`; reload the list and try again. The returned summary is that list row with the change applied.
+- Sala acts on threads it has listed in `/threads` (it needs Aula's subscription id from the list row). A thread it hasn't listed since it started, and that isn't on the inbox's first page → `409`; reload the list and try again. The returned summary is that list row with the change applied.
 `GET /threads/{id}` (also marks it read) →
 ```json
 {"id":"123","subject":"Forældremøde","canReply":true,
@@ -160,19 +147,11 @@ Nullable here: `opensAt`, `closesAt`, `current.time`, `current.by`.
 
 ## Translation
 
-`GET /features` → `{"translate":true}`. The app shows its "Translate" buttons only when `translate` is true (an older server without this route: treat as false).
-
-`POST /translate` body `{"texts":["Hej","..."]}` → `{"texts":["Hi","..."]}`, one translation per text, same order. Translates into English (the server's `SALA_TRANSLATE_LANG`) with the Claude API; empty texts come back as they are and text already in English comes back unchanged. Only on a tap, never automatically.
-- At most 50 texts, each at most 20 000 characters, else `400`.
-- Translation off (no `ANTHROPIC_API_KEY` on the server) → `404 {"error":"not_enabled"}`.
-- The Claude API failing (error status, refusal, a cut-off or malformed answer) → `502 {"error":"upstream","message":"Translation failed..."}`. The server translates in chunks of about 12 000 characters and caches each chunk as it succeeds, so after a failure a retry only sends what is still untranslated.
-- Translations are cached on the server by text, so asking again costs nothing. Works without an Aula session.
+`GET /features` → `{"translate":false}`, and `POST /translate` → `404 {"error":"not_enabled"}`, until translation comes back (on-device models, or the user's own API key). The app shows its "Translate" buttons only when `translate` is true. When it's on: body `{"texts":["Hej","..."]}` → `{"texts":["Hi","..."]}`, one translation per text, same order, at most 50 texts of at most 20 000 characters each; only on a tap, never automatically.
 
 ## Push
 
-There is no push endpoint. Push goes through [ntfy](https://ntfy.sh): the server polls Aula every `POLL_SECONDS` and publishes to the ntfy topic `NTFY_TOPIC`; the phone subscribes to that topic in the ntfy iOS app. Push is off when `NTFY_TOPIC` is unset.
-
-Notifications (titles only, never message or post bodies):
+Not built yet. The old server polled Aula and pushed through ntfy; without it, notifications will be best effort from background refresh. These were the server's rules, the spec to keep (titles only, never message or post bodies):
 
 | Event | Title | Priority | Click |
 | --- | --- | --- | --- |
@@ -181,6 +160,6 @@ Notifications (titles only, never message or post bodies):
 | New unanswered holiday request (held until 07:00 when its deadline is today or tomorrow) | `Holiday request 21–23 Dec · answer by 13 Nov` | high when the deadline is 2 days away or less | `sala://today` |
 | Unanswered holiday request, the day before its deadline, from 07:00 (not sent when the new-request notification above goes out in the same poll) | `Holiday request 21–23 Dec · answer by tomorrow` | high | `sala://today` |
 | Unanswered holiday request, on its deadline day, from 07:00 (same rule) | `Holiday request 21–23 Dec · answer today` | high | `sala://today` |
-| Aula session lost (once per loss, retried until delivered, not repeated after a server restart) | `Aula login needed` | high | `sala://today` |
+| Aula session lost (once per loss) | `Aula login needed` | high | `sala://today` |
 
-Items that exist when push is first enabled never notify. Each reminder is sent at most once, only on its own day: a reminder ntfy refused is retried on later polls that same day, never after it, and never after the deadline. The app handles the `sala://` links (`thread/<id>` opens the thread, `today` the Today tab).
+Items that exist when notifications are first enabled never notify. Each reminder is sent at most once, only on its own day, and never after the deadline. The app handles the `sala://` links (`thread/<id>` opens the thread, `today` the Today tab).

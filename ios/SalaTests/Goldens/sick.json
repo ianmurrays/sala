@@ -1,0 +1,1364 @@
+{
+ "name": "sick",
+ "today": "2026-11-13",
+ "now": "2026-11-13T13:07:00+01:00",
+ "forbidden": [],
+ "profile": {
+  "profiles.getProfilesByLogin": {
+   "status": {
+    "code": 0,
+    "message": "OK"
+   },
+   "data": {
+    "profiles": [
+     {
+      "profileId": 501,
+      "displayName": "Jonas Hansen",
+      "institutionProfiles": [
+       {
+        "id": 1001,
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset",
+        "role": "guardian"
+       }
+      ],
+      "children": [
+       {
+        "id": 2001,
+        "profileId": 601,
+        "name": "Oskar",
+        "userId": "oskar01",
+        "hasCustodyOrExtendedAccess": true,
+        "institutionProfile": {
+         "institutionName": "Børnehuset",
+         "institutionCode": "999001",
+         "metadata": "Stue"
+        },
+        "profilePicture": {
+         "id": 77,
+         "url": "https://fake-files.aula.dk/files/profile.png?sig=21"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "profiles.getProfileContext": {
+   "status": {
+    "code": 0,
+    "message": "OK"
+   },
+   "data": {
+    "institutionProfile": {
+     "id": 1001
+    },
+    "institutions": []
+   }
+  }
+ },
+ "files": {},
+ "steps": [
+  {
+   "note": "",
+   "verb": "POST",
+   "path": "/children/2001/sick",
+   "body": null,
+   "status": 200,
+   "response": {
+    "id": 2001,
+    "name": "Oskar",
+    "picture": "f31f36216c157540666c85d9",
+    "institution": "Børnehuset",
+    "group": "Stue",
+    "status": "sick",
+    "statusLabel": "Sick",
+    "arrivedAt": "07:40",
+    "leftAt": null,
+    "pickup": {
+     "time": "16:00",
+     "by": "Jonas Hansen (Far)"
+    },
+    "closesAt": "16:45",
+    "canReportSick": true
+   },
+   "aula": [
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "profiles.getProfilesByLogin"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": {
+       "profiles": [
+        {
+         "profileId": 501,
+         "displayName": "Jonas Hansen",
+         "institutionProfiles": [
+          {
+           "id": 1001,
+           "institutionCode": "999001",
+           "institutionName": "Børnehuset",
+           "role": "guardian"
+          }
+         ],
+         "children": [
+          {
+           "id": 2001,
+           "profileId": 601,
+           "name": "Oskar",
+           "userId": "oskar01",
+           "hasCustodyOrExtendedAccess": true,
+           "institutionProfile": {
+            "institutionName": "Børnehuset",
+            "institutionCode": "999001",
+            "metadata": "Stue"
+           },
+           "profilePicture": {
+            "id": 77,
+            "url": "https://fake-files.aula.dk/files/profile.png?sig=21"
+           }
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "profiles.getProfileContext"
+      ],
+      [
+       "portalrole",
+       "guardian"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": {
+       "institutionProfile": {
+        "id": 1001
+       },
+       "institutions": []
+      }
+     }
+    },
+    {
+     "verb": "POST",
+     "query": [
+      [
+       "method",
+       "presence.updateStatusByInstitutionProfileIds"
+      ]
+     ],
+     "body": {
+      "institutionProfileIds": [
+       2001
+      ],
+      "status": 1
+     },
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": true
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getDailyOverview"
+      ],
+      [
+       "childIds[]",
+       "2001"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": [
+       {
+        "id": 88001,
+        "institutionProfile": {
+         "id": 2001,
+         "profileId": 601,
+         "name": "Oskar",
+         "institutionCode": "999001",
+         "institutionName": "Børnehuset",
+         "role": "child",
+         "profilePicture": {
+          "id": 77,
+          "url": "https://fake-files.aula.dk/files/profile.png?sig=22"
+         }
+        },
+        "mainGroup": {
+         "id": 3001,
+         "name": "Stue",
+         "shortName": "Stue",
+         "institutionCode": "999001"
+        },
+        "status": 1,
+        "location": null,
+        "sleepIntervals": [],
+        "checkInTime": "07:40",
+        "checkOutTime": null,
+        "entryTime": "07:45",
+        "exitTime": "16:00",
+        "exitWith": "Jonas Hansen (Far)",
+        "comment": "Har madpakke med"
+       }
+      ]
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getPresenceTemplates"
+      ],
+      [
+       "filterInstitutionProfileIds[]",
+       "2001"
+      ],
+      [
+       "fromDate",
+       "2026-11-13"
+      ],
+      [
+       "toDate",
+       "2026-11-13"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": {
+       "presenceWeekTemplates": [
+        {
+         "institutionProfile": {
+          "id": 2001,
+          "name": "Oskar",
+          "institutionCode": "999001"
+         },
+         "dayTemplates": [
+          {
+           "id": 7001,
+           "repeatPattern": "weekly",
+           "repeatFromDate": "2026-09-14",
+           "repeatToDate": null,
+           "isOnVacation": false,
+           "activityType": 0,
+           "entryTime": "07:45",
+           "exitTime": "16:00",
+           "exitWith": "Jonas Hansen (Far)",
+           "comment": "Har madpakke med",
+           "spareTimeActivity": null,
+           "byDate": "2026-11-13",
+           "dayOfWeek": 5
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getPresenceConfigurationByChildIds"
+      ],
+      [
+       "childIds[]",
+       "2001"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": [
+       {
+        "uniStudentId": 2001,
+        "presenceConfiguration": {
+         "institution": {
+          "institutionCode": "999001",
+          "name": "Børnehuset"
+         },
+         "pickup": true,
+         "goHomeWith": false,
+         "selfDecider": false,
+         "dashboardModuleSettings": [
+          {
+           "presenceDashboardContext": "guardian_dashboard",
+           "presenceModules": [
+            {
+             "moduleType": "pickup_times",
+             "permission": "editable"
+            },
+            {
+             "moduleType": "drop_off_time",
+             "permission": "editable"
+            },
+            {
+             "moduleType": "report_sick",
+             "permission": "editable"
+            },
+            {
+             "moduleType": "vacation",
+             "permission": "editable"
+            },
+            {
+             "moduleType": "pickup_type",
+             "permission": "editable"
+            }
+           ]
+          }
+         ]
+        }
+       }
+      ]
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getOpeningHoursByInstitutionCodes"
+      ],
+      [
+       "institutionCodes[]",
+       "999001"
+      ],
+      [
+       "startDate",
+       "2026-11-13"
+      ],
+      [
+       "endDate",
+       "2026-11-13"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": {
+       "openingHoursOverviewDto": [
+        {
+         "institutionCode": "999001",
+         "openingHoursDto": [
+          {
+           "date": "2026-11-13",
+           "type": "general_opening_hours",
+           "openTime": "06:30",
+           "closeTime": "16:45"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "writes": [
+    {
+     "method": "presence.updateStatusByInstitutionProfileIds",
+     "payload": {
+      "institutionProfileIds": [
+       2001
+      ],
+      "status": 1
+     }
+    }
+   ]
+  },
+  {
+   "note": "checked in, not out: back to present",
+   "verb": "DELETE",
+   "path": "/children/2001/sick",
+   "body": null,
+   "status": 200,
+   "response": {
+    "id": 2001,
+    "name": "Oskar",
+    "picture": "f31f36216c157540666c85d9",
+    "institution": "Børnehuset",
+    "group": "Stue",
+    "status": "present",
+    "statusLabel": "Present",
+    "arrivedAt": "07:40",
+    "leftAt": null,
+    "pickup": {
+     "time": "16:00",
+     "by": "Jonas Hansen (Far)"
+    },
+    "closesAt": "16:45",
+    "canReportSick": true
+   },
+   "aula": [
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getDailyOverview"
+      ],
+      [
+       "childIds[]",
+       "2001"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": [
+       {
+        "id": 88001,
+        "institutionProfile": {
+         "id": 2001,
+         "profileId": 601,
+         "name": "Oskar",
+         "institutionCode": "999001",
+         "institutionName": "Børnehuset",
+         "role": "child",
+         "profilePicture": {
+          "id": 77,
+          "url": "https://fake-files.aula.dk/files/profile.png?sig=23"
+         }
+        },
+        "mainGroup": {
+         "id": 3001,
+         "name": "Stue",
+         "shortName": "Stue",
+         "institutionCode": "999001"
+        },
+        "status": 1,
+        "location": null,
+        "sleepIntervals": [],
+        "checkInTime": "07:40",
+        "checkOutTime": null,
+        "entryTime": "07:45",
+        "exitTime": "16:00",
+        "exitWith": "Jonas Hansen (Far)",
+        "comment": "Har madpakke med"
+       }
+      ]
+     }
+    },
+    {
+     "verb": "POST",
+     "query": [
+      [
+       "method",
+       "presence.updateStatusByInstitutionProfileIds"
+      ]
+     ],
+     "body": {
+      "institutionProfileIds": [
+       2001
+      ],
+      "status": 3
+     },
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": true
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getDailyOverview"
+      ],
+      [
+       "childIds[]",
+       "2001"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": [
+       {
+        "id": 88001,
+        "institutionProfile": {
+         "id": 2001,
+         "profileId": 601,
+         "name": "Oskar",
+         "institutionCode": "999001",
+         "institutionName": "Børnehuset",
+         "role": "child",
+         "profilePicture": {
+          "id": 77,
+          "url": "https://fake-files.aula.dk/files/profile.png?sig=24"
+         }
+        },
+        "mainGroup": {
+         "id": 3001,
+         "name": "Stue",
+         "shortName": "Stue",
+         "institutionCode": "999001"
+        },
+        "status": 3,
+        "location": null,
+        "sleepIntervals": [],
+        "checkInTime": "07:40",
+        "checkOutTime": null,
+        "entryTime": "07:45",
+        "exitTime": "16:00",
+        "exitWith": "Jonas Hansen (Far)",
+        "comment": "Har madpakke med"
+       }
+      ]
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getPresenceTemplates"
+      ],
+      [
+       "filterInstitutionProfileIds[]",
+       "2001"
+      ],
+      [
+       "fromDate",
+       "2026-11-13"
+      ],
+      [
+       "toDate",
+       "2026-11-13"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": {
+       "presenceWeekTemplates": [
+        {
+         "institutionProfile": {
+          "id": 2001,
+          "name": "Oskar",
+          "institutionCode": "999001"
+         },
+         "dayTemplates": [
+          {
+           "id": 7001,
+           "repeatPattern": "weekly",
+           "repeatFromDate": "2026-09-14",
+           "repeatToDate": null,
+           "isOnVacation": false,
+           "activityType": 0,
+           "entryTime": "07:45",
+           "exitTime": "16:00",
+           "exitWith": "Jonas Hansen (Far)",
+           "comment": "Har madpakke med",
+           "spareTimeActivity": null,
+           "byDate": "2026-11-13",
+           "dayOfWeek": 5
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getPresenceConfigurationByChildIds"
+      ],
+      [
+       "childIds[]",
+       "2001"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": [
+       {
+        "uniStudentId": 2001,
+        "presenceConfiguration": {
+         "institution": {
+          "institutionCode": "999001",
+          "name": "Børnehuset"
+         },
+         "pickup": true,
+         "goHomeWith": false,
+         "selfDecider": false,
+         "dashboardModuleSettings": [
+          {
+           "presenceDashboardContext": "guardian_dashboard",
+           "presenceModules": [
+            {
+             "moduleType": "pickup_times",
+             "permission": "editable"
+            },
+            {
+             "moduleType": "drop_off_time",
+             "permission": "editable"
+            },
+            {
+             "moduleType": "report_sick",
+             "permission": "editable"
+            },
+            {
+             "moduleType": "vacation",
+             "permission": "editable"
+            },
+            {
+             "moduleType": "pickup_type",
+             "permission": "editable"
+            }
+           ]
+          }
+         ]
+        }
+       }
+      ]
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getOpeningHoursByInstitutionCodes"
+      ],
+      [
+       "institutionCodes[]",
+       "999001"
+      ],
+      [
+       "startDate",
+       "2026-11-13"
+      ],
+      [
+       "endDate",
+       "2026-11-13"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": {
+       "openingHoursOverviewDto": [
+        {
+         "institutionCode": "999001",
+         "openingHoursDto": [
+          {
+           "date": "2026-11-13",
+           "type": "general_opening_hours",
+           "openTime": "06:30",
+           "closeTime": "16:45"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "writes": [
+    {
+     "method": "presence.updateStatusByInstitutionProfileIds",
+     "payload": {
+      "institutionProfileIds": [
+       2001
+      ],
+      "status": 3
+     }
+    }
+   ]
+  },
+  {
+   "note": "",
+   "verb": "POST",
+   "path": "/children/2001/sick",
+   "body": null,
+   "status": 200,
+   "response": {
+    "id": 2001,
+    "name": "Oskar",
+    "picture": "f31f36216c157540666c85d9",
+    "institution": "Børnehuset",
+    "group": "Stue",
+    "status": "sick",
+    "statusLabel": "Sick",
+    "arrivedAt": null,
+    "leftAt": null,
+    "pickup": {
+     "time": "16:00",
+     "by": "Jonas Hansen (Far)"
+    },
+    "closesAt": "16:45",
+    "canReportSick": true
+   },
+   "aula": [
+    {
+     "verb": "POST",
+     "query": [
+      [
+       "method",
+       "presence.updateStatusByInstitutionProfileIds"
+      ]
+     ],
+     "body": {
+      "institutionProfileIds": [
+       2001
+      ],
+      "status": 1
+     },
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": true
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getDailyOverview"
+      ],
+      [
+       "childIds[]",
+       "2001"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": [
+       {
+        "id": 88001,
+        "institutionProfile": {
+         "id": 2001,
+         "profileId": 601,
+         "name": "Oskar",
+         "institutionCode": "999001",
+         "institutionName": "Børnehuset",
+         "role": "child",
+         "profilePicture": {
+          "id": 77,
+          "url": "https://fake-files.aula.dk/files/profile.png?sig=25"
+         }
+        },
+        "mainGroup": {
+         "id": 3001,
+         "name": "Stue",
+         "shortName": "Stue",
+         "institutionCode": "999001"
+        },
+        "status": 1,
+        "location": null,
+        "sleepIntervals": [],
+        "checkInTime": null,
+        "checkOutTime": null,
+        "entryTime": "07:45",
+        "exitTime": "16:00",
+        "exitWith": "Jonas Hansen (Far)",
+        "comment": "Har madpakke med"
+       }
+      ]
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getPresenceTemplates"
+      ],
+      [
+       "filterInstitutionProfileIds[]",
+       "2001"
+      ],
+      [
+       "fromDate",
+       "2026-11-13"
+      ],
+      [
+       "toDate",
+       "2026-11-13"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": {
+       "presenceWeekTemplates": [
+        {
+         "institutionProfile": {
+          "id": 2001,
+          "name": "Oskar",
+          "institutionCode": "999001"
+         },
+         "dayTemplates": [
+          {
+           "id": 7001,
+           "repeatPattern": "weekly",
+           "repeatFromDate": "2026-09-14",
+           "repeatToDate": null,
+           "isOnVacation": false,
+           "activityType": 0,
+           "entryTime": "07:45",
+           "exitTime": "16:00",
+           "exitWith": "Jonas Hansen (Far)",
+           "comment": "Har madpakke med",
+           "spareTimeActivity": null,
+           "byDate": "2026-11-13",
+           "dayOfWeek": 5
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getPresenceConfigurationByChildIds"
+      ],
+      [
+       "childIds[]",
+       "2001"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": [
+       {
+        "uniStudentId": 2001,
+        "presenceConfiguration": {
+         "institution": {
+          "institutionCode": "999001",
+          "name": "Børnehuset"
+         },
+         "pickup": true,
+         "goHomeWith": false,
+         "selfDecider": false,
+         "dashboardModuleSettings": [
+          {
+           "presenceDashboardContext": "guardian_dashboard",
+           "presenceModules": [
+            {
+             "moduleType": "pickup_times",
+             "permission": "editable"
+            },
+            {
+             "moduleType": "drop_off_time",
+             "permission": "editable"
+            },
+            {
+             "moduleType": "report_sick",
+             "permission": "editable"
+            },
+            {
+             "moduleType": "vacation",
+             "permission": "editable"
+            },
+            {
+             "moduleType": "pickup_type",
+             "permission": "editable"
+            }
+           ]
+          }
+         ]
+        }
+       }
+      ]
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getOpeningHoursByInstitutionCodes"
+      ],
+      [
+       "institutionCodes[]",
+       "999001"
+      ],
+      [
+       "startDate",
+       "2026-11-13"
+      ],
+      [
+       "endDate",
+       "2026-11-13"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": {
+       "openingHoursOverviewDto": [
+        {
+         "institutionCode": "999001",
+         "openingHoursDto": [
+          {
+           "date": "2026-11-13",
+           "type": "general_opening_hours",
+           "openTime": "06:30",
+           "closeTime": "16:45"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "writes": [
+    {
+     "method": "presence.updateStatusByInstitutionProfileIds",
+     "payload": {
+      "institutionProfileIds": [
+       2001
+      ],
+      "status": 1
+     }
+    }
+   ]
+  },
+  {
+   "note": "not checked in: not arrived",
+   "verb": "DELETE",
+   "path": "/children/2001/sick",
+   "body": null,
+   "status": 200,
+   "response": {
+    "id": 2001,
+    "name": "Oskar",
+    "picture": "f31f36216c157540666c85d9",
+    "institution": "Børnehuset",
+    "group": "Stue",
+    "status": "not_arrived",
+    "statusLabel": "Not Present",
+    "arrivedAt": null,
+    "leftAt": null,
+    "pickup": {
+     "time": "16:00",
+     "by": "Jonas Hansen (Far)"
+    },
+    "closesAt": "16:45",
+    "canReportSick": true
+   },
+   "aula": [
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getDailyOverview"
+      ],
+      [
+       "childIds[]",
+       "2001"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": [
+       {
+        "id": 88001,
+        "institutionProfile": {
+         "id": 2001,
+         "profileId": 601,
+         "name": "Oskar",
+         "institutionCode": "999001",
+         "institutionName": "Børnehuset",
+         "role": "child",
+         "profilePicture": {
+          "id": 77,
+          "url": "https://fake-files.aula.dk/files/profile.png?sig=26"
+         }
+        },
+        "mainGroup": {
+         "id": 3001,
+         "name": "Stue",
+         "shortName": "Stue",
+         "institutionCode": "999001"
+        },
+        "status": 1,
+        "location": null,
+        "sleepIntervals": [],
+        "checkInTime": null,
+        "checkOutTime": null,
+        "entryTime": "07:45",
+        "exitTime": "16:00",
+        "exitWith": "Jonas Hansen (Far)",
+        "comment": "Har madpakke med"
+       }
+      ]
+     }
+    },
+    {
+     "verb": "POST",
+     "query": [
+      [
+       "method",
+       "presence.updateStatusByInstitutionProfileIds"
+      ]
+     ],
+     "body": {
+      "institutionProfileIds": [
+       2001
+      ],
+      "status": 0
+     },
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": true
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getDailyOverview"
+      ],
+      [
+       "childIds[]",
+       "2001"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": [
+       {
+        "id": 88001,
+        "institutionProfile": {
+         "id": 2001,
+         "profileId": 601,
+         "name": "Oskar",
+         "institutionCode": "999001",
+         "institutionName": "Børnehuset",
+         "role": "child",
+         "profilePicture": {
+          "id": 77,
+          "url": "https://fake-files.aula.dk/files/profile.png?sig=27"
+         }
+        },
+        "mainGroup": {
+         "id": 3001,
+         "name": "Stue",
+         "shortName": "Stue",
+         "institutionCode": "999001"
+        },
+        "status": 0,
+        "location": null,
+        "sleepIntervals": [],
+        "checkInTime": null,
+        "checkOutTime": null,
+        "entryTime": "07:45",
+        "exitTime": "16:00",
+        "exitWith": "Jonas Hansen (Far)",
+        "comment": "Har madpakke med"
+       }
+      ]
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getPresenceTemplates"
+      ],
+      [
+       "filterInstitutionProfileIds[]",
+       "2001"
+      ],
+      [
+       "fromDate",
+       "2026-11-13"
+      ],
+      [
+       "toDate",
+       "2026-11-13"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": {
+       "presenceWeekTemplates": [
+        {
+         "institutionProfile": {
+          "id": 2001,
+          "name": "Oskar",
+          "institutionCode": "999001"
+         },
+         "dayTemplates": [
+          {
+           "id": 7001,
+           "repeatPattern": "weekly",
+           "repeatFromDate": "2026-09-14",
+           "repeatToDate": null,
+           "isOnVacation": false,
+           "activityType": 0,
+           "entryTime": "07:45",
+           "exitTime": "16:00",
+           "exitWith": "Jonas Hansen (Far)",
+           "comment": "Har madpakke med",
+           "spareTimeActivity": null,
+           "byDate": "2026-11-13",
+           "dayOfWeek": 5
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getPresenceConfigurationByChildIds"
+      ],
+      [
+       "childIds[]",
+       "2001"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": [
+       {
+        "uniStudentId": 2001,
+        "presenceConfiguration": {
+         "institution": {
+          "institutionCode": "999001",
+          "name": "Børnehuset"
+         },
+         "pickup": true,
+         "goHomeWith": false,
+         "selfDecider": false,
+         "dashboardModuleSettings": [
+          {
+           "presenceDashboardContext": "guardian_dashboard",
+           "presenceModules": [
+            {
+             "moduleType": "pickup_times",
+             "permission": "editable"
+            },
+            {
+             "moduleType": "drop_off_time",
+             "permission": "editable"
+            },
+            {
+             "moduleType": "report_sick",
+             "permission": "editable"
+            },
+            {
+             "moduleType": "vacation",
+             "permission": "editable"
+            },
+            {
+             "moduleType": "pickup_type",
+             "permission": "editable"
+            }
+           ]
+          }
+         ]
+        }
+       }
+      ]
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getOpeningHoursByInstitutionCodes"
+      ],
+      [
+       "institutionCodes[]",
+       "999001"
+      ],
+      [
+       "startDate",
+       "2026-11-13"
+      ],
+      [
+       "endDate",
+       "2026-11-13"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": {
+       "openingHoursOverviewDto": [
+        {
+         "institutionCode": "999001",
+         "openingHoursDto": [
+          {
+           "date": "2026-11-13",
+           "type": "general_opening_hours",
+           "openTime": "06:30",
+           "closeTime": "16:45"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "writes": [
+    {
+     "method": "presence.updateStatusByInstitutionProfileIds",
+     "payload": {
+      "institutionProfileIds": [
+       2001
+      ],
+      "status": 0
+     }
+    }
+   ]
+  },
+  {
+   "note": "unknown child",
+   "verb": "POST",
+   "path": "/children/9999/sick",
+   "body": null,
+   "status": 404,
+   "response": {
+    "error": "not_found",
+    "message": "child 9999"
+   },
+   "aula": [],
+   "writes": []
+  }
+ ]
+}

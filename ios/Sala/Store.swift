@@ -9,17 +9,11 @@ final class Store {
     enum Phase: Equatable {
         case loading
         case ready
-        /// The server needs a MitID login (503 auth_required).
+        /// No Aula session: the MitID login screen.
         case needsLogin
-        /// 401: the bearer token is wrong or missing.
-        case unauthorized
         /// No data and the last load failed (connection refused, 502, …).
         case failed(String)
     }
-
-    // Config
-    private(set) var serverURL: String
-    private(set) var token: String
 
     // State
     var phase: Phase = .loading
@@ -28,10 +22,6 @@ final class Store {
     var banner: String?
     var isRefreshing = false
     var showSettings = false
-
-    // Auth
-    var auth: AuthStatus?
-    var authError: String?
 
     // Messages
     /// The threads of the shown folder (`folder`), or the inbox.
@@ -80,22 +70,19 @@ final class Store {
 
 
     init() {
-        let overrideToken = Config.applyLaunchOverrides()
-        serverURL = Config.serverURL
-        // Keep a launch-argument token in memory too, in case the Keychain write failed.
-        token = overrideToken ?? Config.token
-        if token.isEmpty { showSettings = true }
+        // ponytail: leftovers of the server setup and the login spike; drop this once every install has run it.
+        for key in ["token", "serverURL", "spike.aulaTokens"] { Keychain.delete(key) }
     }
 
-    var client: APIClient { APIClient(baseURL: serverURL, token: token) }
+    var client: APIClient { APIClient() }
 
-    func updateConfig(serverURL: String, token: String) {
-        let url = serverURL.trimmingCharacters(in: .whitespacesAndNewlines)
-        let tok = token.trimmingCharacters(in: .whitespacesAndNewlines)
-        Config.save(serverURL: url, token: tok)
-        self.serverURL = url.isEmpty ? Shared.defaultServerURL : url
-        self.token = tok
-        Task { await load() }
+    /// Forgets the Aula session and everything shown from it.
+    func logout() async {
+        await Aula.shared.logout()
+        Config.clearWidgets()
+        today = nil
+        threads = nil
+        phase = .needsLogin
     }
 
     // MARK: Loading
@@ -146,14 +133,7 @@ final class Store {
         case is CancellationError:
             return nil
         case APIError.authRequired:
-            if phase != .needsLogin { auth = nil }
             phase = .needsLogin
-            Task { await refreshAuthStatus() }
-            return nil
-        case APIError.unauthorized:
-            Config.clearWidgets()
-            phase = .unauthorized
-            showSettings = true
             return nil
         default:
             let msg = error.localizedDescription
@@ -339,7 +319,6 @@ final class Store {
             return try await op()
         } catch {
             if case APIError.authRequired = error { handle(error) }
-            if case APIError.unauthorized = error { handle(error) }
             throw error
         }
     }
@@ -352,36 +331,6 @@ final class Store {
             return
         }
         threads?[i].unread = false
-    }
-
-    // MARK: Auth
-
-    func refreshAuthStatus() async {
-        do {
-            let s = try await client.authStatus()
-            let wasOK = auth?.state == "ok"
-            auth = s
-            authError = nil
-            // Only reload on the transition to ok, so a server that says ok but still answers 503 can't loop.
-            if s.state == "ok", !wasOK, phase == .needsLogin { await load() }
-        } catch is CancellationError {
-        } catch APIError.unauthorized {
-            handle(APIError.unauthorized)
-        } catch {
-            authError = error.localizedDescription
-        }
-    }
-
-    func startLogin() async {
-        authError = nil
-        do {
-            auth = try await client.login()
-        } catch is CancellationError {
-        } catch APIError.unauthorized {
-            handle(APIError.unauthorized)
-        } catch {
-            authError = error.localizedDescription
-        }
     }
 
     // MARK: Mutations
@@ -454,7 +403,7 @@ final class Store {
             replace(updated)
             await noteSick(updated)
         } catch {
-            let msg = handle(error) ?? "Open Sala to check the server and try again."
+            let msg = handle(error) ?? "Open Sala and try again."
             await StillSick.notifyFailure(name: name, msg)
         }
     }
@@ -465,7 +414,6 @@ final class Store {
             replace(updated)
         } catch {
             if case APIError.authRequired = error { handle(error) }
-            if case APIError.unauthorized = error { handle(error) }
             throw error
         }
     }
@@ -627,42 +575,12 @@ struct Paging: Equatable {
     }
 }
 
-// MARK: - Config (Keychain + launch overrides, see Shared/SalaShared.swift)
+// MARK: - Config
 
 enum Config {
-    static var serverURL: String { Shared.serverURL }
-    static var token: String { Shared.token }
-
-    static func save(serverURL: String, token: String) {
-        let urlChanged = (serverURL.isEmpty ? Shared.defaultServerURL : serverURL) != Shared.serverURL
-        Shared.setServerURL(serverURL)
-        if token.isEmpty { Keychain.delete() } else { Keychain.write(token) }
-        if token.isEmpty || urlChanged { clearWidgets() }
-    }
-
-    /// Drops the widgets' snapshot, so they don't keep showing data the settings no longer reach.
+    /// Drops the widgets' snapshot, so they don't keep showing data from a session that's gone.
     static func clearWidgets() {
         Shared.clearSnapshot()
         WidgetCenter.shared.reloadAllTimelines()
-    }
-
-    /// `-serverURL <url> -token <token>` launch arguments, or `SALA_SERVER_URL` / `SALA_TOKEN`
-    /// environment variables, override and persist the settings.
-    @discardableResult
-    static func applyLaunchOverrides() -> String? {
-        let info = ProcessInfo.processInfo
-        func arg(_ name: String) -> String? {
-            let a = info.arguments
-            guard let i = a.firstIndex(of: name), i + 1 < a.count else { return nil }
-            return a[i + 1]
-        }
-        if let url = arg("-serverURL") ?? info.environment["SALA_SERVER_URL"], !url.isEmpty {
-            Shared.setServerURL(url)
-        }
-        if let tok = arg("-token") ?? info.environment["SALA_TOKEN"], !tok.isEmpty {
-            Keychain.write(tok)
-            return tok
-        }
-        return nil
     }
 }

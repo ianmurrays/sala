@@ -78,17 +78,6 @@ struct TodayView: View {
                 } actions: {
                     Button("Try again") { Task { await store.load() } }
                         .buttonStyle(.glassProminent)
-                    Button("Settings") { store.showSettings = true }
-                }
-                .padding(.top, 40)
-            case .unauthorized:
-                ContentUnavailableView {
-                    Label("Token rejected", systemImage: "lock.trianglebadge.exclamationmark")
-                } description: {
-                    Text("The server didn't accept the token. Check it in Settings.")
-                } actions: {
-                    Button("Open Settings") { store.showSettings = true }
-                        .buttonStyle(.glassProminent)
                 }
                 .padding(.top, 40)
             default:

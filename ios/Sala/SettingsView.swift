@@ -3,62 +3,41 @@ import SwiftUI
 struct SettingsView: View {
     @Environment(Store.self) private var store
     @Environment(\.dismiss) private var dismiss
-    @State private var url = ""
-    @State private var token = ""
-    @State private var showToken = false
+    @State private var confirmLogout = false
+    #if DEBUG
+    @State private var captureTraffic = TrafficLog.enabled
+    #endif
 
     var body: some View {
         NavigationStack {
             Form {
-                if store.token.isEmpty {
-                    Section {
-                        Label("Enter your server's URL and token to get started.", systemImage: "info.circle")
-                    }
-                } else if store.phase == .unauthorized {
-                    Section {
-                        Label("The server rejected the token. Check the token and server URL.", systemImage: "lock.trianglebadge.exclamationmark")
-                            .foregroundStyle(Color.sickText)
-                    }
-                }
-
                 Section {
-                    TextField("http://localhost:8000", text: $url)
-                        .keyboardType(.URL)
-                        .textContentType(.URL)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                } header: {
-                    Text("Server URL")
+                    Button("Log out of Aula", role: .destructive) { confirmLogout = true }
                 } footer: {
-                    Text("Your home server, for example http://192.168.1.10:8000 or a Tailscale address.")
-                }
-
-                Section {
-                    HStack {
-                        Group {
-                            if showToken {
-                                TextField("Token", text: $token)
-                            } else {
-                                SecureField("Token", text: $token)
-                            }
-                        }
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                        .fontDesign(.monospaced)
-                        Button(showToken ? "Hide token" : "Show token", systemImage: showToken ? "eye.slash" : "eye") {
-                            showToken.toggle()
-                        }
-                        .labelStyle(.iconOnly)
-                        .buttonStyle(.borderless)
-                    }
-                } header: {
-                    Text("Bearer token")
-                } footer: {
-                    Text("Stored in the Keychain on this device.")
+                    Text("Sala talks to Aula directly from this phone. Logging out forgets the session; you'll need MitID to log in again.")
                 }
 
                 #if DEBUG
-                Section("Debug") {
+                Section {
+                    Toggle("Capture Aula traffic", isOn: Binding(get: { captureTraffic }, set: {
+                        captureTraffic = $0
+                        TrafficLog.enabled = $0
+                    }))
+                    Button("Clear captured traffic", role: .destructive) { TrafficLog.clear() }
+                } header: {
+                    Text("Debug")
+                } footer: {
+                    Text("Writes every Aula call and its answer to aula-traffic.jsonl. Pull it with scripts/pull-aula-traffic.sh.")
+                }
+
+                Section {
+                    Button("Expire the Aula session and reload") {
+                        Task {
+                            await Aula.shared.debugExpireSession()
+                            await store.load()
+                            dismiss()
+                        }
+                    }
                     Button("Test still-sick notification in 5 s") {
                         let child = store.today?.children.first
                         Task { await StillSick.schedule(child: child?.id ?? 0, name: child?.name ?? "Oskar", at: Date() + 5) }
@@ -72,18 +51,15 @@ struct SettingsView: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Close", systemImage: "xmark", role: .close) { dismiss() }
                 }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save", systemImage: "checkmark", role: .confirm) {
-                        store.updateConfig(serverURL: url, token: token)
+            }
+            .confirmationDialog("Log out of Aula?", isPresented: $confirmLogout, titleVisibility: .visible) {
+                Button("Log out", role: .destructive) {
+                    Task {
+                        await store.logout()
                         dismiss()
                     }
-                    .disabled(token.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             }
-        }
-        .onAppear {
-            url = store.serverURL
-            token = store.token
         }
     }
 }

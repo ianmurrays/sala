@@ -1,22 +1,10 @@
 import Foundation
 import Security
 
-// Compiled into both the app and the widget: settings, the token, the child shape and a `/today` fetch.
+// Compiled into both the app and the widget: the child shape and the app's `/today` snapshot.
 
 enum Shared {
-    static let defaultServerURL = "http://localhost:8000"
-
-    private static let urlKey = "serverURL"
     private static let snapshotKey = "todaySnapshot"
-
-    static var serverURL: String {
-        let v = Keychain.string(urlKey)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        return v.isEmpty ? defaultServerURL : v
-    }
-
-    static func setServerURL(_ url: String) { Keychain.write(Data(url.utf8), urlKey) }
-
-    static var token: String { Keychain.read() ?? "" }
 
     // MARK: Snapshot (the last good `/today` children, for the widget to fall back on)
 
@@ -30,29 +18,6 @@ enum Shared {
     }
 
     static func clearSnapshot() { Keychain.delete(snapshotKey) }
-
-    // MARK: Fetch
-
-    enum FetchError: Error { case authRequired, unauthorized, failed }
-
-    /// `GET /today`, decoding only the date and the children.
-    static func fetchToday() async throws -> TodaySnapshot {
-        guard let url = URL(string: serverURL.trimmingCharacters(in: CharacterSet(charactersIn: "/")) + "/today") else {
-            throw FetchError.failed
-        }
-        var request = URLRequest(url: url, timeoutInterval: 20)
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        let (data, response) = try await URLSession.shared.data(for: request)
-        let status = (response as? HTTPURLResponse)?.statusCode ?? 0
-        if status == 503, (try? JSONDecoder().decode([String: String?].self, from: data))?["error"] == "auth_required" {
-            throw FetchError.authRequired
-        }
-        if status == 401 { throw FetchError.unauthorized }
-        guard (200..<300).contains(status) else { throw FetchError.failed }
-        var today = try JSONDecoder().decode(TodaySnapshot.self, from: data)
-        today.fetchedAt = .now
-        return today
-    }
 
     // MARK: Copenhagen days
 
@@ -100,11 +65,10 @@ struct Pickup: Codable, Sendable, Equatable {
 
 // MARK: - Keychain (shared by the app and the widget through a keychain access group)
 
-/// Holds the token, the server URL and the snapshot. A keychain access group instead of an app group,
+/// Holds the snapshot and the Aula tokens (the app's only; the widget never calls Aula). A keychain access group instead of an app group,
 /// because a personal (free) team can't register app groups.
 enum Keychain {
     private static let service = "sala"
-    private static let tokenKey = "token"
     /// `$(AppIdentifierPrefix)$(SALA_BUNDLE_ID)`, from Info.plist, since the prefix is the signing team's ID.
     private static let group = Bundle.main.object(forInfoDictionaryKey: "SalaKeychainGroup") as? String ?? ""
 
@@ -141,9 +105,4 @@ enum Keychain {
     }
 
     static func delete(_ account: String) { SecItemDelete(base(account) as CFDictionary) }
-
-    // The token.
-    static func read() -> String? { string(tokenKey) }
-    @discardableResult static func write(_ token: String) -> Bool { write(Data(token.utf8), tokenKey) }
-    static func delete() { delete(tokenKey) }
 }

@@ -1,0 +1,739 @@
+{
+ "name": "folders",
+ "today": "2026-11-13",
+ "now": "2026-11-13T13:07:00+01:00",
+ "forbidden": [],
+ "profile": {
+  "profiles.getProfilesByLogin": {
+   "status": {
+    "code": 0,
+    "message": "OK"
+   },
+   "data": {
+    "profiles": [
+     {
+      "profileId": 501,
+      "displayName": "Jonas Hansen",
+      "institutionProfiles": [
+       {
+        "id": 1001,
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset",
+        "role": "guardian"
+       }
+      ],
+      "children": [
+       {
+        "id": 2001,
+        "profileId": 601,
+        "name": "Oskar",
+        "userId": "oskar01",
+        "hasCustodyOrExtendedAccess": true,
+        "institutionProfile": {
+         "institutionName": "Børnehuset",
+         "institutionCode": "999001",
+         "metadata": "Stue"
+        },
+        "profilePicture": {
+         "id": 77,
+         "url": "https://fake-files.aula.dk/files/profile.png?sig=489"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "profiles.getProfileContext": {
+   "status": {
+    "code": 0,
+    "message": "OK"
+   },
+   "data": {
+    "institutionProfile": {
+     "id": 1001
+    },
+    "institutions": []
+   }
+  }
+ },
+ "files": {},
+ "steps": [
+  {
+   "note": "",
+   "verb": "GET",
+   "path": "/folders",
+   "body": null,
+   "status": 200,
+   "response": [
+    {
+     "id": 71,
+     "name": "Skole"
+    },
+    {
+     "id": 72,
+     "name": "Gemt"
+    }
+   ],
+   "aula": [
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "messaging.getFolders"
+      ],
+      [
+       "IncludeDeletedFolders",
+       "false"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": [
+       {
+        "id": 70,
+        "name": "Slettet post",
+        "type": "deleted"
+       },
+       {
+        "id": 71,
+        "name": "Skole",
+        "type": "normal"
+       },
+       {
+        "id": 72,
+        "name": "Gemt",
+        "type": "normal"
+       }
+      ]
+     }
+    }
+   ],
+   "writes": []
+  },
+  {
+   "note": "",
+   "verb": "POST",
+   "path": "/folders",
+   "body": {
+    "name": "  Ny mappe "
+   },
+   "status": 200,
+   "response": {
+    "id": 81,
+    "name": "Ny mappe"
+   },
+   "aula": [
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "messaging.getFolders"
+      ],
+      [
+       "IncludeDeletedFolders",
+       "false"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": [
+       {
+        "id": 70,
+        "name": "Slettet post",
+        "type": "deleted"
+       },
+       {
+        "id": 71,
+        "name": "Skole",
+        "type": "normal"
+       },
+       {
+        "id": 72,
+        "name": "Gemt",
+        "type": "normal"
+       }
+      ]
+     }
+    },
+    {
+     "verb": "POST",
+     "query": [
+      [
+       "method",
+       "messaging.createFolder"
+      ]
+     ],
+     "body": {
+      "folderName": "Ny mappe"
+     },
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": null
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "messaging.getFolders"
+      ],
+      [
+       "IncludeDeletedFolders",
+       "false"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": [
+       {
+        "id": 70,
+        "name": "Slettet post",
+        "type": "deleted"
+       },
+       {
+        "id": 71,
+        "name": "Skole",
+        "type": "normal"
+       },
+       {
+        "id": 72,
+        "name": "Gemt",
+        "type": "normal"
+       },
+       {
+        "id": 81,
+        "name": "Ny mappe",
+        "type": "normal"
+       }
+      ]
+     }
+    }
+   ],
+   "writes": [
+    {
+     "method": "messaging.createFolder",
+     "payload": {
+      "folderName": "Ny mappe"
+     }
+    }
+   ]
+  },
+  {
+   "note": "",
+   "verb": "PATCH",
+   "path": "/folders/71",
+   "body": {
+    "name": "Skole 2"
+   },
+   "status": 200,
+   "response": {
+    "id": 71,
+    "name": "Skole 2"
+   },
+   "aula": [
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "messaging.getFolders"
+      ],
+      [
+       "IncludeDeletedFolders",
+       "false"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": [
+       {
+        "id": 70,
+        "name": "Slettet post",
+        "type": "deleted"
+       },
+       {
+        "id": 71,
+        "name": "Skole",
+        "type": "normal"
+       },
+       {
+        "id": 72,
+        "name": "Gemt",
+        "type": "normal"
+       },
+       {
+        "id": 81,
+        "name": "Ny mappe",
+        "type": "normal"
+       }
+      ]
+     }
+    },
+    {
+     "verb": "POST",
+     "query": [
+      [
+       "method",
+       "messaging.updateFolder"
+      ]
+     ],
+     "body": {
+      "folderName": "Skole 2",
+      "folderId": 71
+     },
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": null
+     }
+    }
+   ],
+   "writes": [
+    {
+     "method": "messaging.updateFolder",
+     "payload": {
+      "folderName": "Skole 2",
+      "folderId": 71
+     }
+    }
+   ]
+  },
+  {
+   "note": "unknown folder",
+   "verb": "PATCH",
+   "path": "/folders/999",
+   "body": {
+    "name": "x"
+   },
+   "status": 404,
+   "response": {
+    "error": "not_found",
+    "message": "folder 999"
+   },
+   "aula": [
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "messaging.getFolders"
+      ],
+      [
+       "IncludeDeletedFolders",
+       "false"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": [
+       {
+        "id": 70,
+        "name": "Slettet post",
+        "type": "deleted"
+       },
+       {
+        "id": 71,
+        "name": "Skole 2",
+        "type": "normal"
+       },
+       {
+        "id": 72,
+        "name": "Gemt",
+        "type": "normal"
+       },
+       {
+        "id": 81,
+        "name": "Ny mappe",
+        "type": "normal"
+       }
+      ]
+     }
+    }
+   ],
+   "writes": []
+  },
+  {
+   "note": "Aula's deleted folder",
+   "verb": "PATCH",
+   "path": "/folders/70",
+   "body": {
+    "name": "x"
+   },
+   "status": 404,
+   "response": {
+    "error": "not_found",
+    "message": "folder 70"
+   },
+   "aula": [
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "messaging.getFolders"
+      ],
+      [
+       "IncludeDeletedFolders",
+       "false"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": [
+       {
+        "id": 70,
+        "name": "Slettet post",
+        "type": "deleted"
+       },
+       {
+        "id": 71,
+        "name": "Skole 2",
+        "type": "normal"
+       },
+       {
+        "id": 72,
+        "name": "Gemt",
+        "type": "normal"
+       },
+       {
+        "id": 81,
+        "name": "Ny mappe",
+        "type": "normal"
+       }
+      ]
+     }
+    }
+   ],
+   "writes": []
+  },
+  {
+   "note": "empty name",
+   "verb": "POST",
+   "path": "/folders",
+   "body": {
+    "name": "   "
+   },
+   "status": 400,
+   "response": {
+    "error": "bad_request",
+    "message": "name must be 1–100 characters"
+   },
+   "aula": [],
+   "writes": []
+  },
+  {
+   "note": "long name",
+   "verb": "POST",
+   "path": "/folders",
+   "body": {
+    "name": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+   },
+   "status": 400,
+   "response": {
+    "error": "bad_request",
+    "message": "name must be 1–100 characters"
+   },
+   "aula": [],
+   "writes": []
+  },
+  {
+   "note": "",
+   "verb": "DELETE",
+   "path": "/folders/72",
+   "body": null,
+   "status": 200,
+   "response": {
+    "ok": true
+   },
+   "aula": [
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "messaging.getFolders"
+      ],
+      [
+       "IncludeDeletedFolders",
+       "false"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": [
+       {
+        "id": 70,
+        "name": "Slettet post",
+        "type": "deleted"
+       },
+       {
+        "id": 71,
+        "name": "Skole 2",
+        "type": "normal"
+       },
+       {
+        "id": 72,
+        "name": "Gemt",
+        "type": "normal"
+       },
+       {
+        "id": 81,
+        "name": "Ny mappe",
+        "type": "normal"
+       }
+      ]
+     }
+    },
+    {
+     "verb": "POST",
+     "query": [
+      [
+       "method",
+       "messaging.deleteFolder"
+      ]
+     ],
+     "body": {
+      "folderId": 72
+     },
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": null
+     }
+    }
+   ],
+   "writes": [
+    {
+     "method": "messaging.deleteFolder",
+     "payload": {
+      "folderId": 72
+     }
+    }
+   ]
+  },
+  {
+   "note": "its threads go too",
+   "verb": "DELETE",
+   "path": "/folders/71",
+   "body": null,
+   "status": 200,
+   "response": {
+    "ok": true
+   },
+   "aula": [
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "messaging.getFolders"
+      ],
+      [
+       "IncludeDeletedFolders",
+       "false"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": [
+       {
+        "id": 70,
+        "name": "Slettet post",
+        "type": "deleted"
+       },
+       {
+        "id": 71,
+        "name": "Skole 2",
+        "type": "normal"
+       },
+       {
+        "id": 81,
+        "name": "Ny mappe",
+        "type": "normal"
+       }
+      ]
+     }
+    },
+    {
+     "verb": "POST",
+     "query": [
+      [
+       "method",
+       "messaging.deleteFolder"
+      ]
+     ],
+     "body": {
+      "folderId": 71
+     },
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": null
+     }
+    }
+   ],
+   "writes": [
+    {
+     "method": "messaging.deleteFolder",
+     "payload": {
+      "folderId": 71
+     }
+    }
+   ]
+  },
+  {
+   "note": "",
+   "verb": "GET",
+   "path": "/folders",
+   "body": null,
+   "status": 200,
+   "response": [
+    {
+     "id": 81,
+     "name": "Ny mappe"
+    }
+   ],
+   "aula": [
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "messaging.getFolders"
+      ],
+      [
+       "IncludeDeletedFolders",
+       "false"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": [
+       {
+        "id": 70,
+        "name": "Slettet post",
+        "type": "deleted"
+       },
+       {
+        "id": 81,
+        "name": "Ny mappe",
+        "type": "normal"
+       }
+      ]
+     }
+    }
+   ],
+   "writes": []
+  },
+  {
+   "note": "",
+   "verb": "GET",
+   "path": "/threads?folder=71",
+   "body": null,
+   "status": 200,
+   "response": [],
+   "aula": [
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "messaging.getThreads"
+      ],
+      [
+       "sortOn",
+       "date"
+      ],
+      [
+       "orderDirection",
+       "desc"
+      ],
+      [
+       "page",
+       "0"
+      ],
+      [
+       "folderId",
+       "71"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": {
+       "threads": [],
+       "moreMessagesExist": false
+      }
+     }
+    }
+   ],
+   "writes": []
+  }
+ ]
+}

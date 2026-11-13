@@ -1,0 +1,1978 @@
+{
+ "name": "gallery",
+ "today": "2026-11-13",
+ "now": "2026-11-13T13:07:00+01:00",
+ "forbidden": [],
+ "profile": {
+  "profiles.getProfilesByLogin": {
+   "status": {
+    "code": 0,
+    "message": "OK"
+   },
+   "data": {
+    "profiles": [
+     {
+      "profileId": 501,
+      "displayName": "Jonas Hansen",
+      "institutionProfiles": [
+       {
+        "id": 1001,
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset",
+        "role": "guardian"
+       }
+      ],
+      "children": [
+       {
+        "id": 2001,
+        "profileId": 601,
+        "name": "Oskar",
+        "userId": "oskar01",
+        "hasCustodyOrExtendedAccess": true,
+        "institutionProfile": {
+         "institutionName": "Børnehuset",
+         "institutionCode": "999001",
+         "metadata": "Stue"
+        },
+        "profilePicture": {
+         "id": 77,
+         "url": "https://fake-files.aula.dk/files/profile.png?sig=39"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "profiles.getProfileContext": {
+   "status": {
+    "code": 0,
+    "message": "OK"
+   },
+   "data": {
+    "institutionProfile": {
+     "id": 1001
+    },
+    "institutions": []
+   }
+  }
+ },
+ "files": {},
+ "steps": [
+  {
+   "note": "",
+   "verb": "GET",
+   "path": "/albums?page=1",
+   "body": null,
+   "status": 200,
+   "response": [
+    {
+     "id": 0,
+     "title": "Billeder af dit barn",
+     "date": "2026-11-13T10:40:22+01:00",
+     "cover": "b8e7b0e884ca872c87853e7d",
+     "tagged": true
+    },
+    {
+     "id": 6001,
+     "title": "Skovtur",
+     "date": "2026-11-13T10:40:22+01:00",
+     "cover": "6693d0f0bc5ba523a2862403",
+     "tagged": false
+    },
+    {
+     "id": 6002,
+     "title": "Juleklip",
+     "date": "2026-11-06T10:40:22+01:00",
+     "cover": "b8e7b0e884ca872c87853e7d",
+     "tagged": false
+    }
+   ],
+   "aula": [
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "profiles.getProfilesByLogin"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": {
+       "profiles": [
+        {
+         "profileId": 501,
+         "displayName": "Jonas Hansen",
+         "institutionProfiles": [
+          {
+           "id": 1001,
+           "institutionCode": "999001",
+           "institutionName": "Børnehuset",
+           "role": "guardian"
+          }
+         ],
+         "children": [
+          {
+           "id": 2001,
+           "profileId": 601,
+           "name": "Oskar",
+           "userId": "oskar01",
+           "hasCustodyOrExtendedAccess": true,
+           "institutionProfile": {
+            "institutionName": "Børnehuset",
+            "institutionCode": "999001",
+            "metadata": "Stue"
+           },
+           "profilePicture": {
+            "id": 77,
+            "url": "https://fake-files.aula.dk/files/profile.png?sig=39"
+           }
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "profiles.getProfileContext"
+      ],
+      [
+       "portalrole",
+       "guardian"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": {
+       "institutionProfile": {
+        "id": 1001
+       },
+       "institutions": []
+      }
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "gallery.getAlbums"
+      ],
+      [
+       "index",
+       "0"
+      ],
+      [
+       "limit",
+       "20"
+      ],
+      [
+       "sortOn",
+       "createdAt"
+      ],
+      [
+       "orderDirection",
+       "desc"
+      ],
+      [
+       "filterBy",
+       "all"
+      ],
+      [
+       "filterInstProfileIds[]",
+       "1001"
+      ],
+      [
+       "filterInstProfileIds[]",
+       "2001"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": [
+       {
+        "id": null,
+        "title": "Billeder af dit barn",
+        "creationDate": "2026-11-13T10:40:22+01:00",
+        "thumbnailsUrls": [
+         "https://fake-files.aula.dk/files/gallery/6002-0-small.png?Expires=1&Signature=40"
+        ]
+       },
+       {
+        "id": 6001,
+        "title": "Skovtur",
+        "creationDate": "2026-11-13T10:40:22+01:00",
+        "thumbnailsUrls": [
+         "https://fake-files.aula.dk/files/gallery/6001-0-small.png?Expires=1&Signature=41"
+        ]
+       },
+       {
+        "id": 6002,
+        "title": "Juleklip",
+        "creationDate": "2026-11-06T10:40:22+01:00",
+        "thumbnailsUrls": [
+         "https://fake-files.aula.dk/files/gallery/6002-0-small.png?Expires=1&Signature=42"
+        ]
+       }
+      ]
+     }
+    }
+   ],
+   "writes": []
+  },
+  {
+   "note": "",
+   "verb": "GET",
+   "path": "/albums?page=2",
+   "body": null,
+   "status": 200,
+   "response": [],
+   "aula": [
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "gallery.getAlbums"
+      ],
+      [
+       "index",
+       "20"
+      ],
+      [
+       "limit",
+       "20"
+      ],
+      [
+       "sortOn",
+       "createdAt"
+      ],
+      [
+       "orderDirection",
+       "desc"
+      ],
+      [
+       "filterBy",
+       "all"
+      ],
+      [
+       "filterInstProfileIds[]",
+       "1001"
+      ],
+      [
+       "filterInstProfileIds[]",
+       "2001"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": []
+     }
+    }
+   ],
+   "writes": []
+  },
+  {
+   "note": "",
+   "verb": "GET",
+   "path": "/albums/6001/photos?page=1",
+   "body": null,
+   "status": 200,
+   "response": [
+    {
+     "id": 6001000,
+     "thumbnail": "6693d0f0bc5ba523a2862403",
+     "image": "c80c53ce65d6a51a1b99efb1",
+     "date": "2026-11-13T10:40:22+01:00"
+    },
+    {
+     "id": 6001001,
+     "thumbnail": "96c03e938bbf1bd0bb5da6f5",
+     "image": "c20883a1e548ae9601c8574d",
+     "date": "2026-11-13T09:40:22+01:00"
+    },
+    {
+     "id": 6001002,
+     "thumbnail": "acefe77a25d7339133b99b44",
+     "image": "cabf75b742a947ebe016b05c",
+     "date": "2026-11-13T08:40:22+01:00"
+    },
+    {
+     "id": 6001003,
+     "thumbnail": "bd213338dc288a134b100559",
+     "image": "48ee0c0ccecbc66b444a8ad9",
+     "date": "2026-11-13T07:40:22+01:00"
+    },
+    {
+     "id": 6001004,
+     "thumbnail": "cb7145aea79d5cbb1ca38339",
+     "image": "40ecfb564dd77690a41188cd",
+     "date": "2026-11-13T06:40:22+01:00"
+    },
+    {
+     "id": 6001005,
+     "thumbnail": "280bf1ce2e95d29a4aef7fce",
+     "image": "b5251e4b4d37a6ac2317fd16",
+     "date": "2026-11-13T05:40:22+01:00"
+    },
+    {
+     "id": 6001006,
+     "thumbnail": "fe5df84b9cd057f19dbac95f",
+     "image": "73b37c376f81510fc9bb880f",
+     "date": "2026-11-13T04:40:22+01:00"
+    },
+    {
+     "id": 6001007,
+     "thumbnail": "27f6f9db19a97b1f805d77ea",
+     "image": "9d7e9c9d6254c5de4e95997f",
+     "date": "2026-11-13T03:40:22+01:00"
+    },
+    {
+     "id": 6001008,
+     "thumbnail": "9291c6a4676d178cb72405e6",
+     "image": "7ee8144f6d0d45804b51c959",
+     "date": "2026-11-13T02:40:22+01:00"
+    },
+    {
+     "id": 6001009,
+     "thumbnail": "ffb31bc8a750d121c87944f1",
+     "image": "26759db631321902498aa323",
+     "date": "2026-11-13T01:40:22+01:00"
+    },
+    {
+     "id": 6001010,
+     "thumbnail": "7185846d80ac5be4356ca434",
+     "image": "72861d5d221ef85e89bf0e28",
+     "date": "2026-11-13T00:40:22+01:00"
+    },
+    {
+     "id": 6001011,
+     "thumbnail": "fb935375bc6a619d7686a0b6",
+     "image": "bdb409c52185b4e5613295c4",
+     "date": "2026-11-12T23:40:22+01:00"
+    },
+    {
+     "id": 6001012,
+     "thumbnail": "bcfc5ecb4c577a9c16d1205d",
+     "image": "31383878ac8fd794d9101bd3",
+     "date": "2026-11-12T22:40:22+01:00"
+    },
+    {
+     "id": 6001013,
+     "thumbnail": "0cb4296564c3a5ea479f4314",
+     "image": "9146fe75666e5a1816055943",
+     "date": "2026-11-12T21:40:22+01:00"
+    },
+    {
+     "id": 6001014,
+     "thumbnail": "95f7ab83a6219edaae6a77c1",
+     "image": "aaac8f85e4ceffe1aff88be7",
+     "date": "2026-11-12T20:40:22+01:00"
+    },
+    {
+     "id": 6001015,
+     "thumbnail": "ed318765c6d6ab1e39561818",
+     "image": "0ddacdce524fdaecda3e3991",
+     "date": "2026-11-12T19:40:22+01:00"
+    },
+    {
+     "id": 6001016,
+     "thumbnail": "9d418645a1598de10f29b69b",
+     "image": "7b785ce2173716e9535993bf",
+     "date": "2026-11-12T18:40:22+01:00"
+    },
+    {
+     "id": 6001017,
+     "thumbnail": "06496509e04b7bc87f281848",
+     "image": "dc8afbefe085ce4c37882e98",
+     "date": "2026-11-12T17:40:22+01:00"
+    },
+    {
+     "id": 6001018,
+     "thumbnail": "cf93064ab8f74b7d1403146b",
+     "image": "2aa6156d96aaa743b78574ab",
+     "date": "2026-11-12T16:40:22+01:00"
+    },
+    {
+     "id": 6001019,
+     "thumbnail": "0c641f5d8392b7bec0f6cdf5",
+     "image": "baf4af03660512e0fc9d2618",
+     "date": "2026-11-12T15:40:22+01:00"
+    },
+    {
+     "id": 6001020,
+     "thumbnail": "d66bf4f2aa495746f60d433a",
+     "image": "0ae022a4666e592a3bb14269",
+     "date": "2026-11-12T14:40:22+01:00"
+    },
+    {
+     "id": 6001021,
+     "thumbnail": "e23bb9326724ba7ff2719fcc",
+     "image": "27ae56a3cae6e2a071b96f35",
+     "date": "2026-11-12T13:40:22+01:00"
+    },
+    {
+     "id": 6001022,
+     "thumbnail": "91250c6ed45163755457af9a",
+     "image": "4d3cd116b3157cd20a8d3701",
+     "date": "2026-11-12T12:40:22+01:00"
+    },
+    {
+     "id": 6001023,
+     "thumbnail": "ef1d1b1cd27a90674e4b6320",
+     "image": "4fa6653a782a1cda3257ed9b",
+     "date": "2026-11-12T11:40:22+01:00"
+    },
+    {
+     "id": 6001024,
+     "thumbnail": "126a41a7e640f72e47c7dd04",
+     "image": "3c6229543849f555cee998fc",
+     "date": "2026-11-12T10:40:22+01:00"
+    },
+    {
+     "id": 6001025,
+     "thumbnail": "1b7268cf89d7e6efdf5f8ccc",
+     "image": "e4417795acf3bf60f4d0d18b",
+     "date": "2026-11-12T09:40:22+01:00"
+    },
+    {
+     "id": 6001026,
+     "thumbnail": "8f131bee02ef6dab7bf6a443",
+     "image": "ee4bcbe360ebe5356d6a01a4",
+     "date": "2026-11-12T08:40:22+01:00"
+    },
+    {
+     "id": 6001027,
+     "thumbnail": "e82ecc5a5a5f3fbc5056a3d6",
+     "image": "811095cfa914a373dbcf2d6e",
+     "date": "2026-11-12T07:40:22+01:00"
+    },
+    {
+     "id": 6001028,
+     "thumbnail": "ee3102dba1827b548ae58e67",
+     "image": "5247a4e8d23b502cf1f80f6a",
+     "date": "2026-11-12T06:40:22+01:00"
+    },
+    {
+     "id": 6001029,
+     "thumbnail": "9e0ab166497d7cd6f6d491b0",
+     "image": "56cd30e6701b3dd25aea2df3",
+     "date": "2026-11-12T05:40:22+01:00"
+    },
+    {
+     "id": 6001030,
+     "thumbnail": "8565c31094fe75715904a1d6",
+     "image": "c90fc50ce010601966131650",
+     "date": "2026-11-12T04:40:22+01:00"
+    },
+    {
+     "id": 6001031,
+     "thumbnail": "1e6058c9e474d3aad4073cf1",
+     "image": "c610cab26c159c989139d2eb",
+     "date": "2026-11-12T03:40:22+01:00"
+    },
+    {
+     "id": 6001032,
+     "thumbnail": "43b76d8414d231b5a22d379b",
+     "image": "26ac540e6b151f5267936d06",
+     "date": "2026-11-12T02:40:22+01:00"
+    },
+    {
+     "id": 6001033,
+     "thumbnail": "9fa1fa601807d615856f10c3",
+     "image": "7648aea5c90d34bfa541e8d6",
+     "date": "2026-11-12T01:40:22+01:00"
+    },
+    {
+     "id": 6001034,
+     "thumbnail": "4d344ea6dac48c1359592d1c",
+     "image": "6fbd4a42b173bf1d904ac151",
+     "date": "2026-11-12T00:40:22+01:00"
+    },
+    {
+     "id": 6001035,
+     "thumbnail": "a19a70542327419b12fd0020",
+     "image": "821c3023c9842ab015365060",
+     "date": "2026-11-11T23:40:22+01:00"
+    },
+    {
+     "id": 6001036,
+     "thumbnail": "72678be1fd85df954a2d371e",
+     "image": "3a6928c89b64b0f517255826",
+     "date": "2026-11-11T22:40:22+01:00"
+    },
+    {
+     "id": 6001037,
+     "thumbnail": "1e3b49261cab5f793e08db79",
+     "image": "39f2bbabc1479de1a0c8c81c",
+     "date": "2026-11-11T21:40:22+01:00"
+    },
+    {
+     "id": 6001038,
+     "thumbnail": "6653d66d917b08d2f5f9fe25",
+     "image": "9c5c158aa06245268eba1b91",
+     "date": "2026-11-11T20:40:22+01:00"
+    },
+    {
+     "id": 6001039,
+     "thumbnail": "739049b1bcc5052458d1cf4e",
+     "image": "fae0d9edea5a21e9fcf00826",
+     "date": "2026-11-11T19:40:22+01:00"
+    },
+    {
+     "id": 6001040,
+     "thumbnail": "6234bc6bbaa03e78d6e6cf12",
+     "image": "9584f735b2449e385c3e89f5",
+     "date": "2026-11-11T18:40:22+01:00"
+    },
+    {
+     "id": 6001041,
+     "thumbnail": "7f864d540ab5509e84bc3be4",
+     "image": "b03c864ec493319d7f3d24df",
+     "date": "2026-11-11T17:40:22+01:00"
+    },
+    {
+     "id": 6001042,
+     "thumbnail": "97dacc41764b79c971267c93",
+     "image": "f1a957764309ad59b5b67112",
+     "date": "2026-11-11T16:40:22+01:00"
+    },
+    {
+     "id": 6001043,
+     "thumbnail": "e8dbfb851163eca1cc8d7217",
+     "image": "888283ee3c757cead894aa94",
+     "date": "2026-11-11T15:40:22+01:00"
+    },
+    {
+     "id": 6001044,
+     "thumbnail": "d269b1c1b35ab48a4c4ea011",
+     "image": "bb850761aaa4fcd9d7fb57b9",
+     "date": "2026-11-11T14:40:22+01:00"
+    },
+    {
+     "id": 6001045,
+     "thumbnail": "818c3a1a23d6bc55b1fc1295",
+     "image": "c1038566f4852dd9dc032a67",
+     "date": "2026-11-11T13:40:22+01:00"
+    },
+    {
+     "id": 6001046,
+     "thumbnail": "d60c91ba5df51eb66d6c7d5a",
+     "image": "54e259dccf6cf4429dc13f30",
+     "date": "2026-11-11T12:40:22+01:00"
+    },
+    {
+     "id": 6001047,
+     "thumbnail": "cb250a5c43ad9df596837133",
+     "image": "a7f911d02ac6d2efbc6923a5",
+     "date": "2026-11-11T11:40:22+01:00"
+    },
+    {
+     "id": 6001048,
+     "thumbnail": "6291f106ff4aa0cac71bb31b",
+     "image": "cfb9321618368700cc8ff932",
+     "date": "2026-11-11T10:40:22+01:00"
+    },
+    {
+     "id": 6001049,
+     "thumbnail": "47b25924a028840e6e6ab139",
+     "image": "de64f7bd26f94e7192312d83",
+     "date": "2026-11-11T09:40:22+01:00"
+    },
+    {
+     "id": 6001050,
+     "thumbnail": "82f5b3403be617d5c67a1233",
+     "image": "ccdb32d86c6315917b3fa89d",
+     "date": "2026-11-11T08:40:22+01:00"
+    },
+    {
+     "id": 6001051,
+     "thumbnail": "8b75c9240a309ffa3e619e7f",
+     "image": "0aa40678d599c203410b62ec",
+     "date": "2026-11-11T07:40:22+01:00"
+    },
+    {
+     "id": 6001052,
+     "thumbnail": "77de4c9505df7a5ad7a8f7c2",
+     "image": "537ba2e06826392fd0de935d",
+     "date": "2026-11-11T06:40:22+01:00"
+    },
+    {
+     "id": 6001053,
+     "thumbnail": "b807c51c849ec06427afbb09",
+     "image": "0fe9507aee89ff6a517b7cd6",
+     "date": "2026-11-11T05:40:22+01:00"
+    },
+    {
+     "id": 6001054,
+     "thumbnail": "3088bd739eb82c80184c2142",
+     "image": "3e045142f6fa1c091d3b4f01",
+     "date": "2026-11-11T04:40:22+01:00"
+    },
+    {
+     "id": 6001055,
+     "thumbnail": "b50ce7c381b8ee58f7f8e829",
+     "image": "d017ca8b197e645344e4c94e",
+     "date": "2026-11-11T03:40:22+01:00"
+    },
+    {
+     "id": 6001056,
+     "thumbnail": "462b7c38194f09db2d0ccfd6",
+     "image": "4e4266789287463c5c1c1e9d",
+     "date": "2026-11-11T02:40:22+01:00"
+    },
+    {
+     "id": 6001057,
+     "thumbnail": "8a6918bb2e6c45341922d184",
+     "image": "85bd9d0f4bf2a091162b50b6",
+     "date": "2026-11-11T01:40:22+01:00"
+    },
+    {
+     "id": 6001058,
+     "thumbnail": "9aaf9b1a7f76702cc425382d",
+     "image": "6bee3eedf7d20a53b6ba641d",
+     "date": "2026-11-11T00:40:22+01:00"
+    }
+   ],
+   "aula": [
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "gallery.getMedia"
+      ],
+      [
+       "albumId",
+       "6001"
+      ],
+      [
+       "userSpecificAlbum",
+       "false"
+      ],
+      [
+       "index",
+       "0"
+      ],
+      [
+       "limit",
+       "60"
+      ],
+      [
+       "sortOn",
+       "uploadedAt"
+      ],
+      [
+       "orderDirection",
+       "desc"
+      ],
+      [
+       "filterBy",
+       "all"
+      ],
+      [
+       "filterInstProfileIds[]",
+       "1001"
+      ],
+      [
+       "filterInstProfileIds[]",
+       "2001"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": {
+       "results": [
+        {
+         "id": 6001000,
+         "mediaType": "image",
+         "file": {
+          "id": 6001000,
+          "name": "IMG_0000.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-0.png?Expires=1&Signature=46",
+          "created": "2026-11-13T10:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-0-small.png?Expires=1&Signature=47"
+        },
+        {
+         "id": 6001999,
+         "mediaType": "video",
+         "file": {
+          "id": 6001999,
+          "name": "film.mp4",
+          "url": "https://fake-files.aula.dk/files/film.mp4"
+         }
+        },
+        {
+         "id": 6001001,
+         "mediaType": "image",
+         "file": {
+          "id": 6001001,
+          "name": "IMG_0001.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-1.png?Expires=1&Signature=48",
+          "created": "2026-11-13T09:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-1-small.png?Expires=1&Signature=49"
+        },
+        {
+         "id": 6001002,
+         "mediaType": "image",
+         "file": {
+          "id": 6001002,
+          "name": "IMG_0002.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-2.png?Expires=1&Signature=50",
+          "created": "2026-11-13T08:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-2-small.png?Expires=1&Signature=51"
+        },
+        {
+         "id": 6001003,
+         "mediaType": "image",
+         "file": {
+          "id": 6001003,
+          "name": "IMG_0003.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-3.png?Expires=1&Signature=52",
+          "created": "2026-11-13T07:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-3-small.png?Expires=1&Signature=53"
+        },
+        {
+         "id": 6001004,
+         "mediaType": "image",
+         "file": {
+          "id": 6001004,
+          "name": "IMG_0004.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-4.png?Expires=1&Signature=54",
+          "created": "2026-11-13T06:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-4-small.png?Expires=1&Signature=55"
+        },
+        {
+         "id": 6001005,
+         "mediaType": "image",
+         "file": {
+          "id": 6001005,
+          "name": "IMG_0005.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-5.png?Expires=1&Signature=56",
+          "created": "2026-11-13T05:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-5-small.png?Expires=1&Signature=57"
+        },
+        {
+         "id": 6001006,
+         "mediaType": "image",
+         "file": {
+          "id": 6001006,
+          "name": "IMG_0006.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-6.png?Expires=1&Signature=58",
+          "created": "2026-11-13T04:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-6-small.png?Expires=1&Signature=59"
+        },
+        {
+         "id": 6001007,
+         "mediaType": "image",
+         "file": {
+          "id": 6001007,
+          "name": "IMG_0007.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-7.png?Expires=1&Signature=60",
+          "created": "2026-11-13T03:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-7-small.png?Expires=1&Signature=61"
+        },
+        {
+         "id": 6001008,
+         "mediaType": "image",
+         "file": {
+          "id": 6001008,
+          "name": "IMG_0008.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-8.png?Expires=1&Signature=62",
+          "created": "2026-11-13T02:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-8-small.png?Expires=1&Signature=63"
+        },
+        {
+         "id": 6001009,
+         "mediaType": "image",
+         "file": {
+          "id": 6001009,
+          "name": "IMG_0009.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-9.png?Expires=1&Signature=64",
+          "created": "2026-11-13T01:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-9-small.png?Expires=1&Signature=65"
+        },
+        {
+         "id": 6001010,
+         "mediaType": "image",
+         "file": {
+          "id": 6001010,
+          "name": "IMG_0010.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-10.png?Expires=1&Signature=66",
+          "created": "2026-11-13T00:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-10-small.png?Expires=1&Signature=67"
+        },
+        {
+         "id": 6001011,
+         "mediaType": "image",
+         "file": {
+          "id": 6001011,
+          "name": "IMG_0011.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-11.png?Expires=1&Signature=68",
+          "created": "2026-11-12T23:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-11-small.png?Expires=1&Signature=69"
+        },
+        {
+         "id": 6001012,
+         "mediaType": "image",
+         "file": {
+          "id": 6001012,
+          "name": "IMG_0012.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-12.png?Expires=1&Signature=70",
+          "created": "2026-11-12T22:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-12-small.png?Expires=1&Signature=71"
+        },
+        {
+         "id": 6001013,
+         "mediaType": "image",
+         "file": {
+          "id": 6001013,
+          "name": "IMG_0013.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-13.png?Expires=1&Signature=72",
+          "created": "2026-11-12T21:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-13-small.png?Expires=1&Signature=73"
+        },
+        {
+         "id": 6001014,
+         "mediaType": "image",
+         "file": {
+          "id": 6001014,
+          "name": "IMG_0014.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-14.png?Expires=1&Signature=74",
+          "created": "2026-11-12T20:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-14-small.png?Expires=1&Signature=75"
+        },
+        {
+         "id": 6001015,
+         "mediaType": "image",
+         "file": {
+          "id": 6001015,
+          "name": "IMG_0015.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-15.png?Expires=1&Signature=76",
+          "created": "2026-11-12T19:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-15-small.png?Expires=1&Signature=77"
+        },
+        {
+         "id": 6001016,
+         "mediaType": "image",
+         "file": {
+          "id": 6001016,
+          "name": "IMG_0016.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-16.png?Expires=1&Signature=78",
+          "created": "2026-11-12T18:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-16-small.png?Expires=1&Signature=79"
+        },
+        {
+         "id": 6001017,
+         "mediaType": "image",
+         "file": {
+          "id": 6001017,
+          "name": "IMG_0017.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-17.png?Expires=1&Signature=80",
+          "created": "2026-11-12T17:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-17-small.png?Expires=1&Signature=81"
+        },
+        {
+         "id": 6001018,
+         "mediaType": "image",
+         "file": {
+          "id": 6001018,
+          "name": "IMG_0018.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-18.png?Expires=1&Signature=82",
+          "created": "2026-11-12T16:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-18-small.png?Expires=1&Signature=83"
+        },
+        {
+         "id": 6001019,
+         "mediaType": "image",
+         "file": {
+          "id": 6001019,
+          "name": "IMG_0019.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-19.png?Expires=1&Signature=84",
+          "created": "2026-11-12T15:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-19-small.png?Expires=1&Signature=85"
+        },
+        {
+         "id": 6001020,
+         "mediaType": "image",
+         "file": {
+          "id": 6001020,
+          "name": "IMG_0020.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-20.png?Expires=1&Signature=86",
+          "created": "2026-11-12T14:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-20-small.png?Expires=1&Signature=87"
+        },
+        {
+         "id": 6001021,
+         "mediaType": "image",
+         "file": {
+          "id": 6001021,
+          "name": "IMG_0021.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-21.png?Expires=1&Signature=88",
+          "created": "2026-11-12T13:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-21-small.png?Expires=1&Signature=89"
+        },
+        {
+         "id": 6001022,
+         "mediaType": "image",
+         "file": {
+          "id": 6001022,
+          "name": "IMG_0022.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-22.png?Expires=1&Signature=90",
+          "created": "2026-11-12T12:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-22-small.png?Expires=1&Signature=91"
+        },
+        {
+         "id": 6001023,
+         "mediaType": "image",
+         "file": {
+          "id": 6001023,
+          "name": "IMG_0023.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-23.png?Expires=1&Signature=92",
+          "created": "2026-11-12T11:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-23-small.png?Expires=1&Signature=93"
+        },
+        {
+         "id": 6001024,
+         "mediaType": "image",
+         "file": {
+          "id": 6001024,
+          "name": "IMG_0024.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-24.png?Expires=1&Signature=94",
+          "created": "2026-11-12T10:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-24-small.png?Expires=1&Signature=95"
+        },
+        {
+         "id": 6001025,
+         "mediaType": "image",
+         "file": {
+          "id": 6001025,
+          "name": "IMG_0025.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-25.png?Expires=1&Signature=96",
+          "created": "2026-11-12T09:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-25-small.png?Expires=1&Signature=97"
+        },
+        {
+         "id": 6001026,
+         "mediaType": "image",
+         "file": {
+          "id": 6001026,
+          "name": "IMG_0026.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-26.png?Expires=1&Signature=98",
+          "created": "2026-11-12T08:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-26-small.png?Expires=1&Signature=99"
+        },
+        {
+         "id": 6001027,
+         "mediaType": "image",
+         "file": {
+          "id": 6001027,
+          "name": "IMG_0027.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-27.png?Expires=1&Signature=100",
+          "created": "2026-11-12T07:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-27-small.png?Expires=1&Signature=101"
+        },
+        {
+         "id": 6001028,
+         "mediaType": "image",
+         "file": {
+          "id": 6001028,
+          "name": "IMG_0028.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-28.png?Expires=1&Signature=102",
+          "created": "2026-11-12T06:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-28-small.png?Expires=1&Signature=103"
+        },
+        {
+         "id": 6001029,
+         "mediaType": "image",
+         "file": {
+          "id": 6001029,
+          "name": "IMG_0029.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-29.png?Expires=1&Signature=104",
+          "created": "2026-11-12T05:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-29-small.png?Expires=1&Signature=105"
+        },
+        {
+         "id": 6001030,
+         "mediaType": "image",
+         "file": {
+          "id": 6001030,
+          "name": "IMG_0030.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-30.png?Expires=1&Signature=106",
+          "created": "2026-11-12T04:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-30-small.png?Expires=1&Signature=107"
+        },
+        {
+         "id": 6001031,
+         "mediaType": "image",
+         "file": {
+          "id": 6001031,
+          "name": "IMG_0031.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-31.png?Expires=1&Signature=108",
+          "created": "2026-11-12T03:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-31-small.png?Expires=1&Signature=109"
+        },
+        {
+         "id": 6001032,
+         "mediaType": "image",
+         "file": {
+          "id": 6001032,
+          "name": "IMG_0032.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-32.png?Expires=1&Signature=110",
+          "created": "2026-11-12T02:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-32-small.png?Expires=1&Signature=111"
+        },
+        {
+         "id": 6001033,
+         "mediaType": "image",
+         "file": {
+          "id": 6001033,
+          "name": "IMG_0033.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-33.png?Expires=1&Signature=112",
+          "created": "2026-11-12T01:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-33-small.png?Expires=1&Signature=113"
+        },
+        {
+         "id": 6001034,
+         "mediaType": "image",
+         "file": {
+          "id": 6001034,
+          "name": "IMG_0034.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-34.png?Expires=1&Signature=114",
+          "created": "2026-11-12T00:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-34-small.png?Expires=1&Signature=115"
+        },
+        {
+         "id": 6001035,
+         "mediaType": "image",
+         "file": {
+          "id": 6001035,
+          "name": "IMG_0035.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-35.png?Expires=1&Signature=116",
+          "created": "2026-11-11T23:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-35-small.png?Expires=1&Signature=117"
+        },
+        {
+         "id": 6001036,
+         "mediaType": "image",
+         "file": {
+          "id": 6001036,
+          "name": "IMG_0036.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-36.png?Expires=1&Signature=118",
+          "created": "2026-11-11T22:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-36-small.png?Expires=1&Signature=119"
+        },
+        {
+         "id": 6001037,
+         "mediaType": "image",
+         "file": {
+          "id": 6001037,
+          "name": "IMG_0037.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-37.png?Expires=1&Signature=120",
+          "created": "2026-11-11T21:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-37-small.png?Expires=1&Signature=121"
+        },
+        {
+         "id": 6001038,
+         "mediaType": "image",
+         "file": {
+          "id": 6001038,
+          "name": "IMG_0038.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-38.png?Expires=1&Signature=122",
+          "created": "2026-11-11T20:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-38-small.png?Expires=1&Signature=123"
+        },
+        {
+         "id": 6001039,
+         "mediaType": "image",
+         "file": {
+          "id": 6001039,
+          "name": "IMG_0039.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-39.png?Expires=1&Signature=124",
+          "created": "2026-11-11T19:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-39-small.png?Expires=1&Signature=125"
+        },
+        {
+         "id": 6001040,
+         "mediaType": "image",
+         "file": {
+          "id": 6001040,
+          "name": "IMG_0040.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-40.png?Expires=1&Signature=126",
+          "created": "2026-11-11T18:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-40-small.png?Expires=1&Signature=127"
+        },
+        {
+         "id": 6001041,
+         "mediaType": "image",
+         "file": {
+          "id": 6001041,
+          "name": "IMG_0041.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-41.png?Expires=1&Signature=128",
+          "created": "2026-11-11T17:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-41-small.png?Expires=1&Signature=129"
+        },
+        {
+         "id": 6001042,
+         "mediaType": "image",
+         "file": {
+          "id": 6001042,
+          "name": "IMG_0042.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-42.png?Expires=1&Signature=130",
+          "created": "2026-11-11T16:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-42-small.png?Expires=1&Signature=131"
+        },
+        {
+         "id": 6001043,
+         "mediaType": "image",
+         "file": {
+          "id": 6001043,
+          "name": "IMG_0043.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-43.png?Expires=1&Signature=132",
+          "created": "2026-11-11T15:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-43-small.png?Expires=1&Signature=133"
+        },
+        {
+         "id": 6001044,
+         "mediaType": "image",
+         "file": {
+          "id": 6001044,
+          "name": "IMG_0044.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-44.png?Expires=1&Signature=134",
+          "created": "2026-11-11T14:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-44-small.png?Expires=1&Signature=135"
+        },
+        {
+         "id": 6001045,
+         "mediaType": "image",
+         "file": {
+          "id": 6001045,
+          "name": "IMG_0045.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-45.png?Expires=1&Signature=136",
+          "created": "2026-11-11T13:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-45-small.png?Expires=1&Signature=137"
+        },
+        {
+         "id": 6001046,
+         "mediaType": "image",
+         "file": {
+          "id": 6001046,
+          "name": "IMG_0046.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-46.png?Expires=1&Signature=138",
+          "created": "2026-11-11T12:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-46-small.png?Expires=1&Signature=139"
+        },
+        {
+         "id": 6001047,
+         "mediaType": "image",
+         "file": {
+          "id": 6001047,
+          "name": "IMG_0047.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-47.png?Expires=1&Signature=140",
+          "created": "2026-11-11T11:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-47-small.png?Expires=1&Signature=141"
+        },
+        {
+         "id": 6001048,
+         "mediaType": "image",
+         "file": {
+          "id": 6001048,
+          "name": "IMG_0048.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-48.png?Expires=1&Signature=142",
+          "created": "2026-11-11T10:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-48-small.png?Expires=1&Signature=143"
+        },
+        {
+         "id": 6001049,
+         "mediaType": "image",
+         "file": {
+          "id": 6001049,
+          "name": "IMG_0049.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-49.png?Expires=1&Signature=144",
+          "created": "2026-11-11T09:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-49-small.png?Expires=1&Signature=145"
+        },
+        {
+         "id": 6001050,
+         "mediaType": "image",
+         "file": {
+          "id": 6001050,
+          "name": "IMG_0050.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-50.png?Expires=1&Signature=146",
+          "created": "2026-11-11T08:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-50-small.png?Expires=1&Signature=147"
+        },
+        {
+         "id": 6001051,
+         "mediaType": "image",
+         "file": {
+          "id": 6001051,
+          "name": "IMG_0051.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-51.png?Expires=1&Signature=148",
+          "created": "2026-11-11T07:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-51-small.png?Expires=1&Signature=149"
+        },
+        {
+         "id": 6001052,
+         "mediaType": "image",
+         "file": {
+          "id": 6001052,
+          "name": "IMG_0052.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-52.png?Expires=1&Signature=150",
+          "created": "2026-11-11T06:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-52-small.png?Expires=1&Signature=151"
+        },
+        {
+         "id": 6001053,
+         "mediaType": "image",
+         "file": {
+          "id": 6001053,
+          "name": "IMG_0053.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-53.png?Expires=1&Signature=152",
+          "created": "2026-11-11T05:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-53-small.png?Expires=1&Signature=153"
+        },
+        {
+         "id": 6001054,
+         "mediaType": "image",
+         "file": {
+          "id": 6001054,
+          "name": "IMG_0054.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-54.png?Expires=1&Signature=154",
+          "created": "2026-11-11T04:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-54-small.png?Expires=1&Signature=155"
+        },
+        {
+         "id": 6001055,
+         "mediaType": "image",
+         "file": {
+          "id": 6001055,
+          "name": "IMG_0055.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-55.png?Expires=1&Signature=156",
+          "created": "2026-11-11T03:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-55-small.png?Expires=1&Signature=157"
+        },
+        {
+         "id": 6001056,
+         "mediaType": "image",
+         "file": {
+          "id": 6001056,
+          "name": "IMG_0056.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-56.png?Expires=1&Signature=158",
+          "created": "2026-11-11T02:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-56-small.png?Expires=1&Signature=159"
+        },
+        {
+         "id": 6001057,
+         "mediaType": "image",
+         "file": {
+          "id": 6001057,
+          "name": "IMG_0057.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-57.png?Expires=1&Signature=160",
+          "created": "2026-11-11T01:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-57-small.png?Expires=1&Signature=161"
+        },
+        {
+         "id": 6001058,
+         "mediaType": "image",
+         "file": {
+          "id": 6001058,
+          "name": "IMG_0058.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-58.png?Expires=1&Signature=162",
+          "created": "2026-11-11T00:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-58-small.png?Expires=1&Signature=163"
+        }
+       ],
+       "mediaCount": 71,
+       "totalSize": 71
+      }
+     }
+    }
+   ],
+   "writes": []
+  },
+  {
+   "note": "",
+   "verb": "GET",
+   "path": "/albums/6001/photos?page=2",
+   "body": null,
+   "status": 200,
+   "response": [
+    {
+     "id": 6001059,
+     "thumbnail": "e24846cd3909ce46c155fe21",
+     "image": "34a65c9c6f28e14af96d1367",
+     "date": "2026-11-10T23:40:22+01:00"
+    },
+    {
+     "id": 6001060,
+     "thumbnail": "94063882b5324587a1815b74",
+     "image": "0ba0d3aa5d7021ea241ecc7a",
+     "date": "2026-11-10T22:40:22+01:00"
+    },
+    {
+     "id": 6001061,
+     "thumbnail": "abcedd1e31c56286c8e64a3c",
+     "image": "6d4c7c3f377dbcfa878f60b2",
+     "date": "2026-11-10T21:40:22+01:00"
+    },
+    {
+     "id": 6001062,
+     "thumbnail": "8b8fe6dc65589deca347345b",
+     "image": "dd77dc9eec9d5926b20b04d6",
+     "date": "2026-11-10T20:40:22+01:00"
+    },
+    {
+     "id": 6001063,
+     "thumbnail": "276f34398fffd74a863f594a",
+     "image": "6d19ff29e48f8739ae9a5283",
+     "date": "2026-11-10T19:40:22+01:00"
+    },
+    {
+     "id": 6001064,
+     "thumbnail": "e1512c7da99e55339277c211",
+     "image": "3d6a01a06cbde8e55beb8dcb",
+     "date": "2026-11-10T18:40:22+01:00"
+    },
+    {
+     "id": 6001065,
+     "thumbnail": "84218d135b156c39f66c3889",
+     "image": "fc80812a2d5796d9daac1cad",
+     "date": "2026-11-10T17:40:22+01:00"
+    },
+    {
+     "id": 6001066,
+     "thumbnail": "1426cf5a5c4b333f97c6c77f",
+     "image": "19125378115b454467c99e5d",
+     "date": "2026-11-10T16:40:22+01:00"
+    },
+    {
+     "id": 6001067,
+     "thumbnail": "da9af7cd124b2a2a379bb166",
+     "image": "1777a39b7fe92c71bd218690",
+     "date": "2026-11-10T15:40:22+01:00"
+    },
+    {
+     "id": 6001068,
+     "thumbnail": "8891ea5e441b9d0398898c01",
+     "image": "f388ed3dd6c623e07031d799",
+     "date": "2026-11-10T14:40:22+01:00"
+    },
+    {
+     "id": 6001069,
+     "thumbnail": "b95efaa0eb3e29235f7e2a09",
+     "image": "34858cbd63027ba7b7fafa3a",
+     "date": "2026-11-10T13:40:22+01:00"
+    }
+   ],
+   "aula": [
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "gallery.getMedia"
+      ],
+      [
+       "albumId",
+       "6001"
+      ],
+      [
+       "userSpecificAlbum",
+       "false"
+      ],
+      [
+       "index",
+       "60"
+      ],
+      [
+       "limit",
+       "60"
+      ],
+      [
+       "sortOn",
+       "uploadedAt"
+      ],
+      [
+       "orderDirection",
+       "desc"
+      ],
+      [
+       "filterBy",
+       "all"
+      ],
+      [
+       "filterInstProfileIds[]",
+       "1001"
+      ],
+      [
+       "filterInstProfileIds[]",
+       "2001"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": {
+       "results": [
+        {
+         "id": 6001059,
+         "mediaType": "image",
+         "file": {
+          "id": 6001059,
+          "name": "IMG_0059.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-59.png?Expires=1&Signature=304",
+          "created": "2026-11-10T23:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-59-small.png?Expires=1&Signature=305"
+        },
+        {
+         "id": 6001060,
+         "mediaType": "image",
+         "file": {
+          "id": 6001060,
+          "name": "IMG_0060.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-60.png?Expires=1&Signature=306",
+          "created": "2026-11-10T22:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-60-small.png?Expires=1&Signature=307"
+        },
+        {
+         "id": 6001061,
+         "mediaType": "image",
+         "file": {
+          "id": 6001061,
+          "name": "IMG_0061.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-61.png?Expires=1&Signature=308",
+          "created": "2026-11-10T21:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-61-small.png?Expires=1&Signature=309"
+        },
+        {
+         "id": 6001062,
+         "mediaType": "image",
+         "file": {
+          "id": 6001062,
+          "name": "IMG_0062.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-62.png?Expires=1&Signature=310",
+          "created": "2026-11-10T20:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-62-small.png?Expires=1&Signature=311"
+        },
+        {
+         "id": 6001063,
+         "mediaType": "image",
+         "file": {
+          "id": 6001063,
+          "name": "IMG_0063.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-63.png?Expires=1&Signature=312",
+          "created": "2026-11-10T19:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-63-small.png?Expires=1&Signature=313"
+        },
+        {
+         "id": 6001064,
+         "mediaType": "image",
+         "file": {
+          "id": 6001064,
+          "name": "IMG_0064.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-64.png?Expires=1&Signature=314",
+          "created": "2026-11-10T18:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-64-small.png?Expires=1&Signature=315"
+        },
+        {
+         "id": 6001065,
+         "mediaType": "image",
+         "file": {
+          "id": 6001065,
+          "name": "IMG_0065.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-65.png?Expires=1&Signature=316",
+          "created": "2026-11-10T17:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-65-small.png?Expires=1&Signature=317"
+        },
+        {
+         "id": 6001066,
+         "mediaType": "image",
+         "file": {
+          "id": 6001066,
+          "name": "IMG_0066.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-66.png?Expires=1&Signature=318",
+          "created": "2026-11-10T16:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-66-small.png?Expires=1&Signature=319"
+        },
+        {
+         "id": 6001067,
+         "mediaType": "image",
+         "file": {
+          "id": 6001067,
+          "name": "IMG_0067.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-67.png?Expires=1&Signature=320",
+          "created": "2026-11-10T15:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-67-small.png?Expires=1&Signature=321"
+        },
+        {
+         "id": 6001068,
+         "mediaType": "image",
+         "file": {
+          "id": 6001068,
+          "name": "IMG_0068.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-68.png?Expires=1&Signature=322",
+          "created": "2026-11-10T14:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-68-small.png?Expires=1&Signature=323"
+        },
+        {
+         "id": 6001069,
+         "mediaType": "image",
+         "file": {
+          "id": 6001069,
+          "name": "IMG_0069.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6001-69.png?Expires=1&Signature=324",
+          "created": "2026-11-10T13:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6001-69-small.png?Expires=1&Signature=325"
+        }
+       ],
+       "mediaCount": 71,
+       "totalSize": 71
+      }
+     }
+    }
+   ],
+   "writes": []
+  },
+  {
+   "note": "",
+   "verb": "GET",
+   "path": "/albums/6001/photos?page=3",
+   "body": null,
+   "status": 200,
+   "response": [],
+   "aula": [
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "gallery.getMedia"
+      ],
+      [
+       "albumId",
+       "6001"
+      ],
+      [
+       "userSpecificAlbum",
+       "false"
+      ],
+      [
+       "index",
+       "120"
+      ],
+      [
+       "limit",
+       "60"
+      ],
+      [
+       "sortOn",
+       "uploadedAt"
+      ],
+      [
+       "orderDirection",
+       "desc"
+      ],
+      [
+       "filterBy",
+       "all"
+      ],
+      [
+       "filterInstProfileIds[]",
+       "1001"
+      ],
+      [
+       "filterInstProfileIds[]",
+       "2001"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": {
+       "results": [],
+       "mediaCount": 71,
+       "totalSize": 71
+      }
+     }
+    }
+   ],
+   "writes": []
+  },
+  {
+   "note": "",
+   "verb": "GET",
+   "path": "/albums/6002/photos?page=1",
+   "body": null,
+   "status": 200,
+   "response": [
+    {
+     "id": 6002000,
+     "thumbnail": "b8e7b0e884ca872c87853e7d",
+     "image": "d2cabbed78c907403d2bb60f",
+     "date": "2026-11-13T10:40:22+01:00"
+    },
+    {
+     "id": 6002001,
+     "thumbnail": "808da843c9dd7b2a9f93775d",
+     "image": "408d15cada82b8c6a5effdf3",
+     "date": "2026-11-13T09:40:22+01:00"
+    },
+    {
+     "id": 6002002,
+     "thumbnail": "0247ab24d1cc8721c5eccf9e",
+     "image": "0a4b6a7d1d1d765001ace643",
+     "date": "2026-11-13T08:40:22+01:00"
+    }
+   ],
+   "aula": [
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "gallery.getMedia"
+      ],
+      [
+       "albumId",
+       "6002"
+      ],
+      [
+       "userSpecificAlbum",
+       "false"
+      ],
+      [
+       "index",
+       "0"
+      ],
+      [
+       "limit",
+       "60"
+      ],
+      [
+       "sortOn",
+       "uploadedAt"
+      ],
+      [
+       "orderDirection",
+       "desc"
+      ],
+      [
+       "filterBy",
+       "all"
+      ],
+      [
+       "filterInstProfileIds[]",
+       "1001"
+      ],
+      [
+       "filterInstProfileIds[]",
+       "2001"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": {
+       "results": [
+        {
+         "id": 6002000,
+         "mediaType": "image",
+         "file": {
+          "id": 6002000,
+          "name": "IMG_0000.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6002-0.png?Expires=1&Signature=466",
+          "created": "2026-11-13T10:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6002-0-small.png?Expires=1&Signature=467"
+        },
+        {
+         "id": 6002001,
+         "mediaType": "image",
+         "file": {
+          "id": 6002001,
+          "name": "IMG_0001.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6002-1.png?Expires=1&Signature=468",
+          "created": "2026-11-13T09:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6002-1-small.png?Expires=1&Signature=469"
+        },
+        {
+         "id": 6002002,
+         "mediaType": "image",
+         "file": {
+          "id": 6002002,
+          "name": "IMG_0002.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6002-2.png?Expires=1&Signature=470",
+          "created": "2026-11-13T08:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6002-2-small.png?Expires=1&Signature=471"
+        }
+       ],
+       "mediaCount": 3,
+       "totalSize": 3
+      }
+     }
+    }
+   ],
+   "writes": []
+  },
+  {
+   "note": "",
+   "verb": "GET",
+   "path": "/albums/0/photos?page=1",
+   "body": null,
+   "status": 200,
+   "response": [
+    {
+     "id": 6002000,
+     "thumbnail": "b8e7b0e884ca872c87853e7d",
+     "image": "d2cabbed78c907403d2bb60f",
+     "date": "2026-11-13T10:40:22+01:00"
+    },
+    {
+     "id": 6002001,
+     "thumbnail": "808da843c9dd7b2a9f93775d",
+     "image": "408d15cada82b8c6a5effdf3",
+     "date": "2026-11-13T09:40:22+01:00"
+    },
+    {
+     "id": 6002002,
+     "thumbnail": "0247ab24d1cc8721c5eccf9e",
+     "image": "0a4b6a7d1d1d765001ace643",
+     "date": "2026-11-13T08:40:22+01:00"
+    }
+   ],
+   "aula": [
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "gallery.getMedia"
+      ],
+      [
+       "userSpecificAlbum",
+       "true"
+      ],
+      [
+       "index",
+       "0"
+      ],
+      [
+       "limit",
+       "60"
+      ],
+      [
+       "sortOn",
+       "uploadedAt"
+      ],
+      [
+       "orderDirection",
+       "desc"
+      ],
+      [
+       "filterBy",
+       "all"
+      ],
+      [
+       "filterInstProfileIds[]",
+       "1001"
+      ],
+      [
+       "filterInstProfileIds[]",
+       "2001"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": {
+       "results": [
+        {
+         "id": 6002000,
+         "mediaType": "image",
+         "file": {
+          "id": 6002000,
+          "name": "IMG_0000.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6002-0.png?Expires=1&Signature=472",
+          "created": "2026-11-13T10:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6002-0-small.png?Expires=1&Signature=473"
+        },
+        {
+         "id": 6002001,
+         "mediaType": "image",
+         "file": {
+          "id": 6002001,
+          "name": "IMG_0001.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6002-1.png?Expires=1&Signature=474",
+          "created": "2026-11-13T09:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6002-1-small.png?Expires=1&Signature=475"
+        },
+        {
+         "id": 6002002,
+         "mediaType": "image",
+         "file": {
+          "id": 6002002,
+          "name": "IMG_0002.png",
+          "url": "https://fake-files.aula.dk/files/gallery/6002-2.png?Expires=1&Signature=476",
+          "created": "2026-11-13T08:40:22+01:00"
+         },
+         "smallThumbnailUrl": "https://fake-files.aula.dk/files/gallery/6002-2-small.png?Expires=1&Signature=477"
+        }
+       ],
+       "mediaCount": 3,
+       "totalSize": 3
+      }
+     }
+    }
+   ],
+   "writes": []
+  },
+  {
+   "note": "below 1",
+   "verb": "GET",
+   "path": "/albums?page=0",
+   "body": null,
+   "status": 400,
+   "response": {
+    "error": "bad_request",
+    "message": "query.page: Input should be greater than or equal to 1"
+   },
+   "aula": [],
+   "writes": []
+  },
+  {
+   "note": "not an int",
+   "verb": "GET",
+   "path": "/albums/x/photos",
+   "body": null,
+   "status": 400,
+   "response": {
+    "error": "bad_request",
+    "message": "path.album_id: Input should be a valid integer, unable to parse string as an integer"
+   },
+   "aula": [],
+   "writes": []
+  }
+ ]
+}
