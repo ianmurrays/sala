@@ -68,7 +68,7 @@ struct TodayView: View {
             Button {
                 store.showSettings = true
             } label: {
-                Image(systemName: "person.fill")
+                Image(systemName: "gearshape.fill")
                     .font(.title3)
                     .frame(width: 30, height: 30)
             }
