@@ -216,7 +216,6 @@ struct AISettingsView: View {
         switch provider {
         case .off: "No AI buttons anywhere. Nothing is sent."
         case .device: "Apple's model on this iPhone. Nothing leaves your phone. Needs Apple Intelligence."
-        case .pcc: "Apple's larger model on Apple's servers. The text leaves your phone: Apple says it's used only for your request and never stored, Apple staff can't access it, the servers run software independent researchers can inspect, and your iPhone only sends to servers that prove they run that software."
         case .openAI, .anthropic: "The text of the message or post you tap is sent to this provider, and its terms and data policies apply. It may store it. Only use one you trust with your children's school messages."
         }
     }

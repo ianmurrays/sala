@@ -204,7 +204,7 @@ Aula's contact book (Kontaktbog). Other families' personal data: the app keeps i
 
 ## Translation and summaries
 
-Not routes. The app translates or summarizes one message or post on a tap, in `ios/Sala/AI.swift`, with what Settings → AI picks: Apple's model on the phone, Apple's Private Cloud Compute, an OpenAI-compatible endpoint, or the Anthropic API. Off by default.
+Not routes. The app translates or summarizes one message or post on a tap, in `ios/Sala/AI.swift`, with what Settings → AI picks: Apple's model on the phone, an OpenAI-compatible endpoint, or the Anthropic API. Off by default.
 
 ## Push
 

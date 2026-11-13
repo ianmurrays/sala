@@ -6,13 +6,14 @@ import NaturalLanguage
 /// Off by default. Never runs on its own: only on a tap. Never falls back to another option.
 enum AI {
     enum Provider: String, CaseIterable, Identifiable, Sendable {
-        case off, device, pcc, openAI, anthropic
+        // ponytail: no Private Cloud Compute: it needs Apple's managed entitlement
+        // com.apple.developer.private-cloud-compute and crashes without it (while reporting itself available).
+        case off, device, openAI, anthropic
         var id: String { rawValue }
         var title: String {
             switch self {
             case .off: "Off"
             case .device: "On this iPhone"
-            case .pcc: "Apple Private Cloud Compute"
             case .openAI: "OpenAI-compatible endpoint"
             case .anthropic: "Anthropic (Claude)"
             }
@@ -86,13 +87,6 @@ enum AI {
             case .unavailable(.modelNotReady): return "Apple Intelligence is still downloading its model. Try again later."
             case .unavailable: return "Apple Intelligence isn't available."
             }
-        case .pcc:
-            switch PrivateCloudComputeLanguageModel().availability {
-            case .available: return nil
-            case .unavailable(.deviceNotEligible): return "This iPhone can't use Private Cloud Compute."
-            case .unavailable(.systemNotReady): return "Private Cloud Compute isn't ready yet. Try again later."
-            case .unavailable: return "Private Cloud Compute isn't available."
-            }
         case .openAI:
             if URL(string: endpoint)?.host == nil { return "Set the endpoint's URL." }
             if openAIModel.trimmingCharacters(in: .whitespaces).isEmpty { return "Set the model." }
@@ -108,7 +102,7 @@ enum AI {
     static var model: String {
         switch provider {
         case .off: ""
-        case .device, .pcc: ProcessInfo.processInfo.operatingSystemVersionString
+        case .device: ProcessInfo.processInfo.operatingSystemVersionString
         case .openAI: openAIModel
         case .anthropic: anthropicModel.isEmpty ? defaultAnthropicModel : anthropicModel
         }
@@ -185,8 +179,6 @@ enum AI {
                 throw Failure(errorDescription: "AI is off.")
             case .device:
                 return try await LanguageModelSession(model: SystemLanguageModel.default, instructions: instructions).respond(to: text).content
-            case .pcc:
-                return try await LanguageModelSession(model: PrivateCloudComputeLanguageModel(), instructions: instructions).respond(to: text).content
             case .openAI:
                 let req = try openAIRequest(endpoint: endpoint, key: openAIKey, model: openAIModel, instructions: instructions, text: text)
                 return try openAIText(try await send(req))
@@ -270,7 +262,7 @@ enum AI {
             r = URLRequest(url: URL(string: "https://api.anthropic.com/v1/models?limit=1000")!)
             r.setValue(anthropicKey, forHTTPHeaderField: "x-api-key")
             r.setValue("2026-10-21", forHTTPHeaderField: "anthropic-version")
-        case .off, .device, .pcc:
+        case .off, .device:
             return []
         }
         return try modelIDs(try await send(r))
