@@ -25,6 +25,9 @@ struct RootView: View {
             if store.phase == .needsLogin {
                 LoginView()
             } else {
+                // At most 5 tabs, Search included. On iPhone a sixth sends the overflow under iOS's More,
+                // where a tab's own NavigationStack shows a second navigation bar (#32). Apple's answer
+                // is fewer tabs: https://developer.apple.com/forums/thread/764293
                 TabView(selection: $store.selectedTab) {
                     Tab("Today", systemImage: "sun.max", value: AppTab.today) {
                         TodayView()
@@ -38,9 +41,6 @@ struct RootView: View {
                     .badge(store.unreadThreadCount)
                     Tab("Gallery", systemImage: "photo.on.rectangle", value: AppTab.gallery) {
                         GalleryView()
-                    }
-                    Tab("Contacts", systemImage: "person.2", value: AppTab.contacts) {
-                        ContactsView()
                     }
                     Tab(value: AppTab.search, role: .search) {
                         SearchView()

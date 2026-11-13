@@ -5,6 +5,7 @@ struct TodayView: View {
     @State private var pickupChild: Child?
     @State private var holidayItem: AttentionItem?
     @State private var showAbsence = false
+    @State private var showContacts = false
     @State private var attachments = AttachmentOpener()
 
     var body: some View {
@@ -31,6 +32,9 @@ struct TodayView: View {
             .sheet(isPresented: $showAbsence) {
                 AbsenceSheet()
             }
+            .sheet(isPresented: $showContacts) {
+                ContactsView()
+            }
             .quickLookPreview(attachments)
         }
     }
@@ -50,6 +54,17 @@ struct TodayView: View {
                     .accessibilityAddTraits(.isHeader)
             }
             Spacer()
+            // Contacts isn't a tab: with Search, a sixth tab sends the last two under iOS's More (#32).
+            Button {
+                showContacts = true
+            } label: {
+                Image(systemName: "person.2.fill")
+                    .font(.title3)
+                    .frame(width: 30, height: 30)
+            }
+            .buttonStyle(.glass)
+            .buttonBorderShape(.circle)
+            .accessibilityLabel("Contacts")
             Button {
                 store.showSettings = true
             } label: {
