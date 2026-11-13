@@ -1055,7 +1055,7 @@ extension Aula {
     /// activeChildrenInstitutionProfileIds, text, docType, docTypeCount; Media adds sortOn/orderDirection).
     /// Result fields from live answers (docs/aula-shapes/search.findGeneric.json): a Post result is a
     /// post with `creator` for getAllPosts' `ownerProfile` and `content` as the HTML string, no isBookmarked.
-    func search(_ profile: AulaProfile, _ text: String, type: String, page: Int, limit: Int = 20) async throws -> JSONObject {
+    func search(_ profile: AulaProfile, _ text: String, type: String, page: Int, limit: Int = 20, skips: Int = 0) async throws -> JSONObject {
         guard let docType = Self.searchTypes[type] else { throw MapError.badRequest("type must be messages, posts or photos") }
         var params = [("text", text), ("docType", docType), ("docTypeCount", "true"),
                       ("limit", String(limit)), ("offset", String((page - 1) * limit))]
@@ -1096,6 +1096,13 @@ extension Aula {
             }
         default:
             out["photos"] = (J.list(J.get(data, "mediaResults", default: nil)) ?? []).compactMap(photoOut)
+        }
+        // An Aula page whose hits were all left out (videos, threadless messages) would read as the end
+        // to the client, so answer the next Aula page instead; the client drops the repeats by id.
+        // ponytail: at most 5 pages skipped in one call; a longer run of left-out hits still ends the list.
+        let raw = (J.list(J.get(data, "mediaResults", default: nil)) ?? []).count + results.count
+        if (out[type] as? [Any])?.isEmpty == true, raw > 0, skips < 5, page < 100 {
+            return try await search(profile, text, type: type, page: page + 1, limit: limit, skips: skips + 1)
         }
         return out
     }

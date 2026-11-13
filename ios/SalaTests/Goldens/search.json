@@ -643,6 +643,239 @@
    "writes": []
   },
   {
+   "note": "an Aula page that is all videos is skipped, so an empty list still means no more",
+   "verb": "GET",
+   "path": "/search?q=b%C3%A5l%20%26%20co%2B1&type=photos&page=2",
+   "body": null,
+   "status": 200,
+   "response": {
+    "counts": {
+     "messages": 1,
+     "posts": 2,
+     "photos": 3
+    },
+    "messages": [],
+    "posts": [],
+    "photos": [
+     {
+      "id": 8801,
+      "thumbnail": "d6fa32d2247eebcc3082ff95",
+      "image": "bf87a41ff757c04bd00e4f8c",
+      "date": "2026-11-11T10:00:00+01:00"
+     }
+    ]
+   },
+   "aula": [
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "search.findGeneric"
+      ],
+      [
+       "text",
+       "bål & co+1"
+      ],
+      [
+       "docType",
+       "Media"
+      ],
+      [
+       "docTypeCount",
+       "true"
+      ],
+      [
+       "limit",
+       "20"
+      ],
+      [
+       "offset",
+       "20"
+      ],
+      [
+       "institutionProfileIds[]",
+       "1001"
+      ],
+      [
+       "activeChildrenInstitutionProfileIds[]",
+       "2001"
+      ],
+      [
+       "sortOn",
+       "datetime"
+      ],
+      [
+       "orderDirection",
+       "desc"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": {
+       "query": "bål & co+1",
+       "from": 0,
+       "size": 20,
+       "totalSize": 1,
+       "docTypeCount": [
+        {
+         "key": "Media",
+         "name": "Media",
+         "count": 3
+        },
+        {
+         "key": "Post",
+         "name": "Post",
+         "count": 2
+        },
+        {
+         "key": "ThreadMessage",
+         "name": "ThreadMessage",
+         "count": 1
+        },
+        {
+         "key": "Profile",
+         "name": "Profile",
+         "count": 4
+        }
+       ],
+       "profileTypeCount": [],
+       "groupTypeCount": [],
+       "results": [],
+       "mediaResults": [
+        {
+         "docType": "Media",
+         "docId": "8802",
+         "id": 8802,
+         "mediaType": "video",
+         "albumId": 4401,
+         "albumTitle": "Skovtur",
+         "file": {
+          "id": 9801,
+          "name": "foto1.jpg",
+          "url": "https://media-prod.aula.dk/gallery/foto1.jpg?sig=1",
+          "created": "2026-11-11T10:00:00+01:00"
+         },
+         "smallThumbnailUrl": "https://media-prod.aula.dk/gallery/foto1-small.jpg?sig=2",
+         "thumbnailUrl": null,
+         "score": 0
+        }
+       ]
+      }
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "search.findGeneric"
+      ],
+      [
+       "text",
+       "bål & co+1"
+      ],
+      [
+       "docType",
+       "Media"
+      ],
+      [
+       "docTypeCount",
+       "true"
+      ],
+      [
+       "limit",
+       "20"
+      ],
+      [
+       "offset",
+       "40"
+      ],
+      [
+       "institutionProfileIds[]",
+       "1001"
+      ],
+      [
+       "activeChildrenInstitutionProfileIds[]",
+       "2001"
+      ],
+      [
+       "sortOn",
+       "datetime"
+      ],
+      [
+       "orderDirection",
+       "desc"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": {
+       "query": "bål & co+1",
+       "from": 0,
+       "size": 20,
+       "totalSize": 1,
+       "docTypeCount": [
+        {
+         "key": "Media",
+         "name": "Media",
+         "count": 3
+        },
+        {
+         "key": "Post",
+         "name": "Post",
+         "count": 2
+        },
+        {
+         "key": "ThreadMessage",
+         "name": "ThreadMessage",
+         "count": 1
+        },
+        {
+         "key": "Profile",
+         "name": "Profile",
+         "count": 4
+        }
+       ],
+       "profileTypeCount": [],
+       "groupTypeCount": [],
+       "results": [],
+       "mediaResults": [
+        {
+         "docType": "Media",
+         "docId": "8801",
+         "id": 8801,
+         "mediaType": "image",
+         "albumId": 4401,
+         "albumTitle": "Skovtur",
+         "file": {
+          "id": 9801,
+          "name": "foto1.jpg",
+          "url": "https://media-prod.aula.dk/gallery/foto1.jpg?sig=1",
+          "created": "2026-11-11T10:00:00+01:00"
+         },
+         "smallThumbnailUrl": "https://media-prod.aula.dk/gallery/foto1-small.jpg?sig=2",
+         "thumbnailUrl": null,
+         "score": 0
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "writes": []
+  },
+  {
    "note": "blank q",
    "verb": "GET",
    "path": "/search?q=%20%20",
