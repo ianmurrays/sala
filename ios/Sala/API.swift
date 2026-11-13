@@ -59,6 +59,26 @@ struct Post: Codable, Sendable, Equatable, Identifiable {
     var attachments: [Attachment]
 }
 
+struct Album: Decodable, Sendable, Hashable, Identifiable {
+    var id: Int
+    var title: String
+    /// ISO 8601 timestamp, nil when Aula has none.
+    var date: String?
+    /// Id for `GET /attachments/{id}`, nil when the album has no cover.
+    var cover: String?
+    /// Aula's album of photos the child is tagged in (id 0).
+    var tagged: Bool
+}
+
+struct Photo: Decodable, Sendable, Equatable, Identifiable {
+    var id: Int
+    /// Ids for `GET /attachments/{id}`: a small size for the grid, the original for the viewer and saving.
+    var thumbnail: String
+    var image: String
+    /// Upload time, ISO 8601.
+    var date: String?
+}
+
 struct Attachment: Codable, Sendable, Equatable {
     /// Server id for `GET /attachments/{id}`; absent for links.
     var id: String?
@@ -360,11 +380,11 @@ struct APIClient: Sendable {
         return URLSession(configuration: config)
     }()
 
-    /// For profile pictures: a disk cache, so lists and relaunches don't refetch them.
+    /// For profile pictures and gallery images: a disk cache, so lists and relaunches don't refetch them.
     private static let pictureSession: URLSession = {
         let config = URLSessionConfiguration.default
         config.timeoutIntervalForRequest = 30
-        config.urlCache = URLCache(memoryCapacity: 0, diskCapacity: 50_000_000, directory: URL.cachesDirectory.appending(path: "pictures"))
+        config.urlCache = URLCache(memoryCapacity: 0, diskCapacity: 200_000_000, directory: URL.cachesDirectory.appending(path: "pictures"))
         return URLSession(configuration: config)
     }()
 
@@ -391,6 +411,10 @@ struct APIClient: Sendable {
         let r: SavedResponse = try await send(saved ? "POST" : "DELETE", "/posts/\(post)/save")
         return r.saved
     }
+
+    /// `page` is 1-based. Empty means no more.
+    func albums(page: Int) async throws -> [Album] { try await send("GET", "/albums?page=\(page)") }
+    func photos(album: Int, page: Int) async throws -> [Photo] { try await send("GET", "/albums/\(album)/photos?page=\(page)") }
 
     /// `page` is 0-based like Aula's. Empty means no more.
     /// `folder` nil is the inbox.
@@ -428,7 +452,7 @@ struct APIClient: Sendable {
         return r.texts
     }
 
-    /// A profile picture, from the disk cache while the server's `Cache-Control` allows.
+    /// A profile picture or gallery image, from the disk cache while the server's `Cache-Control` allows.
     func picture(_ id: String) async throws -> Data {
         let request = try makeRequest("GET", "/attachments/\(id.urlPathEscaped)")
         let (data, response) = try await perform { try await Self.pictureSession.data(for: request) }

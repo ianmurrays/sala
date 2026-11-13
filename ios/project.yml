@@ -55,6 +55,7 @@ targets:
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
         NSLocalNetworkUsageDescription: Sala talks to your home server on the local network.
+        NSPhotoLibraryAddUsageDescription: Sala saves photos from the gallery to your library.
   SalaWidget:
     type: app-extension
     platform: iOS

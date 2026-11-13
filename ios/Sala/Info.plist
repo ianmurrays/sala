@@ -38,6 +38,8 @@
 	</dict>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Sala talks to your home server on the local network.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Sala saves photos from the gallery to your library.</string>
 	<key>SalaKeychainGroup</key>
 	<string>$(AppIdentifierPrefix)$(SALA_BUNDLE_ID)</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

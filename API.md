@@ -111,7 +111,24 @@ Nullable here: `opensAt`, `closesAt`, `current.time`, `current.by`.
 `GET /posts?page=N` → `[Post]`, newest first, 10 per page. `page` is 1-based (default 1, at most 100, else `400`); page 1 is the `posts` of `/today`. An empty list means there are no more posts.
 
 `POST /posts/{id}/save` / `DELETE /posts/{id}/save` → `{"saved": true|false}`.
-`GET /attachments/{id}` → the file bytes with its `Content-Type` and `Content-Disposition: inline; filename=...`. `id` is an opaque server-issued id from a Post, Message or profile picture; the server never fetches a client-supplied URL, only Aula file URLs on Aula's own hosts (https, `*.aula.dk`), and follows redirects only onto those hosts.
+`GET /attachments/{id}` → the file bytes with its `Content-Type` and `Content-Disposition: inline; filename=...`. `id` is an opaque server-issued id from a Post, Message, profile picture or the gallery; the server never fetches a client-supplied URL, only Aula file URLs on Aula's own hosts (https, `*.aula.dk`), and follows redirects only onto those hosts.
+
+## Gallery
+
+`GET /albums?page=N` → the institution's photo albums, newest first, 20 per page:
+```json
+[{"id": 7001, "title": "Skovtur", "date": "timestamp|null", "cover": "e3b0c4…|null", "tagged": false}]
+```
+`GET /albums/{id}/photos?page=N` → the photos in one album, newest first, 60 per page:
+```json
+[{"id": 8001, "thumbnail": "9f86d0…", "image": "2c26b4…", "date": "timestamp|null"}]
+```
+- `page` is 1-based (default 1, at most 100, else `400`). An empty list means there are no more.
+- `cover`, `thumbnail` and `image` are ids for `GET /attachments/{id}`, stable across loads like profile pictures, so the client can cache them. `thumbnail` is Aula's small size (300×400 for a 1200×1600 photo, about 55 kB); `image` is the original, for the viewer and for saving. `thumbnail` is the same id as `image` when Aula has no thumbnail.
+- Videos are left out, so a page can hold fewer than 60 photos. A page of nothing but videos comes back empty, and the client stops there (rare enough to accept).
+- Page 1 starts with Aula's album of photos the child is tagged in: `"tagged": true`, `id` 0 (Aula gives it none), title from Aula. `GET /albums/0/photos` lists it.
+- A photo's `date` is when it was uploaded.
+- Aula's image URLs are signed and expire; listing the album again refreshes the ones the server fetches.
 
 ## Messages
 

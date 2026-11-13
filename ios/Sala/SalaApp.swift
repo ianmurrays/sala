@@ -32,6 +32,9 @@ struct RootView: View {
                         MessagesView()
                     }
                     .badge(store.unreadThreadCount)
+                    Tab("Gallery", systemImage: "photo.on.rectangle", value: AppTab.gallery) {
+                        GalleryView()
+                    }
                 }
             }
         }

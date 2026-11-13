@@ -1,0 +1,36 @@
+[
+ {
+  "creationDate": "str",
+  "creator": {
+   "id": "int",
+   "institutionCode": "str",
+   "institutionName": "str",
+   "institutionRole": "str",
+   "mainGroup": "null",
+   "metadata": "str",
+   "name": "str",
+   "profileId": "int",
+   "profilePicture": {
+    "bucket": "str",
+    "id": "int",
+    "isImageScalingPending": "bool",
+    "key": "str",
+    "scanningStatus": "str",
+    "url": "str"
+   },
+   "role": "str",
+   "shortName": "str"
+  },
+  "currentUserCanAddMedia": "bool",
+  "currentUserCanDelete": "bool",
+  "currentUserCanEdit": "bool",
+  "description": "str",
+  "id": "int",
+  "regardingInstitutionProfileId": "null",
+  "sharedWithGroups": [],
+  "thumbnailsUrls": [
+   "str"
+  ],
+  "title": "str"
+ }
+]

@@ -1,0 +1,108 @@
+{
+ "album": {
+  "creationDate": "str",
+  "creator": {
+   "id": "int",
+   "institutionCode": "str",
+   "institutionName": "str",
+   "institutionRole": "str",
+   "mainGroup": "null",
+   "metadata": "str",
+   "name": "str",
+   "profileId": "int",
+   "profilePicture": {
+    "bucket": "str",
+    "id": "int",
+    "isImageScalingPending": "bool",
+    "key": "str",
+    "scanningStatus": "str",
+    "url": "str"
+   },
+   "role": "str",
+   "shortName": "str"
+  },
+  "currentUserCanAddMedia": "bool",
+  "currentUserCanDelete": "bool",
+  "currentUserCanEdit": "bool",
+  "description": "str",
+  "id": "int",
+  "regardingInstitutionProfileId": "null",
+  "sharedWithGroups": [
+   {
+    "allowMembersToBeShown": "bool",
+    "id": "int",
+    "institutionCode": "str",
+    "institutionName": "str",
+    "isDeactivated": "bool",
+    "mainGroup": "bool",
+    "name": "str",
+    "portalRoles": [
+     "str"
+    ],
+    "shortName": "str"
+   }
+  ],
+  "thumbnailsUrls": [],
+  "title": "str"
+ },
+ "limit": "int",
+ "mediaCount": "int",
+ "results": [
+  {
+   "album": "null",
+   "allowsComments": "bool",
+   "canViewComments": "bool",
+   "commentCount": "int",
+   "conversionStatus": "str",
+   "creator": {
+    "id": "int",
+    "institutionCode": "str",
+    "institutionName": "str",
+    "institutionRole": "str",
+    "mainGroup": "null",
+    "metadata": "str",
+    "name": "str",
+    "profileId": "int",
+    "profilePicture": {
+     "bucket": "str",
+     "id": "int",
+     "isImageScalingPending": "bool",
+     "key": "str",
+     "scanningStatus": "str",
+     "url": "str"
+    },
+    "role": "str",
+    "shortName": "str"
+   },
+   "currentUserCanDelete": "bool",
+   "currentUserCanEditMetaData": "bool",
+   "currentUserCanEditTags": "bool",
+   "currentUserCanReport": "bool",
+   "description": "null",
+   "duration": "null",
+   "extraSmallThumbnailUrl": "str",
+   "file": {
+    "bucket": "str",
+    "created": "str",
+    "id": "int",
+    "key": "str",
+    "name": "str",
+    "scanningStatus": "str",
+    "url": "str"
+   },
+   "hasVideoThumbnail": "bool",
+   "id": "int",
+   "isDeleted": "bool",
+   "isUploadPending": "null",
+   "largeThumbnailUrl": "str",
+   "mediaType": "str",
+   "mediumThumbnailUrl": "str",
+   "smallThumbnailUrl": "str",
+   "tags": [],
+   "thumbnailUrl": "str",
+   "title": "null"
+  }
+ ],
+ "startIndex": "int",
+ "totalSize": "int"
+}

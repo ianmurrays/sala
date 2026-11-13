@@ -66,7 +66,7 @@ def test_fake_sends_only_fields_live_aula_sends(api, fake, monkeypatch):
     monkeypatch.setattr(fake, "request", recording)
     today = api.get("/today", headers=AUTH).json()
     thread = api.get("/threads", headers=AUTH).json()[0]["id"]
-    for path in ("/posts?page=2", "/threads?page=1", f"/threads/{thread}", "/folders",
+    for path in ("/posts?page=2", "/threads?page=1", f"/threads/{thread}", "/folders", "/albums", "/albums/6001/photos",
                  f"/children/{today['children'][0]['id']}/pickup"):
         assert api.get(path, headers=AUTH).status_code == 200, path
 

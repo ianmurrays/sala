@@ -394,3 +394,24 @@ def test_profile_pictures_are_stable_opaque_ids(api):
     msgs = [msg for t in api.get("/threads", headers=AUTH).json() for msg in api.get(f"/threads/{t['id']}", headers=AUTH).json()["messages"]]
     assert {msg["picture"] is None for msg in msgs} == {True, False}
     assert any(t["picture"] for t in api.get("/threads", headers=AUTH).json())
+
+
+def test_gallery_albums_photos_and_images(api):
+    albums = api.get("/albums", headers=AUTH).json()
+    assert [(a["id"], a["tagged"]) for a in albums] == [(0, True), (6001, False), (6002, False)]
+    assert albums[1]["title"] == "Skovtur" and albums[1]["date"] and albums[1]["cover"]
+    assert [p["id"] for p in api.get("/albums/0/photos", headers=AUTH).json()] == [6002000, 6002001, 6002002]
+    assert api.get("/albums?page=2", headers=AUTH).json() == []
+
+    first = api.get("/albums/6001/photos", headers=AUTH).json()
+    second = api.get("/albums/6001/photos?page=2", headers=AUTH).json()
+    assert len(first) == 59 and len(second) == 11  # 60 per page; the video on page 1 is left out
+    assert 6001999 not in {p["id"] for p in first}
+    photo = first[0]
+    assert photo["thumbnail"] != photo["image"] and photo["date"]
+    # Gallery URLs are signed anew on every load; the ids must not change.
+    assert api.get("/albums/6001/photos", headers=AUTH).json()[0] == photo
+    for att in (photo["thumbnail"], photo["image"], albums[0]["cover"]):
+        r = api.get(f"/attachments/{att}", headers=AUTH)
+        assert r.status_code == 200 and r.content.startswith(b"\x89PNG") and r.headers["content-type"] == "image/png"
+    assert api.get("/albums/6001/photos?page=0", headers=AUTH).status_code == 400

@@ -933,6 +933,77 @@ async def posts(client: AulaApiClient, profile: Profile, register: Register, pag
     return [post_out(p, register) for p in rows if p.timestamp is not None]
 
 
+# --- gallery -----------------------------------------------------------------
+
+
+def _gallery_image(url: Any, name: str, register: Register) -> str | None:
+    """A gallery URL as an id stable across Aula's re-signed URLs (like ``picture_id``)."""
+    if not isinstance(url, str) or not file_url_allowed(url):
+        if url:
+            _LOGGER.warning("Skipping gallery image on a non-Aula host: %s", urlsplit(str(url)).hostname)
+        return None
+    return register(url, name, urlsplit(url)._replace(query="", fragment="").geturl())
+
+
+async def _gallery_get(client: AulaApiClient, method: str, params: dict) -> Any:
+    resp = await client._request_with_version_retry("get", client.api_url, params={"method": method, **params})
+    resp.raise_for_status()
+    return resp.json().get("data")
+
+
+TAGGED_ALBUM = 0
+
+
+async def albums(client: AulaApiClient, profile: Profile, register: Register, page: int = 1, limit: int = 20) -> list[dict]:
+    data = await _gallery_get(client, "gallery.getAlbums", {
+        "index": (page - 1) * limit, "limit": limit, "sortOn": "createdAt", "orderDirection": "desc",
+        "filterBy": "all", "filterInstProfileIds[]": profile.institution_profile_ids,
+    })
+    out = []
+    for a in data or []:
+        if not isinstance(a, dict) or not (isinstance(a.get("id"), int) or (a.get("id") is None and page == 1)):
+            continue
+        # Live: on page 1 a row with id null comes first, Aula's virtual album of photos the child is
+        # tagged in. It doesn't count towards `limit`; it's served as album 0 (see album_photos).
+        thumbs = [u for u in a.get("thumbnailsUrls") or [] if isinstance(u, str)]
+        out.append({
+            "id": a.get("id") or TAGGED_ALBUM,
+            "title": a.get("title") or "",
+            "date": iso(a.get("creationDate")),
+            "cover": _gallery_image(thumbs[0], "cover.jpg", register) if thumbs else None,
+            "tagged": a.get("id") is None,
+        })
+    return out
+
+
+async def album_photos(client: AulaApiClient, profile: Profile, album_id: int, register: Register, page: int = 1, limit: int = 60) -> list[dict]:
+    # The tagged album has no id: Aula asks for it as userSpecificAlbum without albumId.
+    album = {"userSpecificAlbum": "true"} if album_id == TAGGED_ALBUM else {"albumId": album_id, "userSpecificAlbum": "false"}
+    data = await _gallery_get(client, "gallery.getMedia", {
+        **album, "index": (page - 1) * limit, "limit": limit,
+        "sortOn": "uploadedAt", "orderDirection": "desc", "filterBy": "all",
+        "filterInstProfileIds[]": profile.institution_profile_ids,
+    })
+    out = []
+    for p in get_in(data, "results", default=None) or []:
+        if not isinstance(p, dict) or not isinstance(p.get("id"), int) or p.get("mediaType") != "image":
+            continue  # ponytail: videos are left out; show them when someone misses them
+        name = get_in(p, "file.name") or "photo.jpg"
+        image = _gallery_image(get_in(p, "file.url"), name, register)
+        if image is None:
+            continue
+        # Live sizes (one photo): large 900x1200, medium 600x800, small 300x400 (~55 kB), extraSmall 150x200.
+        # Small fills a third of a phone's width at 3x.
+        thumb = p.get("smallThumbnailUrl") or p.get("thumbnailUrl")
+        out.append({
+            "id": p["id"],
+            "thumbnail": _gallery_image(thumb, "thumb-" + name, register) or image,
+            "image": image,
+            "date": iso(get_in(p, "file.created")),
+        })
+    return out
+
+
 async def set_bookmark(client: AulaApiClient, post_id: int, saved: bool) -> None:
     # Endpoints from the portal bundle (10.*.js): POST ?method=posts.bookmark /
     # posts.unbookmark with body {postId}. Not in the library.
