@@ -393,16 +393,17 @@ final class Store {
 
     /// Also the Report Sick intent's write, so Siri and Shortcuts update the widget and ask "Still sick?" too.
     func reportSick(_ id: Int) async throws {
-        await loadIfEmpty()
+        await loadIfStale()
         let updated = try await client.reportSick(child: id)
         replace(updated)
         // Not awaited: the first time this waits on the permission prompt.
         Task { await noteSick(updated) }
     }
 
-    /// An intent can run with no scene, so nothing loaded `/today`; `replace` (and so the widget) needs it.
-    private func loadIfEmpty() async {
-        if today == nil { await load() }
+    /// An intent can run with no scene, so nothing loaded `/today`, or a process suspended overnight still
+    /// holds yesterday's; `replace` (and so the widget, which drops another day's snapshot) needs today's.
+    private func loadIfStale() async {
+        if today?.date != Shared.ymd(.now) { await load() }
     }
 
     // MARK: Still sick
@@ -442,7 +443,7 @@ final class Store {
     }
 
     func savePickup(child: Int, _ update: PickupUpdate) async throws {
-        await loadIfEmpty()
+        await loadIfStale()
         do {
             let updated = try await client.setPickup(child: child, update)
             replace(updated)
