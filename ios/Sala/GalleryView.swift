@@ -264,6 +264,8 @@ private struct PhotoViewer: View {
             .tabViewStyle(.page(indexDisplayMode: .never))
             // Zoomed in, a pan moves within the photo instead of paging or closing.
             .scrollDisabled(zoomed)
+            // The filmstrip can jump away from a zoomed page before it reports zooming out.
+            .onChange(of: current) { zoomed = false }
             .background(.black)
             .ignoresSafeArea()
             .safeAreaInset(edge: .bottom) {
@@ -376,7 +378,7 @@ private final class ZoomScrollView: UIScrollView {
     override func layoutSubviews() {
         super.layoutSubviews()
         guard zoomScale == 1 else { return }
-        content.frame = bounds
+        content.frame = CGRect(origin: .zero, size: bounds.size)
         contentSize = bounds.size
     }
 }
