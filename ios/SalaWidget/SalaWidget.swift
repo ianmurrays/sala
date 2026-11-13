@@ -30,17 +30,8 @@ struct Provider: TimelineProvider {
     func getTimeline(in context: Context, completion: @escaping @Sendable (Timeline<SalaEntry>) -> Void) {
         Task {
             let now = Date.now
-            var entry: SalaEntry
-            do {
-                // Not saved: the app is the snapshot's only writer.
-                entry = Self.entry(try await Shared.fetchToday(), now: now)
-            } catch Shared.FetchError.authRequired {
-                entry = SalaEntry(date: now, message: "Log in needed")
-            } catch Shared.FetchError.unauthorized {
-                entry = SalaEntry(date: now, message: "Check Sala settings")
-            } catch {
-                entry = Self.fallback(Shared.snapshot, now: now)
-            }
+            // The app is the only one holding the Aula session; the widget shows what it last saved.
+            let entry = Self.fallback(Shared.snapshot, now: now)
             let refresh = Self.nextRefresh(after: now)
             var entries = [entry]
             // Data is shown for at most an hour after it was fetched, and never past its day,

@@ -122,16 +122,6 @@ struct PickupUpdate: Codable, Sendable {
     var note: String
 }
 
-struct AuthStatus: Codable, Sendable, Equatable {
-    /// `ok|needs_login|logging_in|error`
-    var state: String
-    var otpCode: String?
-    /// The two MitID QR halves, each as rows of "0"/"1" modules. Shown alternating.
-    var qr: [[String]]?
-    var message: String?
-    var since: String?
-}
-
 struct SavedResponse: Codable, Sendable { var saved: Bool }
 
 /// A row of `GET /threads`.
@@ -326,8 +316,6 @@ struct Features: Decodable, Sendable {
 /// `POST /translate` body and answer: one text per entry, same order.
 struct TranslateTexts: Codable, Sendable { var texts: [String] }
 
-private struct ErrorEnvelope: Decodable { var error: String?; var message: String? }
-
 extension KeyedDecodingContainer {
     /// Accepts a JSON string or number (ids whose type the contract doesn't pin down), or null.
     func decodeLenientString(_ key: Key) throws -> String? {
@@ -341,63 +329,35 @@ extension KeyedDecodingContainer {
 // MARK: - Errors
 
 enum APIError: LocalizedError, Sendable {
-    case unauthorized
     case authRequired
     case upstream(String?)
     case http(Int, String?)
     case notFound
     /// 409: the change isn't allowed right now (for example a pickup on an absence day).
     case conflict(String?)
-    case badURL
     case transport(String)
     case decoding(String)
 
     var errorDescription: String? {
         switch self {
-        case .unauthorized: "The server rejected the token. Check it in Settings."
         case .authRequired: "Log in with MitID to continue."
         case .upstream(let m): "Aula didn't answer properly" + (m.map { ": \($0)" } ?? ".")
-        case .http(let code, let m): m ?? "The server answered with HTTP \(code)."
-        case .notFound: "Not found on the server. It may have been deleted."
+        case .http(let code, let m): m ?? "Aula answered with HTTP \(code)."
+        case .notFound: "Not found in Aula. It may have been deleted."
         case .conflict(let m): m ?? "That can't be changed right now."
-        case .badURL: "The server URL is not valid. Check it in Settings."
-        case .transport(let m): "Can't reach the server. \(m)"
-        case .decoding(let m): "Unexpected answer from the server. \(m)"
+        case .transport(let m): "Can't reach Aula. \(m)"
+        case .decoding(let m): "Unexpected answer from Aula. \(m)"
         }
     }
 }
 
 // MARK: - Client
 
+/// The app's view of Aula, in API.md's shapes. The routes run on the phone (`Aula.handle`, a port of the
+/// old server's routes); the method names still follow them.
 struct APIClient: Sendable {
-    var baseURL: String
-    var token: String
+    private var aula: Aula { .shared }
 
-    private static let session: URLSession = {
-        let config = URLSessionConfiguration.default
-        config.timeoutIntervalForRequest = 30
-        config.waitsForConnectivity = false
-        return URLSession(configuration: config)
-    }()
-
-    /// For profile pictures and gallery images: a disk cache, so lists and relaunches don't refetch them.
-    private static let pictureSession: URLSession = {
-        let config = URLSessionConfiguration.default
-        config.timeoutIntervalForRequest = 30
-        config.urlCache = URLCache(memoryCapacity: 0, diskCapacity: 200_000_000, directory: URL.cachesDirectory.appending(path: "pictures"))
-        return URLSession(configuration: config)
-    }()
-
-    /// For `/translate`: a long thread can take the Claude API a while.
-    private static let slowSession: URLSession = {
-        let config = URLSessionConfiguration.default
-        config.timeoutIntervalForRequest = 200
-        config.waitsForConnectivity = false
-        return URLSession(configuration: config)
-    }()
-
-    func authStatus() async throws -> AuthStatus { try await send("GET", "/auth/status") }
-    func login() async throws -> AuthStatus { try await send("POST", "/auth/login") }
     func today() async throws -> Today { try await send("GET", "/today") }
     func pickupOptions(child: Int) async throws -> PickupOptions { try await send("GET", "/children/\(child)/pickup") }
     func setPickup(child: Int, _ update: PickupUpdate) async throws -> Child {
@@ -448,24 +408,26 @@ struct APIClient: Sendable {
     func features() async throws -> Features { try await send("GET", "/features") }
     /// At most 50 texts per call (API.md).
     func translate(_ texts: [String]) async throws -> [String] {
-        let r: TranslateTexts = try await send("POST", "/translate", bodyData: try JSONEncoder().encode(TranslateTexts(texts: texts)), slow: true)
+        let r: TranslateTexts = try await send("POST", "/translate", body: TranslateTexts(texts: texts))
         return r.texts
     }
 
-    /// A profile picture or gallery image, from the disk cache while the server's `Cache-Control` allows.
+    private static let pictureCache = URL.cachesDirectory.appending(path: "pictures", directoryHint: .isDirectory)
+
+    /// A profile picture or gallery image. The id stays the same while the picture does (API.md), so it's kept on disk.
     func picture(_ id: String) async throws -> Data {
-        let request = try makeRequest("GET", "/attachments/\(id.urlPathEscaped)")
-        let (data, response) = try await perform { try await Self.pictureSession.data(for: request) }
-        try check(response, data: data)
+        let file = Self.pictureCache.appending(path: id.replacingOccurrences(of: "/", with: "-"))
+        if let data = try? Data(contentsOf: file) { return data }
+        let data = try await perform { try await aula.attachment(id).0 }
+        try? FileManager.default.createDirectory(at: Self.pictureCache, withIntermediateDirectories: true)
+        try? data.write(to: file)
         return data
     }
 
     /// Downloads an attachment into a fresh temp directory, named after `name`.
     func download(_ attachment: Attachment) async throws -> URL {
         guard let id = attachment.id, !id.isEmpty else { throw APIError.notFound }
-        let request = try makeRequest("GET", "/attachments/\(id.urlPathEscaped)")
-        let (tmp, response) = try await perform { try await Self.session.download(for: request) }
-        try check(response, data: (try? Data(contentsOf: tmp)) ?? Data())
+        let (data, fileName, _) = try await perform { try await aula.attachment(id) }
         let dir = FileManager.default.temporaryDirectory
             .appendingPathComponent("attachments", isDirectory: true)
             .appendingPathComponent(UUID().uuidString, isDirectory: true)
@@ -476,27 +438,16 @@ struct APIClient: Sendable {
             .trimmingCharacters(in: .whitespacesAndNewlines)
         if name.isEmpty || name.hasPrefix(".") { name = "attachment" + name }
         // QuickLook needs an extension to pick a previewer.
-        if (name as NSString).pathExtension.isEmpty,
-           let ext = (response.suggestedFilename as NSString?)?.pathExtension, !ext.isEmpty {
-            name += "." + ext
+        if (name as NSString).pathExtension.isEmpty {
+            let ext = (fileName as NSString).pathExtension
+            if !ext.isEmpty { name += "." + ext }
         }
         let dest = dir.appendingPathComponent(name)
-        try FileManager.default.moveItem(at: tmp, to: dest)
+        try data.write(to: dest)
         return dest
     }
 
     // MARK: plumbing
-
-    private func makeRequest(_ method: String, _ path: String) throws -> URLRequest {
-        var base = baseURL.trimmingCharacters(in: .whitespacesAndNewlines)
-        while base.hasSuffix("/") { base.removeLast() }
-        guard let url = URL(string: base + path), url.scheme == "http" || url.scheme == "https" else { throw APIError.badURL }
-        var r = URLRequest(url: url)
-        r.httpMethod = method
-        r.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        r.setValue("application/json", forHTTPHeaderField: "Accept")
-        return r
-    }
 
     private func send<T: Decodable>(_ method: String, _ path: String) async throws -> T {
         try await send(method, path, bodyData: nil)
@@ -506,14 +457,8 @@ struct APIClient: Sendable {
         try await send(method, path, bodyData: try JSONEncoder().encode(body))
     }
 
-    private func send<T: Decodable>(_ method: String, _ path: String, bodyData: Data?, slow: Bool = false) async throws -> T {
-        var request = try makeRequest(method, path)
-        if let bodyData {
-            request.httpBody = bodyData
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        }
-        let (data, response) = try await perform { try await (slow ? Self.slowSession : Self.session).data(for: request) }
-        try check(response, data: data)
+    private func send<T: Decodable>(_ method: String, _ path: String, bodyData: Data?) async throws -> T {
+        let data = try await perform { try await aula.handle(method, path, body: bodyData) }
         do {
             return try JSONDecoder().decode(T.self, from: data)
         } catch {
@@ -521,23 +466,13 @@ struct APIClient: Sendable {
         }
     }
 
+    /// Aula's own errors as the app's (`Aula.handle` already throws `APIError` for the rest).
     private func perform<R>(_ op: () async throws -> R) async throws -> R {
         do { return try await op() }
-        catch let e as URLError where e.code == .cancelled { throw CancellationError() }
-        catch let e as URLError { throw APIError.transport(e.localizedDescription) }
-    }
-
-    private func check(_ response: URLResponse, data: Data) throws {
-        guard let http = response as? HTTPURLResponse else { throw APIError.transport("No HTTP response.") }
-        guard !(200..<300).contains(http.statusCode) else { return }
-        let env = try? JSONDecoder().decode(ErrorEnvelope.self, from: data)
-        switch (http.statusCode, env?.error) {
-        case (401, _): throw APIError.unauthorized
-        case (503, "auth_required"): throw APIError.authRequired
-        case (404, _): throw APIError.notFound
-        case (409, _): throw APIError.conflict(env?.message)
-        case (502, _): throw APIError.upstream(env?.message)
-        default: throw APIError.http(http.statusCode, env?.message ?? env?.error)
+        catch Aula.Failure.authRequired { throw APIError.authRequired }
+        catch Aula.Failure.transport(let m) { throw APIError.transport(m) }
+        catch Aula.Failure.rejected(let status, _, _, let method) {
+            throw APIError.upstream("Aula refused \(method ?? "the request") (HTTP \(status))")
         }
     }
 }

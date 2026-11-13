@@ -1,0 +1,209 @@
+{
+ "name": "absence_denied",
+ "today": "2026-11-13",
+ "now": "2026-11-13T13:07:00+01:00",
+ "forbidden": [],
+ "profile": {
+  "profiles.getProfilesByLogin": {
+   "status": {
+    "code": 0,
+    "message": "OK"
+   },
+   "data": {
+    "profiles": [
+     {
+      "profileId": 501,
+      "displayName": "Jonas Hansen",
+      "institutionProfiles": [
+       {
+        "id": 1001,
+        "institutionCode": "999001",
+        "institutionName": "Børnehuset",
+        "role": "guardian"
+       }
+      ],
+      "children": [
+       {
+        "id": 2001,
+        "profileId": 601,
+        "name": "Oskar",
+        "userId": "oskar01",
+        "hasCustodyOrExtendedAccess": true,
+        "institutionProfile": {
+         "institutionName": "Børnehuset",
+         "institutionCode": "999001",
+         "metadata": "Stue"
+        },
+        "profilePicture": {
+         "id": 77,
+         "url": "https://fake-files.aula.dk/files/profile.png?sig=35"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "profiles.getProfileContext": {
+   "status": {
+    "code": 0,
+    "message": "OK"
+   },
+   "data": {
+    "institutionProfile": {
+     "id": 1001
+    },
+    "institutions": []
+   }
+  }
+ },
+ "files": {},
+ "steps": [
+  {
+   "note": "vacation module read-only",
+   "verb": "POST",
+   "path": "/absences",
+   "body": {
+    "childIds": [
+     2001
+    ],
+    "startDate": "2026-11-13",
+    "endDate": "2026-11-13",
+    "comment": ""
+   },
+   "status": 400,
+   "response": {
+    "error": "bad_request",
+    "message": "Oskar: absence registration is read-only for guardians; contact the institution"
+   },
+   "aula": [
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "profiles.getProfilesByLogin"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": {
+       "profiles": [
+        {
+         "profileId": 501,
+         "displayName": "Jonas Hansen",
+         "institutionProfiles": [
+          {
+           "id": 1001,
+           "institutionCode": "999001",
+           "institutionName": "Børnehuset",
+           "role": "guardian"
+          }
+         ],
+         "children": [
+          {
+           "id": 2001,
+           "profileId": 601,
+           "name": "Oskar",
+           "userId": "oskar01",
+           "hasCustodyOrExtendedAccess": true,
+           "institutionProfile": {
+            "institutionName": "Børnehuset",
+            "institutionCode": "999001",
+            "metadata": "Stue"
+           },
+           "profilePicture": {
+            "id": 77,
+            "url": "https://fake-files.aula.dk/files/profile.png?sig=35"
+           }
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "profiles.getProfileContext"
+      ],
+      [
+       "portalrole",
+       "guardian"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": {
+       "institutionProfile": {
+        "id": 1001
+       },
+       "institutions": []
+      }
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getPresenceConfigurationByChildIds"
+      ],
+      [
+       "childIds[]",
+       "2001"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": [
+       {
+        "uniStudentId": 2001,
+        "presenceConfiguration": {
+         "institution": {
+          "institutionCode": "999001",
+          "name": "Børnehuset"
+         },
+         "dashboardModuleSettings": [
+          {
+           "presenceDashboardContext": "guardian_dashboard",
+           "presenceModules": [
+            {
+             "moduleType": "vacation",
+             "permission": "readable"
+            },
+            {
+             "moduleType": "report_sick",
+             "permission": "editable"
+            }
+           ]
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ],
+   "writes": []
+  }
+ ]
+}

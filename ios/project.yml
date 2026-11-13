@@ -23,6 +23,8 @@ targets:
       - path: Shared
     dependencies:
       - target: SalaWidget
+    scheme:
+      testTargets: [SalaTests]
     entitlements:
       path: Sala/Sala.entitlements
       properties:
@@ -52,9 +54,6 @@ targets:
         CFBundleURLTypes:
           - CFBundleURLName: $(PRODUCT_BUNDLE_IDENTIFIER)
             CFBundleURLSchemes: [sala]
-        NSAppTransportSecurity:
-          NSAllowsArbitraryLoads: true
-        NSLocalNetworkUsageDescription: Sala talks to your home server on the local network.
         NSPhotoLibraryAddUsageDescription: Sala saves photos from the gallery to your library.
   SalaWidget:
     type: app-extension
@@ -85,5 +84,20 @@ targets:
         SalaKeychainGroup: $(AppIdentifierPrefix)$(SALA_BUNDLE_ID)
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
-        NSAppTransportSecurity:
-          NSAllowsArbitraryLoads: true
+  SalaTests:
+    # Not hosted: the Aula port and the API models are compiled in, so the tests never launch the
+    # app (whose session would reach real Aula). Goldens are read from the source tree.
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: SalaTests
+        excludes: [Goldens]
+      - path: Sala/Aula
+      - path: Sala/API.swift
+      - path: Shared/SalaShared.swift
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: $(SALA_BUNDLE_ID).tests
+        GENERATE_INFOPLIST_FILE: YES
+        SWIFT_STRICT_CONCURRENCY: complete
+        CODE_SIGN_STYLE: Automatic
