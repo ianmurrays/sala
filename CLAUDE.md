@@ -6,3 +6,4 @@
 - Where fields sit in Aula's live responses: `docs/aula-shapes/` (captured from real Aula, anonymised).
 - Working on an Aula call: the `aula-api` skill. `scripts/aula-bundle.py` searches the web portal's JS for `?method=` calls; `scripts/pull-aula-traffic.sh` pulls what a debug build captured (Settings → Debug → Capture Aula traffic). Captured traffic is real families' data: it stays in `.cache/`.
 - CI (`.github/workflows/ci.yml`) runs gitleaks, the project drift check and the iOS tests.
+- Keep `README.md` current: when a change adds, removes or renames a user-facing feature, or changes the build, setup or test steps, update the README in the same change.
