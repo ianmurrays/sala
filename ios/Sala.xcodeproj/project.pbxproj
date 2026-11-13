@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0A36B536863C947DF0F9ABED /* HolidaySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C4376EE075DB7E8B8A7DD0 /* HolidaySheet.swift */; };
 		0EF6B6061030907C70486123 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61D4DFB892FB869F494631E /* LoginView.swift */; };
+		0F48B5FE9FAC1BE1692FF6BA /* PushTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180CB3C2AEF650334616AEF4 /* PushTests.swift */; };
 		10223E66B9848359D3498E7D /* AulaHTML.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576FF229BD737BAC27D4C865 /* AulaHTML.swift */; };
 		1741679355FAA673C58359E4 /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DDF8360879C8CE3785836C4 /* MessagesView.swift */; };
 		17DDD958DBF614ACB3FFBEA5 /* SalaShared.swift in Sources */ = {isa = PBXBuildFile; fileRef = B052EF3B3E1998CE1C0471B2 /* SalaShared.swift */; };
@@ -42,6 +43,7 @@
 		A1E0A0B6A8296DA131ED182A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E0E0A3B6F2E75335F323F6C7 /* Assets.xcassets */; };
 		A32DA9BD3635FDD2C3886E4E /* GoldenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447EEC8A5735180FD82A3D1C /* GoldenTests.swift */; };
 		A697E81107D0F782E86B6C30 /* AppLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9903F67A12513B2524572FCC /* AppLock.swift */; };
+		A9ADB8067EAFCF160E5320E2 /* AulaPush.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10790638C025D213F72FB9FA /* AulaPush.swift */; };
 		A9E594FF64E86FFEE2A67337 /* AulaDates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2028C09CE72DB34359EB2AD6 /* AulaDates.swift */; };
 		B3D4FF9E850FCCDB4798F518 /* SalaShared.swift in Sources */ = {isa = PBXBuildFile; fileRef = B052EF3B3E1998CE1C0471B2 /* SalaShared.swift */; };
 		BB4F7D888ED1EF06093DC623 /* AulaRoutes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0474C37C635EB4FEE0B2FA3 /* AulaRoutes.swift */; };
@@ -51,6 +53,8 @@
 		C800C72A1D83C8901E63FA8F /* AulaClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80889885B76F5717A9DECCF3 /* AulaClient.swift */; };
 		E657D7775BAD8D02259880F0 /* HTMLEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F54721032189D28F2ECDD8D /* HTMLEntities.swift */; };
 		E8AF275F830BEFC95BA2294C /* SalaShared.swift in Sources */ = {isa = PBXBuildFile; fileRef = B052EF3B3E1998CE1C0471B2 /* SalaShared.swift */; };
+		EDD0C87726785D39C5AE9BE9 /* BackgroundRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = F41459AD15C74E8246176098 /* BackgroundRefresh.swift */; };
+		F98AAEDB2037F9F6760BCD54 /* AulaPush.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10790638C025D213F72FB9FA /* AulaPush.swift */; };
 		FC66B88D8A36FBE3E23C3FFC /* CalendarSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19F24DD932831620346C2F7B /* CalendarSync.swift */; };
 		FE1D817BA0982720E207D92F /* ThreadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FF804A1A12FADBB8F696F3 /* ThreadView.swift */; };
 /* End PBXBuildFile section */
@@ -83,8 +87,10 @@
 		03789688B9864A34F7E3DFD5 /* ContactsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsView.swift; sourceTree = "<group>"; };
 		0623DE8D49000F03DC8C9E59 /* FoldersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoldersView.swift; sourceTree = "<group>"; };
 		0F70E090695CF7260BD21760 /* SalaWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalaWidget.swift; sourceTree = "<group>"; };
+		10790638C025D213F72FB9FA /* AulaPush.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AulaPush.swift; sourceTree = "<group>"; };
 		141011F68471197F2E922834 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		17C4376EE075DB7E8B8A7DD0 /* HolidaySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HolidaySheet.swift; sourceTree = "<group>"; };
+		180CB3C2AEF650334616AEF4 /* PushTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushTests.swift; sourceTree = "<group>"; };
 		18E6F59015D2651602B6C5CF /* StillSick.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StillSick.swift; sourceTree = "<group>"; };
 		19F24DD932831620346C2F7B /* CalendarSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarSync.swift; sourceTree = "<group>"; };
 		2028C09CE72DB34359EB2AD6 /* AulaDates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AulaDates.swift; sourceTree = "<group>"; };
@@ -118,6 +124,7 @@
 		E7E6AB823A3C5EB7D36DDA80 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		EA06833B223D9F880A0BA980 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		EA44F3816DF767D0B3A780A5 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
+		F41459AD15C74E8246176098 /* BackgroundRefresh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundRefresh.swift; sourceTree = "<group>"; };
 		FA7BC442D3BB1B4A2A9B3828 /* SalaTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SalaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FD2E145876A2ECFC2DB2AAD5 /* Sala.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Sala.entitlements; sourceTree = "<group>"; };
 		FED58131D48315A4E399D297 /* AulaMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AulaMapping.swift; sourceTree = "<group>"; };
@@ -133,6 +140,7 @@
 				86D5BEBD3FFA87799B35B7B8 /* AulaJSON.swift */,
 				FED58131D48315A4E399D297 /* AulaMapping.swift */,
 				8E941CB5BEFA754583F1501B /* AulaModels.swift */,
+				10790638C025D213F72FB9FA /* AulaPush.swift */,
 				D0474C37C635EB4FEE0B2FA3 /* AulaRoutes.swift */,
 				221AEB48EB17EA103A3910A8 /* AulaSession.swift */,
 				9F54721032189D28F2ECDD8D /* HTMLEntities.swift */,
@@ -194,6 +202,7 @@
 			isa = PBXGroup;
 			children = (
 				447EEC8A5735180FD82A3D1C /* GoldenTests.swift */,
+				180CB3C2AEF650334616AEF4 /* PushTests.swift */,
 			);
 			path = SalaTests;
 			sourceTree = "<group>";
@@ -205,6 +214,7 @@
 				9903F67A12513B2524572FCC /* AppLock.swift */,
 				E0E0A3B6F2E75335F323F6C7 /* Assets.xcassets */,
 				B6F700FF859455055509BB54 /* AttachmentOpener.swift */,
+				F41459AD15C74E8246176098 /* BackgroundRefresh.swift */,
 				19F24DD932831620346C2F7B /* CalendarSync.swift */,
 				141011F68471197F2E922834 /* CalendarView.swift */,
 				03789688B9864A34F7E3DFD5 /* ContactsView.swift */,
@@ -353,8 +363,10 @@
 				2C955713614AFF3C207032A2 /* AulaJSON.swift in Sources */,
 				33D2456955E8E5BF978F98F6 /* AulaMapping.swift in Sources */,
 				2FBE78824A0520905338300F /* AulaModels.swift in Sources */,
+				A9ADB8067EAFCF160E5320E2 /* AulaPush.swift in Sources */,
 				9A11134E545C9DB2541FC4A4 /* AulaRoutes.swift in Sources */,
 				BFF057C82EFE0656C63483A2 /* AulaSession.swift in Sources */,
+				EDD0C87726785D39C5AE9BE9 /* BackgroundRefresh.swift in Sources */,
 				FC66B88D8A36FBE3E23C3FFC /* CalendarSync.swift in Sources */,
 				8D567F5C240A1B747CA12ED0 /* CalendarView.swift in Sources */,
 				646D9FE68988D4EF8CF9BE60 /* ContactsView.swift in Sources */,
@@ -387,10 +399,12 @@
 				5E3E3CE9F6C50D9D72FB8EBE /* AulaJSON.swift in Sources */,
 				9F0D46CCE76874169F80D0D9 /* AulaMapping.swift in Sources */,
 				8AD7489D45D4FF2D7FFBE4B1 /* AulaModels.swift in Sources */,
+				F98AAEDB2037F9F6760BCD54 /* AulaPush.swift in Sources */,
 				BB4F7D888ED1EF06093DC623 /* AulaRoutes.swift in Sources */,
 				3FC18EAF711CF3DFE0363161 /* AulaSession.swift in Sources */,
 				A32DA9BD3635FDD2C3886E4E /* GoldenTests.swift in Sources */,
 				E657D7775BAD8D02259880F0 /* HTMLEntities.swift in Sources */,
+				0F48B5FE9FAC1BE1692FF6BA /* PushTests.swift in Sources */,
 				17DDD958DBF614ACB3FFBEA5 /* SalaShared.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

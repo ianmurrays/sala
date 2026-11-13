@@ -57,6 +57,8 @@ targets:
         NSPhotoLibraryAddUsageDescription: Sala saves photos from the gallery to your library.
         NSFaceIDUsageDescription: Sala uses Face ID to unlock, when you turn on Lock with Face ID in Settings.
         NSCalendarsFullAccessUsageDescription: Sala keeps a Sala calendar up to date with Aula's events, and removes the ones Aula drops.
+        UIBackgroundModes: [fetch]
+        BGTaskSchedulerPermittedIdentifiers: [$(PRODUCT_BUNDLE_IDENTIFIER).refresh]
   SalaWidget:
     type: app-extension
     platform: iOS

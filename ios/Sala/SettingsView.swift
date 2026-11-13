@@ -8,6 +8,9 @@ struct SettingsView: View {
     @State private var calendarDenied = false
     @State private var syncStatus = CalendarSync.status
     @State private var appLock = AppLock.enabled
+    @State private var notifications = Notifier.enabled
+    @State private var notificationsDenied = false
+    @State private var refreshStatus = BackgroundRefresh.status
     #if DEBUG
     @State private var captureTraffic = TrafficLog.enabled
     #endif
@@ -53,6 +56,21 @@ struct SettingsView: View {
                     }
                 }
 
+                Section {
+                    Toggle("Notifications", isOn: Binding(get: { notifications }, set: { on in
+                        notifications = on
+                        guard on else { return Notifier.disable() }
+                        Task {
+                            notifications = await Notifier.enable()
+                            notificationsDenied = !notifications
+                        }
+                    }))
+                } footer: {
+                    Text(notificationsDenied
+                        ? "Sala isn't allowed to notify. Turn notifications on for Sala in the Settings app."
+                        : "New direct messages, important posts, holiday requests and their deadlines, and when Aula needs you to log in again. iOS decides when Sala may check in the background: often a few times a day, and never after you swipe Sala away, so they can arrive hours late.")
+                }
+
                 #if DEBUG
                 Section {
                     Toggle("Capture Aula traffic", isOn: Binding(get: { captureTraffic }, set: {
@@ -74,10 +92,19 @@ struct SettingsView: View {
                             dismiss()
                         }
                     }
+                    Button("Run background refresh now") {
+                        Task {
+                            await BackgroundRefresh.run()
+                            refreshStatus = BackgroundRefresh.status
+                        }
+                    }
                     Button("Test still-sick notification in 5 s") {
                         let child = store.today?.children.first
                         Task { await StillSick.schedule(child: child?.id ?? 0, name: child?.name ?? "Oskar", at: Date() + 5) }
                     }
+                } footer: {
+                    // Background runs write it too, so this also shows whether iOS has run one.
+                    Text("Last background refresh: \(refreshStatus ?? "never")")
                 }
                 #endif
             }
