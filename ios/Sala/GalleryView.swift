@@ -1,4 +1,5 @@
 import AVKit
+import LazyPager
 import Photos
 import SwiftUI
 
@@ -6,10 +7,11 @@ import SwiftUI
 struct GalleryView: View {
     @Environment(Store.self) private var store
     @State private var albums = Paged<Album> { client, page in try await client.albums(page: page) }
+    @State private var path: [Album] = []
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 12) {
                     Text("Gallery")
@@ -31,7 +33,12 @@ struct GalleryView: View {
             .background(Color.screen)
             .toolbar(.hidden, for: .navigationBar)
             .refreshable { await albums.load(store, reset: true) }
-            .task { if albums.items == nil { await albums.load(store, reset: true) } }
+            .task {
+                if albums.items == nil { await albums.load(store, reset: true) }
+                #if DEBUG
+                if DemoLaunch.openPhoto, let first = albums.items?.first { path = [first] }
+                #endif
+            }
             .onChange(of: scenePhase) { if scenePhase == .active { Task { await albums.refreshURLs(store) } } }
             .navigationDestination(for: Album.self) { AlbumView(album: $0) }
         }
@@ -140,7 +147,18 @@ struct AlbumView: View {
         .toolbar { toolbar }
         .toolbarVisibility(selection == nil ? .automatic : .hidden, for: .tabBar)
         .refreshable { await photos.load(store, reset: true) }
-        .task { if photos.items == nil { await photos.load(store, reset: true) } }
+        .task {
+            if photos.items == nil { await photos.load(store, reset: true) }
+            #if DEBUG
+            // A photo followed by another, so SalaUITests can swipe from one photo to the next.
+            let items = photos.items ?? []
+            if DemoLaunch.openPhoto, let i = items.indices.first(where: { items[$0].video == nil && items.indices.contains($0 + 1) && items[$0 + 1].video == nil }) {
+                DemoLaunch.openPhoto = false
+                current = items[i].id
+                viewing = true
+            }
+            #endif
+        }
         .onChange(of: scenePhase) { if scenePhase == .active { Task { await photos.refreshURLs(store) } } }
         .fullScreenCover(isPresented: $viewing) {
             PhotoViewer(photos: photos, title: title, current: $current)
@@ -239,8 +257,8 @@ struct AlbumView: View {
 }
 
 /// Swipe between an album's photos, Photos style: title and date on top, a filmstrip below.
-/// Swiping down closes it (the zoom transition's own gesture); a tap hides the chrome;
-/// pinch or double-tap zooms.
+/// LazyPager does the paging and the gestures: dragging a page down closes it, a tap hides the chrome,
+/// pinch or double-tap zooms a photo.
 private struct PhotoViewer: View {
     let photos: Paged<Photo>
     let title: String
@@ -249,84 +267,106 @@ private struct PhotoViewer: View {
     @Environment(\.dismiss) private var dismiss
     @State private var saving = false
     @State private var chrome = true
-    @State private var zoomed = false
-    /// The bars' and filmstrip's room, which the pager hides from its pages.
-    @State private var insets = EdgeInsets()
+    /// The black behind the pages, which LazyPager fades while a page is dragged down to close.
+    @State private var backdrop: CGFloat = 1
+    /// The space between the bars, and the screen's height: the pages' room for a video's controls.
+    @State private var gap = CGRect.zero
+    @State private var height: CGFloat = 0
     @State private var message: String?
 
     var body: some View {
         let items = photos.items ?? []
         let photo = items.first { $0.id == current }
-        NavigationStack {
-            TabView(selection: $current) {
-                ForEach(items) { photo in
-                    page(photo, items: items)
-                }
+        // LazyPager pages by index; the album keys photos by id.
+        let index = Binding {
+            items.firstIndex { $0.id == current } ?? 0
+        } set: {
+            if items.indices.contains($0) { current = items[$0].id }
+        }
+        ZStack {
+            LazyPager(data: items, page: index) { photo in
+                // Each page is hosted in UIKit, out of reach of the environment.
+                page(photo).environment(store)
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            // Zoomed in, a pan moves within the photo instead of paging or closing.
-            .scrollDisabled(zoomed)
-            // The filmstrip can jump away from a zoomed page before it reports zooming out.
+            .zoomable { $0.video == nil ? .custom(min: 1, max: 4, doubleTap: .scale(0.5)) : .disabled }
+            .onDismiss(backgroundOpacity: $backdrop) { dismiss() }
+            .onTap { withAnimation { chrome.toggle() } }
+            .shouldLoadMore { Task { await photos.load(store) } }
             .onChange(of: current) {
-                zoomed = false
                 // A video page has no tap to bring hidden bars back (the player takes taps), so show them.
                 if photos.items?.first(where: { $0.id == current })?.video != nil { chrome = true }
             }
-            .background(.black)
+            .background(.black.opacity(backdrop))
             .ignoresSafeArea()
-            .onGeometryChange(for: EdgeInsets.self, of: \.safeAreaInsets) { insets = $0 }
-            .safeAreaInset(edge: .bottom) {
-                if chrome { Filmstrip(items: items, current: $current) }
-            }
-            .navigationTitle(title)
-            .navigationSubtitle(photo?.date.flatMap(Fmt.timestamp).map { Fmt.format($0, "dMMMMHHmm") } ?? "")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Close", systemImage: "chevron.backward") { dismiss() }
-                }
-                ToolbarItem(placement: .bottomBar) {
-                    if saving {
-                        ProgressView()
-                    } else {
-                        Button("Save to Photos", systemImage: "square.and.arrow.down") {
-                            guard let photo else { return }
-                            Task {
-                                saving = true
-                                message = await saveToPhotos([photo], store: store)
-                                saving = false
+            .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { height = $0 }
+            // Plain views over the pager, not a NavigationStack around it: LazyPager reads the safe area only
+            // when a swipe settles, so bars that change it leave the photo off centre; and a NavigationStack
+            // on top would swallow the pager's touches. Empty space here lets touches through.
+            if chrome, backdrop == 1 {
+                VStack(spacing: 0) {
+                    ZStack {
+                        VStack {
+                            Text(title).font(.headline)
+                            if let date = photo?.date.flatMap(Fmt.timestamp) {
+                                Text(Fmt.format(date, "dMMMMHHmm")).font(.subheadline).foregroundStyle(.secondary)
+                            }
+                        }
+                        .padding(.horizontal, 64)
+                        bar {
+                            Button("Close", systemImage: "chevron.backward") { dismiss() }
+                        }
+                    }
+                    // The pages' room between the bars, for the video player's controls.
+                    Color.clear.onGeometryChange(for: CGRect.self) { $0.frame(in: .global) } action: { gap = $0 }
+                    Filmstrip(items: items, current: $current)
+                    bar {
+                        if saving {
+                            ProgressView().frame(width: 44, height: 44)
+                        } else {
+                            Button("Save to Photos", systemImage: "square.and.arrow.down") {
+                                guard let photo else { return }
+                                Task {
+                                    saving = true
+                                    message = await saveToPhotos([photo], store: store)
+                                    saving = false
+                                }
                             }
                         }
                     }
                 }
-                ToolbarSpacer(.flexible, placement: .bottomBar)
+                .transition(.opacity)
             }
-            .toolbarVisibility(chrome ? .visible : .hidden, for: .navigationBar, .bottomBar)
-            .toast($message)
         }
-        .interactiveDismissDisabled(zoomed)
+        .toast($message)
+        // LazyPager's drag closes it, moving only the page; the zoom transition's drag would move the whole cover.
+        .interactiveDismissDisabled()
+        // So the album shows through as a page is dragged down. The album also stays in the accessibility
+        // tree, so check this screen with screenshots or the "viewer.photo" frame, not a snapshot's list.
+        .presentationBackground(.clear)
         .colorScheme(.dark)
     }
 
-    @ViewBuilder private func page(_ photo: Photo, items: [Photo]) -> some View {
-        Group {
-            if let video = photo.video {
-                VideoPage(video: video, still: photo.image, thumbnail: photo.thumbnail, active: photo.id == current, insets: insets)
-            } else {
-                Zoomable(active: photo.id == current, zoomed: $zoomed) {
-                    withAnimation { chrome.toggle() }
-                } content: {
-                    // The cached thumbnail stands in while the original loads.
-                    GalleryImage(id: photo.image, cache: false) {
-                        GalleryImage(id: photo.thumbnail, cache: true).scaledToFit()
-                    }
-                    .scaledToFit()
-                    .environment(store)
-                }
-            }
+    /// A row of round glass buttons at the leading edge, like a toolbar's.
+    private func bar(@ViewBuilder _ content: () -> some View) -> some View {
+        HStack {
+            content().labelStyle(.iconOnly).font(.title3).buttonStyle(.glass).buttonBorderShape(.circle).controlSize(.large)
+            Spacer()
         }
-        .tag(photo.id)
-        .onAppear { if photo.id == items.last?.id { Task { await photos.load(store) } } }
+        .padding(.horizontal)
+    }
+
+    @ViewBuilder private func page(_ photo: Photo) -> some View {
+        if let video = photo.video {
+            VideoPage(video: video, still: photo.image, thumbnail: photo.thumbnail, active: photo.id == current,
+                      insets: EdgeInsets(top: gap.minY, leading: 0, bottom: max(0, height - gap.maxY), trailing: 0))
+        } else {
+            // The cached thumbnail stands in while the original loads.
+            GalleryImage(id: photo.image, cache: false) {
+                GalleryImage(id: photo.thumbnail, cache: true).scaledToFit()
+            }
+            .scaledToFit()
+            .accessibilityIdentifier("viewer.photo")
+        }
     }
 }
 
@@ -401,95 +441,6 @@ private struct VideoPage: View {
     }
 }
 
-/// Pinch or double-tap to zoom `content`, Photos style. `onTap` runs on a single tap, once it can't be a double-tap.
-/// SwiftUI has no zoomable scroll view, hence UIKit. Leaving the page (`active` false) zooms back out.
-private struct Zoomable<Content: View>: UIViewRepresentable {
-    let active: Bool
-    @Binding var zoomed: Bool
-    let onTap: () -> Void
-    @ViewBuilder let content: Content
-
-    func makeCoordinator() -> Coordinator { Coordinator(host: UIHostingController(rootView: content)) }
-
-    func makeUIView(context: Context) -> ZoomScrollView {
-        let c = context.coordinator
-        c.host.safeAreaRegions = []
-        c.host.view.backgroundColor = .clear
-        let scroll = ZoomScrollView(content: c.host.view)
-        scroll.delegate = c
-        scroll.maximumZoomScale = 4
-        scroll.showsVerticalScrollIndicator = false
-        scroll.showsHorizontalScrollIndicator = false
-        scroll.contentInsetAdjustmentBehavior = .never
-        let double = UITapGestureRecognizer(target: c, action: #selector(Coordinator.doubleTap))
-        double.numberOfTapsRequired = 2
-        let single = UITapGestureRecognizer(target: c, action: #selector(Coordinator.singleTap))
-        single.require(toFail: double)
-        scroll.addGestureRecognizer(double)
-        scroll.addGestureRecognizer(single)
-        return scroll
-    }
-
-    func updateUIView(_ scroll: ZoomScrollView, context: Context) {
-        context.coordinator.parent = self
-        context.coordinator.host.rootView = content
-        if !active, scroll.zoomScale != 1 { scroll.setZoomScale(1, animated: false) }
-    }
-
-    final class Coordinator: NSObject, UIScrollViewDelegate {
-        let host: UIHostingController<Content>
-        var parent: Zoomable?
-        init(host: UIHostingController<Content>) { self.host = host }
-
-        func viewForZooming(in scroll: UIScrollView) -> UIView? { host.view }
-
-        func scrollViewDidZoom(_ scroll: UIScrollView) {
-            // A pinch-in bounces below 1x; keep the photo centred instead of shrinking into the corner.
-            if scroll.zoomScale < 1 { host.view.center = CGPoint(x: scroll.bounds.midX, y: scroll.bounds.midY) }
-            let zoomed = scroll.zoomScale > 1
-            // Also called from updateUIView, where SwiftUI state mustn't change.
-            DispatchQueue.main.async { [parent] in if parent?.zoomed != zoomed { parent?.zoomed = zoomed } }
-        }
-
-        /// A pinch let go just above 1x looks unzoomed but would still block paging and swipe-down: snap it back.
-        func scrollViewDidEndZooming(_ scroll: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
-            if scale > 1, scale < 1.1 { scroll.setZoomScale(1, animated: true) }
-        }
-
-        @objc func doubleTap(_ tap: UITapGestureRecognizer) {
-            guard let scroll = tap.view as? UIScrollView else { return }
-            if scroll.zoomScale > 1 { return scroll.setZoomScale(1, animated: true) }
-            let point = tap.location(in: host.view)
-            let size = CGSize(width: scroll.bounds.width / 3, height: scroll.bounds.height / 3)
-            scroll.zoom(to: CGRect(x: point.x - size.width / 2, y: point.y - size.height / 2,
-                                   width: size.width, height: size.height), animated: true)
-        }
-
-        @objc func singleTap() { parent?.onTap() }
-    }
-}
-
-/// Keeps the zoomed view the size of the page while zoomed out.
-// ponytail: the view spans the page, not just the photo, so a zoomed-in landscape photo pans into its black bars.
-// Sizing it to the image's aspect ratio fixes that and double-tap aim: issue #24.
-private final class ZoomScrollView: UIScrollView {
-    private let content: UIView
-    init(content: UIView) {
-        self.content = content
-        super.init(frame: .zero)
-        addSubview(content)
-    }
-    required init?(coder: NSCoder) { fatalError() }
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        guard zoomScale == 1 else { return }
-        content.frame = CGRect(origin: .zero, size: bounds.size)
-        contentSize = bounds.size
-    }
-}
-
-/// The row of thumbnails under the viewer; the current one is wider and centred.
 private struct Filmstrip: View {
     let items: [Photo]
     @Binding var current: Int

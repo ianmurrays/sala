@@ -51,7 +51,12 @@ struct RootView: View {
         .sheet(isPresented: $store.showSettings) {
             SettingsView()
         }
-        .task { await store.load() }
+        .task {
+            #if DEBUG
+            if DemoLaunch.openPhoto { store.selectedTab = .gallery }
+            #endif
+            await store.load()
+        }
         .onOpenURL { store.handleDeepLink($0) }
         .onChange(of: scenePhase, initial: true) { _, phase in AppLock.shared.scenePhaseChanged(phase) }
         .onChange(of: scenePhase) { _, phase in

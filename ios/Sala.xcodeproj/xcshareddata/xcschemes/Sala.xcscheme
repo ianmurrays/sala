@@ -50,6 +50,17 @@
                ReferencedContainer = "container:Sala.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "94D7F41D0CF8394D5B1B9B5F"
+               BuildableName = "SalaUITests.xctest"
+               BlueprintName = "SalaUITests"
+               ReferencedContainer = "container:Sala.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <CommandLineArguments>
       </CommandLineArguments>

@@ -41,7 +41,7 @@ Requires Xcode with the iOS 27 SDK (the app needs iOS 27) and [XcodeGen](https:/
 
 ### Demo mode
 
-A debug build launched with `-demo YES` (Xcode: Product → Scheme → Edit Scheme → Run → Arguments) skips the login and runs on a fake Aula with invented data from `ios/DemoAula/`. Everything but the network is real: routes, mapping, views. Dates follow today. Writes (pickup, sick, replies, folders) succeed but change nothing, so a reload shows the old state; creating a folder fails, since the fake can't show the new one. Log out leads to a "Back to demo data" button, never MitID. Use it in the simulator: on a phone, demo data also reaches the widget and the Sala calendar. The fixtures are not in Release builds.
+A debug build launched with `-demo YES` (Xcode: Product → Scheme → Edit Scheme → Run → Arguments) skips the login and runs on a fake Aula with invented data from `ios/DemoAula/`. Everything but the network is real: routes, mapping, views. Dates follow today. Writes (pickup, sick, replies, folders) succeed but change nothing, so a reload shows the old state; creating a folder fails, since the fake can't show the new one. Log out leads to a "Back to demo data" button, never MitID. Use it in the simulator: on a phone, demo data also reaches the widget and the Sala calendar. Add `-demoOpenPhoto YES` to start in the photo viewer. The fixtures are not in Release builds.
 
 `ios/project.yml` is the source of truth for the Xcode project. `ios/Sala.xcodeproj` is generated from it and committed, so run `xcodegen generate` in `ios/` after changing the spec.
 
@@ -50,6 +50,8 @@ A debug build launched with `-demo YES` (Xcode: Product → Scheme → Edit Sche
 ```sh
 cd ios && xcodebuild test -project Sala.xcodeproj -scheme Sala -destination 'platform=iOS Simulator,name=<an iPhone simulator>'
 ```
+
+`SalaUITests` drive the demo app in the simulator; `PhotoViewerTests` checks that a photo stays centred as the viewer's bars hide and show.
 
 `DemoTests` fail when the app calls an Aula method that has no fixture in `ios/DemoAula/`, when a fixture's method is no longer called, or when a screen's route can't be answered from the fixtures.
 
