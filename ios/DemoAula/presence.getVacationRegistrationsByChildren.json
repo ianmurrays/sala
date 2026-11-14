@@ -40,6 +40,17 @@
        "startDate": "2026-10-24",
        "title": "Efterårsferie",
        "vacationRegistrationId": 54
+      },
+      {
+       "endDate": "2026-12-31",
+       "isEditable": false,
+       "isMissingAnswer": false,
+       "noteToGuardian": "Giv besked om Oskar kommer mellem jul og nytår.",
+       "responseDeadline": "2026-11-10",
+       "responseId": 0,
+       "startDate": "2026-12-28",
+       "title": "Mellem jul og nytår",
+       "vacationRegistrationId": 53
       }
      ]
     }

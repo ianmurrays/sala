@@ -464,8 +464,8 @@ struct AbsenceSheet: View {
     }
 }
 
-/// Registered holidays and days off (tap one to change or cancel it), and the holiday requests that
-/// can still be answered (tap one to change the answer).
+/// Registered holidays and days off (tap one to change or cancel it), and the holiday requests whose
+/// period hasn't ended (tap one to answer, change or see the answer).
 struct HolidaysView: View {
     @Environment(Store.self) private var store
     @Environment(\.dismiss) private var dismiss
@@ -534,7 +534,7 @@ struct HolidaysView: View {
                         Button { request = r } label: {
                             row(r.title.isEmpty ? "Holiday request" : r.title,
                                 [r.startDate.map { Self.range($0, r.endDate ?? $0) }, r.answered ? "Answered" : "Not answered",
-                                 r.deadline.flatMap(Fmt.day).map { "\(r.answered ? "change" : "answer") by \(Fmt.format($0, "dMMM"))" }].compactMap { $0 }.joined(separator: " · "),
+                                 r.editable ? r.deadline.flatMap(Fmt.day).map { "\(r.answered ? "change" : "answer") by \(Fmt.format($0, "dMMM"))" } : "Closed"].compactMap { $0 }.joined(separator: " · "),
                                 locked: false)
                         }
                     }
