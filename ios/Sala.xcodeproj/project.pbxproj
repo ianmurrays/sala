@@ -38,6 +38,7 @@
 		6AEB15E2A7D2D58E3AFBB7AC /* GalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DCDEC490BACA3926522E1C /* GalleryView.swift */; };
 		6E75E7B5960FC1B9B3ED9B82 /* PickupSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996EC5D2487693CC0C6083BE /* PickupSheet.swift */; };
 		6E8B33639C44D7560FE81219 /* AulaDates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2028C09CE72DB34359EB2AD6 /* AulaDates.swift */; };
+		7205EC015E2C6F18E4B690EE /* LazyPager in Frameworks */ = {isa = PBXBuildFile; productRef = 8D918814451941745AA3ED4B /* LazyPager */; };
 		8144705DE169CC5DCD47115A /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = A31531B782C08B051F900B8C /* API.swift */; };
 		8AD7489D45D4FF2D7FFBE4B1 /* AulaModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E941CB5BEFA754583F1501B /* AulaModels.swift */; };
 		8D567F5C240A1B747CA12ED0 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141011F68471197F2E922834 /* CalendarView.swift */; };
@@ -150,6 +151,17 @@
 		FD2E145876A2ECFC2DB2AAD5 /* Sala.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Sala.entitlements; sourceTree = "<group>"; };
 		FED58131D48315A4E399D297 /* AulaMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AulaMapping.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		930341F60785C13F508AF16A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7205EC015E2C6F18E4B690EE /* LazyPager in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		0700FC92D7FEB942764B1EAE /* Aula */ = {
@@ -293,6 +305,7 @@
 			buildPhases = (
 				1C8B9D472B71F548C44C7186 /* Sources */,
 				ABA22DFA9F289824472F49F3 /* Resources */,
+				930341F60785C13F508AF16A /* Frameworks */,
 				2A343F300E528415A934A38D /* Embed Foundation Extensions */,
 			);
 			buildRules = (
@@ -302,6 +315,7 @@
 			);
 			name = Sala;
 			packageProductDependencies = (
+				8D918814451941745AA3ED4B /* LazyPager */,
 			);
 			productName = Sala;
 			productReference = 85EAEE828583E51DD8233BA7 /* Sala.app */;
@@ -356,6 +370,9 @@
 			);
 			mainGroup = 576E8E9DAD3D74B01DDED165;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				D0AD4F83836E3897FDB10BB8 /* XCRemoteSwiftPackageReference "SwiftUI-LazyPager" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 1B4A39ED07382C08BF978376 /* Products */;
 			projectDirPath = "";
@@ -762,6 +779,25 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		D0AD4F83836E3897FDB10BB8 /* XCRemoteSwiftPackageReference "SwiftUI-LazyPager" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/gh123man/SwiftUI-LazyPager";
+			requirement = {
+				kind = exactVersion;
+				version = 1.2.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8D918814451941745AA3ED4B /* LazyPager */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D0AD4F83836E3897FDB10BB8 /* XCRemoteSwiftPackageReference "SwiftUI-LazyPager" */;
+			productName = LazyPager;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = F44E7A6AE736D5B182C35643 /* Project object */;
 }

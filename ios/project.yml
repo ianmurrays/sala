@@ -3,6 +3,11 @@ options:
   deploymentTarget:
     iOS: "27.0"
   createIntermediateGroups: true
+packages:
+  # The gallery's full-screen pager: zoom, double-tap, drag down to close (GalleryView.swift).
+  LazyPager:
+    url: https://github.com/gh123man/SwiftUI-LazyPager
+    exactVersion: 1.2.1
 fileGroups:
   - Config/Signing.xcconfig
   - Config/Local.example.xcconfig
@@ -27,6 +32,7 @@ targets:
         buildPhase: resources
     dependencies:
       - target: SalaWidget
+      - package: LazyPager
     scheme:
       testTargets: [SalaTests]
     entitlements:
