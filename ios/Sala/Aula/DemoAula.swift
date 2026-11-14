@@ -9,6 +9,12 @@ import Foundation
 /// whole answer>}`. The case whose `when` params all equal the request's and has the most of them wins;
 /// repeated params (`ids[]`) are joined with commas. Dates are written as if today were `anchor`, and
 /// every `YYYY-MM-DD` is shifted to the real today when a fixture is read.
+/// `-demoOpenPhoto YES` (with `-demo YES`) starts in the photo viewer, for checking it by hand and for
+/// SalaUITests. Cleared once the viewer opens, so going back stays back.
+@MainActor enum DemoLaunch {
+    static var openPhoto = DemoTransport.enabled && UserDefaults.standard.bool(forKey: "demoOpenPhoto")
+}
+
 final class DemoTransport: AulaTransport, @unchecked Sendable {
     static var enabled: Bool { UserDefaults.standard.bool(forKey: "demo") }
     static let anchor = Day(2026, 11, 13)!

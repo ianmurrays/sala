@@ -34,7 +34,7 @@ targets:
       - target: SalaWidget
       - package: LazyPager
     scheme:
-      testTargets: [SalaTests]
+      testTargets: [SalaTests, SalaUITests]
     entitlements:
       path: Sala/Sala.entitlements
       properties:
@@ -119,4 +119,16 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: $(SALA_BUNDLE_ID).tests
         GENERATE_INFOPLIST_FILE: YES
         SWIFT_STRICT_CONCURRENCY: complete
+        CODE_SIGN_STYLE: Automatic
+  SalaUITests:
+    # Drives the debug app in demo mode (no login, never Aula), for layout no unit test can see.
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [SalaUITests]
+    dependencies:
+      - target: Sala
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: $(SALA_BUNDLE_ID).uitests
+        GENERATE_INFOPLIST_FILE: YES
         CODE_SIGN_STYLE: Automatic

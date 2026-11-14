@@ -7,10 +7,11 @@ import SwiftUI
 struct GalleryView: View {
     @Environment(Store.self) private var store
     @State private var albums = Paged<Album> { client, page in try await client.albums(page: page) }
+    @State private var path: [Album] = []
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 12) {
                     Text("Gallery")
@@ -32,7 +33,12 @@ struct GalleryView: View {
             .background(Color.screen)
             .toolbar(.hidden, for: .navigationBar)
             .refreshable { await albums.load(store, reset: true) }
-            .task { if albums.items == nil { await albums.load(store, reset: true) } }
+            .task {
+                if albums.items == nil { await albums.load(store, reset: true) }
+                #if DEBUG
+                if DemoLaunch.openPhoto, let first = albums.items?.first { path = [first] }
+                #endif
+            }
             .onChange(of: scenePhase) { if scenePhase == .active { Task { await albums.refreshURLs(store) } } }
             .navigationDestination(for: Album.self) { AlbumView(album: $0) }
         }
@@ -141,7 +147,18 @@ struct AlbumView: View {
         .toolbar { toolbar }
         .toolbarVisibility(selection == nil ? .automatic : .hidden, for: .tabBar)
         .refreshable { await photos.load(store, reset: true) }
-        .task { if photos.items == nil { await photos.load(store, reset: true) } }
+        .task {
+            if photos.items == nil { await photos.load(store, reset: true) }
+            #if DEBUG
+            // A photo followed by another, so SalaUITests can swipe from one photo to the next.
+            let items = photos.items ?? []
+            if DemoLaunch.openPhoto, let i = items.indices.first(where: { items[$0].video == nil && items.indices.contains($0 + 1) && items[$0 + 1].video == nil }) {
+                DemoLaunch.openPhoto = false
+                current = items[i].id
+                viewing = true
+            }
+            #endif
+        }
         .onChange(of: scenePhase) { if scenePhase == .active { Task { await photos.refreshURLs(store) } } }
         .fullScreenCover(isPresented: $viewing) {
             PhotoViewer(photos: photos, title: title, current: $current)
@@ -323,7 +340,8 @@ private struct PhotoViewer: View {
         .toast($message)
         // LazyPager's drag closes it, moving only the page; the zoom transition's drag would move the whole cover.
         .interactiveDismissDisabled()
-        // So the album shows through as a page is dragged down.
+        // So the album shows through as a page is dragged down. The album also stays in the accessibility
+        // tree, so check this screen with screenshots or the "viewer.photo" frame, not a snapshot's list.
         .presentationBackground(.clear)
         .colorScheme(.dark)
     }
@@ -347,6 +365,7 @@ private struct PhotoViewer: View {
                 GalleryImage(id: photo.thumbnail, cache: true).scaledToFit()
             }
             .scaledToFit()
+            .accessibilityIdentifier("viewer.photo")
         }
     }
 }
