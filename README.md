@@ -14,6 +14,15 @@
 >
 > Sala is an independent hobby project. It is in no way associated with, affiliated with, endorsed by or supported by Aula, KOMBIT, Netcompany, the municipalities, schools or daycares that use Aula, or anyone else.
 
+<p align="center">
+  <img src="docs/screenshots/today.png" width="200" alt="Today">
+  <img src="docs/screenshots/calendar.png" width="200" alt="Calendar">
+  <img src="docs/screenshots/messages.png" width="200" alt="Messages">
+  <img src="docs/screenshots/thread.png" width="200" alt="A message thread">
+</p>
+
+<p align="center"><sub>Screenshots from <a href="#demo-mode">demo mode</a>: every name and message is invented.</sub></p>
+
 ## What it does
 
 - **Today**: each child's status (present, sick, gone home, ...), pickup time and who picks up, closing time, holiday requests and messages that need an answer, upcoming events and posts.
