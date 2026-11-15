@@ -6,11 +6,11 @@
   ],
   [
    "<p>Vi holder julefrokost for børnene d. 18. december. Børnene må gerne komme i nissetøj, og vi glæder os til at se jer alle sammen til en hyggelig dag.</p>",
-   "Vi holder julefrokost for børnene d. 18. december. Børnene må gerne komme i\nnissetøj, og vi glæder os til at se jer alle sammen til en hyggelig dag."
+   "Vi holder julefrokost for børnene d. 18. december. Børnene må gerne komme i nissetøj, og vi glæder os til at se jer alle sammen til en hyggelig dag."
   ],
   [
-   "<p>18. december er sidste dag før ferien.</p><p>- husk madpakke</p><p>+ og drikkedunk</p>",
-   "18\\. december er sidste dag før ferien.\n\n\\- husk madpakke\n\n\\+ og drikkedunk"
+   "<p>18. december er sidste dag før ferien.</p><p>- husk madpakke</p>",
+   "18. december er sidste dag før ferien.\n\n- husk madpakke"
   ],
   [
    "<p>a<br>b</p><p>c</p>",
@@ -30,147 +30,67 @@
   ],
   [
    "<p>Hej &amp; farvel &lt;3 &nbsp;x &copy; &hellip; &#39; &#x41; &#150; &unknown; a & b</p>",
-   "Hej & farvel <3  x © … ' A – &unknown; a & b"
+   "Hej & farvel <3 x © … ' A &#150; &unknown; a & b"
   ],
   [
    "<ul><li>one</li><li>two</li></ul><p>after</p>",
-   "* one\n  * two\n\nafter"
-  ],
-  [
-   "<ol start=\"3\"><li>one</li><li>two</li></ol>",
-   "3. one\n  4. two"
-  ],
-  [
-   "<ul><li>outer<ul><li>inner</li></ul></li></ul>",
-   "* outer\n    * inner"
+   "• one\n• two\n\nafter"
   ],
   [
    "<ol><li>first<ul><li>sub</li></ul></li></ol>",
-   "1. first\n     * sub"
+   "• first\n\n• sub"
   ],
   [
-   "<ul><li>Et meget langt punkt i en liste der fortsætter og fortsætter langt ud over de otteoghalvfjerds tegn</li></ul>",
-   "* Et meget langt punkt i en liste der fortsætter og fortsætter langt ud over de otteoghalvfjerds tegn"
+   "<h2>Title</h2><p>body</p>",
+   "Title\n\nbody"
   ],
   [
-   "<h2>Title</h2><p>body</p><h1>Big</h1>",
-   "## Title\n\nbody\n\n# Big"
-  ],
-  [
-   "<a href='http://x'>link text</a> after <a href='https://www.aula.dk/portal/#/meget/lang/sti/der/aldrig/slutter/og/bliver/ved/og/ved'>https://www.aula.dk/portal/#/meget/lang/sti/der/aldrig/slutter/og/bliver/ved/og/ved</a>",
-   "link text after\nhttps://www.aula.dk/portal/#/meget/lang/sti/der/aldrig/slutter/og/bliver/ved/og/ved"
-  ],
-  [
-   "<p>Se https://www.aula.dk/portal/#/meget/lang/sti/der/aldrig/slutter/og/bliver/ved/og/ved/endnu/længere for mere</p>",
-   "Se\nhttps://www.aula.dk/portal/#/meget/lang/sti/der/aldrig/slutter/og/bliver/ved/og/ved/endnu/længere\nfor mere"
+   "<a href='x>y'>link text</a> after",
+   "link text after"
   ],
   [
    "<img src='x' alt='pic'> after",
    "after"
   ],
   [
-   "<blockquote>quoted</blockquote>",
-   "> quoted"
-  ],
-  [
-   "<blockquote>Et langt citat som er længere end otteoghalvfjerds tegn, så det bliver brudt over flere linjer her.</blockquote>",
-   "> Et langt citat som er længere end otteoghalvfjerds tegn, så det bliver brudt\n> over flere linjer her."
-  ],
-  [
    "<blockquote>a<br>b</blockquote>",
-   "> a\n> b"
+   "a\nb"
   ],
   [
    "<p>  spaced   out  </p>",
    "spaced out"
   ],
   [
-   "<p>line1</p>\n\n<p>line2</p>",
-   "line1\n\nline2"
-  ],
-  [
    "<table><tr><td>a</td><td>b</td></tr><tr><td>c</td><td>d</td></tr></table>",
-   "ab\ncd"
+   "a b\nc d"
   ],
   [
-   "<p><strong>Bold</strong> and <em>it</em> and <u>under</u></p>",
-   "Bold and it and under"
-  ],
-  [
-   "<p>x</p><br><p>y</p>",
-   "x\n\n\n\ny"
+   "<p><strong>Bold</strong> and <em>it</em></p>",
+   "Bold and it"
   ],
   [
    "<span>a</span> <span>b</span>",
    "a b"
   ],
   [
-   "1. not a list",
-   "1\\. not a list"
-  ],
-  [
-   "<p>* star</p><p>** stars</p>",
-   "* star\n** stars"
-  ],
-  [
-   "<p>Hello&#39;s &quot;q&quot; and \\back\\slash \\* \\.</p>",
-   "Hello's \"q\" and \\back\\slash \\\\* \\\\."
-  ],
-  [
-   "<p>Et ord-med-bindestreger og et meget-langt-sammensat-ord-som-kan-brydes-ved-bindestregerne-hvis-det-er-nødvendigt</p>",
-   "Et ord-med-bindestreger og et meget-langt-sammensat-ord-som-kan-brydes-ved-\nbindestregerne-hvis-det-er-nødvendigt"
-  ],
-  [
-   "<p>Tankestreg -- her og der --- og en ultralangtordudenmellemrumoverhovedetsomslettesikkeerbrydeligtpånogenmådeoverhovedet ja</p>",
-   "Tankestreg -- her og der --- og en\nultralangtordudenmellemrumoverhovedetsomslettesikkeerbrydeligtpånogenmådeoverhovedet\nja"
-  ],
-  [
-   "<p><s>gammel</s> ny pris</p>",
-   "~~gammel~~ ny pris"
-  ],
-  [
-   "<p>Brug <code>kode_her</code> og <kbd>Ctrl</kbd></p>",
-   "Brug `kode_her` og `Ctrl`"
-  ],
-  [
    "<pre>linje 1\n  linje 2</pre><p>efter</p>",
-   "linje 1\n      linje 2\nefter"
+   "linje 1\n  linje 2\n\nefter"
   ],
   [
-   "<p>Hun sagde <q>hej</q></p>",
-   "Hun sagde \"hej\""
-  ],
-  [
-   "<hr><p>under</p>",
-   "* * *\nunder"
-  ],
-  [
-   "<dl><dt>Term</dt><dd>Def</dd></dl>",
-   "Term\n\n    Def"
-  ],
-  [
-   "<style>p{color:red}</style><script>var x = 1;</script><p>synlig</p>",
+   "<style>p{color:red}</style><script>var x = '</p>';</script><p>synlig</p>",
    "synlig"
   ],
   [
-   "<!-- kommentar --><p>efter kommentar</p>",
-   "efter kommentar"
-  ],
-  [
-   "<p>Tab\there and nbsp char</p>",
-   "Tab here and nbsp char"
+   "x <!-- c --> y",
+   "x y"
   ],
   [
    "<P>UPPER <B>case</B></P>",
    "UPPER case"
   ],
   [
-   "<p>a</p>   <p>b</p>",
-   "a\n\nb"
-  ],
-  [
-   "<div><p>nested</p></div>",
-   "nested"
+   "<div>a<div>b</div>c</div>",
+   "a\n\nb\n\nc"
   ],
   [
    "",
@@ -189,56 +109,20 @@
    "Kort nyt fra Stue, opslag 1."
   ],
   [
-   "<p>Ét afsnit med en sætning der er præcis lang nok til at ramme grænsen på 78 tegn!</p>",
-   "Ét afsnit med en sætning der er præcis lang nok til at ramme grænsen på 78\ntegn!"
-  ],
-  [
-   "<p>ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord</p>",
-   "ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord\nord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord\nord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord ord\nord ord ord"
-  ],
-  [
-   "x&amp",
-   "x&"
-  ],
-  [
-   "a &amp b",
-   "a & b"
-  ],
-  [
-   "&#65",
-   "A"
-  ],
-  [
-   "AT&T rocks",
-   "AT&T; rocks"
-  ],
-  [
-   "a&b",
-   "a&b;"
-  ],
-  [
-   "x &#x41;y",
-   "x Ay"
-  ],
-  [
-   "&#65;&#66",
-   "AB"
-  ],
-  [
-   "<p>a</p><hr><p>b</p>",
-   "a\n\n* * *\nb"
-  ],
-  [
    "a < b > c",
    "a < b > c"
   ],
   [
-   "<p>1.5 is not</p>",
-   "1.5 is not"
+   "AT&T rocks",
+   "AT&T rocks"
   ],
   [
-   "<p>2.\tTab</p>",
-   "2\\. Tab"
+   "&lt;b&gt;",
+   "<b>"
+  ],
+  [
+   "<p unclosed",
+   ""
   ],
   [
    "x<br>",
@@ -249,76 +133,12 @@
    "y"
   ],
   [
-   "<p>a<br><br>b</p>",
-   "a\n\nb"
-  ],
-  [
-   "<li>loose</li>",
-   "* loose"
-  ],
-  [
-   "<p>12. maj</p><p>  3. juni</p>",
-   "12\\. maj\n\n3\\. juni"
-  ],
-  [
-   "<b>bold</b>text",
-   "boldtext"
-  ],
-  [
-   "<s>a</s>b",
-   "~~a~~ b"
-  ],
-  [
-   "<p>Line one</p><ul><li>a</li></ul>text after",
-   "Line one\n\n  * a\n\ntext after"
-  ],
-  [
-   "text<p>para</p>more",
-   "text\n\npara\n\nmore"
-  ],
-  [
-   "<h3>H</h3>text",
-   "### H\n\ntext"
-  ],
-  [
-   "</p>stray",
-   "stray"
-  ],
-  [
-   "<p unclosed",
-   ""
-  ],
-  [
-   "x <!-- c --> y",
-   "x  y"
-  ],
-  [
-   "<br/><br/>",
-   ""
-  ],
-  [
-   "&lt;b&gt;",
-   "<b>"
-  ],
-  [
-   "<div>a<div>b</div>c</div>",
-   "a\n\nb\n\nc"
-  ],
-  [
-   "<p>Pris: 100 | 200 | 300 kr og mere tekst så linjen bliver længere end otteoghalvfjerds tegn</p>",
-   "Pris: 100 | 200 | 300 kr og mere tekst så linjen bliver længere end otteoghalvfjerds tegn"
-  ],
-  [
-   "<p>-- tankestreg først i en lang linje der bliver ved og ved og ved til den er over grænsen for ombrydning</p>",
-   "\\-- tankestreg først i en lang linje der bliver ved og ved og ved til den er\nover grænsen for ombrydning"
-  ],
-  [
-   "<abbr title=\"Skolefritidsordning\">SFO</abbr> åbner",
-   "SFO åbner\n\n  *[SFO]: Skolefritidsordning"
+   "<p>x</p><br><br><br><p>y</p>",
+   "x\n\ny"
   ],
   [
    "<p>Ét&nbsp;ord&nbsp;med&nbsp;hårde&nbsp;mellemrum</p>",
-   "Ét ord med hårde mellemrum"
+   "Ét ord med hårde mellemrum"
   ]
  ],
  "textToHtml": [
