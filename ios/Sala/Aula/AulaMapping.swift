@@ -137,10 +137,8 @@ extension Aula {
         return AulaTime.digits(c, 0, 2)! * 60 + AulaTime.digits(c, 3, 2)!
     }
 
-    /// Aula HTML -> plain text (the library converter, minus markdown hard-break spaces).
-    static func plain(_ html: String) -> String {
-        Py.strip(HTMLText.plain(html).components(separatedBy: "\n").map(Py.rstrip).joined(separator: "\n"))
-    }
+    /// Aula HTML -> plain text for the views.
+    static func plain(_ html: String) -> String { AulaText.plain(html) }
 
     /// Plain text from the app -> the HTML Aula's editor would send. The portal's reply box holds
     /// editor HTML (it runs `stripHTML(this.message)` before validating length), so a plain string

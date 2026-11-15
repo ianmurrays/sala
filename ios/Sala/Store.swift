@@ -570,7 +570,7 @@ final class Store {
         selectedTab = .messages
     }
 
-    /// `sala://thread/<id>` opens a thread, `sala://today` shows and refreshes Today (links from ntfy pushes).
+    /// `sala://thread/<id>` opens a thread, `sala://today` shows and refreshes Today.
     func handleDeepLink(_ url: URL) {
         guard url.scheme?.lowercased() == "sala" else { return }
         switch url.host()?.lowercased() {

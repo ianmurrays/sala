@@ -4,3 +4,7 @@ xcuserdata/
 .DS_Store
 ios/Config/Local.xcconfig
 .cache/
+
+# Leftovers of the old Python server: credentials and captured Aula data
+server/
+.env

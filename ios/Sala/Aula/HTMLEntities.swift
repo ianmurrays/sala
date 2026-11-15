@@ -1,6 +1,6 @@
 import Foundation
 
-/// HTML5 named character references (the ones ending in ";"), for the html2text port.
+/// HTML5 named character references (the ones ending in ";"), for `AulaText.decodeEntities`.
 /// Generated from Python's `html.entities.html5`: "name:hex[,hex]" pairs, space separated.
 enum HTMLEntities {
     static let table: [String: String] = {

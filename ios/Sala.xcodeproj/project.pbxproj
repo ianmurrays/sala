@@ -10,7 +10,6 @@
 		0A36B536863C947DF0F9ABED /* HolidaySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C4376EE075DB7E8B8A7DD0 /* HolidaySheet.swift */; };
 		0EF6B6061030907C70486123 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61D4DFB892FB869F494631E /* LoginView.swift */; };
 		0F48B5FE9FAC1BE1692FF6BA /* PushTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180CB3C2AEF650334616AEF4 /* PushTests.swift */; };
-		10223E66B9848359D3498E7D /* AulaHTML.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576FF229BD737BAC27D4C865 /* AulaHTML.swift */; };
 		1741679355FAA673C58359E4 /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DDF8360879C8CE3785836C4 /* MessagesView.swift */; };
 		17DDD958DBF614ACB3FFBEA5 /* SalaShared.swift in Sources */ = {isa = PBXBuildFile; fileRef = B052EF3B3E1998CE1C0471B2 /* SalaShared.swift */; };
 		1AB56BC931C759C9BF112B30 /* AI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24BFD3094CA410383A2C1DE /* AI.swift */; };
@@ -25,7 +24,6 @@
 		33D2456955E8E5BF978F98F6 /* AulaMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = FED58131D48315A4E399D297 /* AulaMapping.swift */; };
 		3593FECD2B5F90E892AE593A /* StillSick.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18E6F59015D2651602B6C5CF /* StillSick.swift */; };
 		35C8CBE94415744492C5AB66 /* AI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24BFD3094CA410383A2C1DE /* AI.swift */; };
-		3F6D633A7E45D2EA5BFD494C /* AulaHTML.swift in Sources */ = {isa = PBXBuildFile; fileRef = 576FF229BD737BAC27D4C865 /* AulaHTML.swift */; };
 		3FC18EAF711CF3DFE0363161 /* AulaSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 221AEB48EB17EA103A3910A8 /* AulaSession.swift */; };
 		5626E9B5BFA97AFE0AF7AFE2 /* SalaWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 2CCD051E3BB3DC75F5359EEA /* SalaWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		5860CC3954AC88E6535A3EA9 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7E6AB823A3C5EB7D36DDA80 /* Theme.swift */; };
@@ -51,6 +49,7 @@
 		A1E0A0B6A8296DA131ED182A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E0E0A3B6F2E75335F323F6C7 /* Assets.xcassets */; };
 		A32DA9BD3635FDD2C3886E4E /* GoldenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447EEC8A5735180FD82A3D1C /* GoldenTests.swift */; };
 		A697E81107D0F782E86B6C30 /* AppLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9903F67A12513B2524572FCC /* AppLock.swift */; };
+		A811FC543E4DEC6E54BA886B /* AulaText.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED6502FBD7A898C996659F16 /* AulaText.swift */; };
 		A9ADB8067EAFCF160E5320E2 /* AulaPush.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10790638C025D213F72FB9FA /* AulaPush.swift */; };
 		A9E594FF64E86FFEE2A67337 /* AulaDates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2028C09CE72DB34359EB2AD6 /* AulaDates.swift */; };
 		B224BDE6B53346923BD09158 /* IntentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE3B22368830EBA510B55B4 /* IntentTests.swift */; };
@@ -68,6 +67,7 @@
 		E657D7775BAD8D02259880F0 /* HTMLEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F54721032189D28F2ECDD8D /* HTMLEntities.swift */; };
 		E8AF275F830BEFC95BA2294C /* SalaShared.swift in Sources */ = {isa = PBXBuildFile; fileRef = B052EF3B3E1998CE1C0471B2 /* SalaShared.swift */; };
 		EDD0C87726785D39C5AE9BE9 /* BackgroundRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = F41459AD15C74E8246176098 /* BackgroundRefresh.swift */; };
+		EE6FB2185EEE45A3EAB9A710 /* AulaText.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED6502FBD7A898C996659F16 /* AulaText.swift */; };
 		F98AAEDB2037F9F6760BCD54 /* AulaPush.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10790638C025D213F72FB9FA /* AulaPush.swift */; };
 		FC66B88D8A36FBE3E23C3FFC /* CalendarSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19F24DD932831620346C2F7B /* CalendarSync.swift */; };
 		FE1D817BA0982720E207D92F /* ThreadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21FF804A1A12FADBB8F696F3 /* ThreadView.swift */; };
@@ -126,7 +126,6 @@
 		3A62848569FE547E44876C3B /* SalaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SalaApp.swift; sourceTree = "<group>"; };
 		447EEC8A5735180FD82A3D1C /* GoldenTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoldenTests.swift; sourceTree = "<group>"; };
 		4DDF8360879C8CE3785836C4 /* MessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesView.swift; sourceTree = "<group>"; };
-		576FF229BD737BAC27D4C865 /* AulaHTML.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AulaHTML.swift; sourceTree = "<group>"; };
 		59725711855BD756C7F555B5 /* Local.example.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Local.example.xcconfig; sourceTree = "<group>"; };
 		5B202731BFAF92B14D963549 /* DemoAula */ = {isa = PBXFileReference; lastKnownFileType = folder; path = DemoAula; sourceTree = SOURCE_ROOT; };
 		5CE445DD73380489DB25D15C /* DemoAula.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoAula.swift; sourceTree = "<group>"; };
@@ -155,6 +154,7 @@
 		E7E6AB823A3C5EB7D36DDA80 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		EA06833B223D9F880A0BA980 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		EA44F3816DF767D0B3A780A5 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
+		ED6502FBD7A898C996659F16 /* AulaText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AulaText.swift; sourceTree = "<group>"; };
 		F41459AD15C74E8246176098 /* BackgroundRefresh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundRefresh.swift; sourceTree = "<group>"; };
 		FA7BC442D3BB1B4A2A9B3828 /* SalaTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SalaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FD2E145876A2ECFC2DB2AAD5 /* Sala.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Sala.entitlements; sourceTree = "<group>"; };
@@ -179,13 +179,13 @@
 			children = (
 				80889885B76F5717A9DECCF3 /* AulaClient.swift */,
 				2028C09CE72DB34359EB2AD6 /* AulaDates.swift */,
-				576FF229BD737BAC27D4C865 /* AulaHTML.swift */,
 				86D5BEBD3FFA87799B35B7B8 /* AulaJSON.swift */,
 				FED58131D48315A4E399D297 /* AulaMapping.swift */,
 				8E941CB5BEFA754583F1501B /* AulaModels.swift */,
 				10790638C025D213F72FB9FA /* AulaPush.swift */,
 				D0474C37C635EB4FEE0B2FA3 /* AulaRoutes.swift */,
 				221AEB48EB17EA103A3910A8 /* AulaSession.swift */,
+				ED6502FBD7A898C996659F16 /* AulaText.swift */,
 				5CE445DD73380489DB25D15C /* DemoAula.swift */,
 				9F54721032189D28F2ECDD8D /* HTMLEntities.swift */,
 			);
@@ -460,13 +460,13 @@
 				246B663D497DB08CB122FB6A /* AttachmentOpener.swift in Sources */,
 				324E4223F05466BB205FF488 /* AulaClient.swift in Sources */,
 				A9E594FF64E86FFEE2A67337 /* AulaDates.swift in Sources */,
-				3F6D633A7E45D2EA5BFD494C /* AulaHTML.swift in Sources */,
 				2C955713614AFF3C207032A2 /* AulaJSON.swift in Sources */,
 				33D2456955E8E5BF978F98F6 /* AulaMapping.swift in Sources */,
 				2FBE78824A0520905338300F /* AulaModels.swift in Sources */,
 				A9ADB8067EAFCF160E5320E2 /* AulaPush.swift in Sources */,
 				9A11134E545C9DB2541FC4A4 /* AulaRoutes.swift in Sources */,
 				BFF057C82EFE0656C63483A2 /* AulaSession.swift in Sources */,
+				EE6FB2185EEE45A3EAB9A710 /* AulaText.swift in Sources */,
 				EDD0C87726785D39C5AE9BE9 /* BackgroundRefresh.swift in Sources */,
 				FC66B88D8A36FBE3E23C3FFC /* CalendarSync.swift in Sources */,
 				8D567F5C240A1B747CA12ED0 /* CalendarView.swift in Sources */,
@@ -502,13 +502,13 @@
 				8144705DE169CC5DCD47115A /* API.swift in Sources */,
 				C800C72A1D83C8901E63FA8F /* AulaClient.swift in Sources */,
 				6E8B33639C44D7560FE81219 /* AulaDates.swift in Sources */,
-				10223E66B9848359D3498E7D /* AulaHTML.swift in Sources */,
 				5E3E3CE9F6C50D9D72FB8EBE /* AulaJSON.swift in Sources */,
 				9F0D46CCE76874169F80D0D9 /* AulaMapping.swift in Sources */,
 				8AD7489D45D4FF2D7FFBE4B1 /* AulaModels.swift in Sources */,
 				F98AAEDB2037F9F6760BCD54 /* AulaPush.swift in Sources */,
 				BB4F7D888ED1EF06093DC623 /* AulaRoutes.swift in Sources */,
 				3FC18EAF711CF3DFE0363161 /* AulaSession.swift in Sources */,
+				A811FC543E4DEC6E54BA886B /* AulaText.swift in Sources */,
 				BEFB4EF5A389959BD1DDD8B4 /* ChildEntity.swift in Sources */,
 				CA81CF8070A2EA71B4FEC2B3 /* DemoAula.swift in Sources */,
 				20236C6207C35135B3F6C994 /* DemoTests.swift in Sources */,

@@ -405,7 +405,7 @@ private final class RedirectGuard: NSObject, URLSessionTaskDelegate, Sendable {
 #if DEBUG
 /// Settings → Debug → "Capture Aula traffic": every Aula API call and its answer, one JSON line each,
 /// in `Caches/aula-traffic.jsonl`. `scripts/pull-aula-traffic.sh` copies it to the Mac. It holds
-/// real children's data, so it never goes into git; `docs/aula-shapes/` gets anonymised copies.
+/// real children's data, so it never goes into git; `docs/aula-shapes/` keeps only their structure and types.
 /// The access token is left out (cookies and the CSRF header are never part of a line).
 enum TrafficLog {
     static let file = URL.cachesDirectory.appending(path: "aula-traffic.jsonl")

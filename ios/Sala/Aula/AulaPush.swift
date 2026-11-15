@@ -1,6 +1,6 @@
 import Foundation
 
-// The old server's push rules (server/sala/push.py at 222c162, API.md → Push), over raw Aula rows:
+// The old server's push rules (push.py, API.md → Push), over raw Aula rows:
 // `/threads` and `/today` drop what they need (mailbox ids, extraRecipientsCount, the deadline date).
 // Background refresh (BackgroundRefresh.swift) turns these into local notifications.
 

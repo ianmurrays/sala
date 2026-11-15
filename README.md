@@ -12,7 +12,16 @@
 >
 > Sala may not be sold, rented or used commercially. See [License](#license).
 >
-> Sala is an independent hobby project. It is in no way associated with, affiliated with, endorsed by or supported by Aula, KOMBIT, Netcompany, the municipalities, schools or daycares that use Aula, or anyone else.
+> Sala is an independent hobby project. It is in no way associated with, affiliated with, endorsed by or supported by Aula, KOMBIT, Netcompany, MitID, the Danish Agency for Digital Government, the municipalities, schools or daycares that use Aula, or anyone else.
+
+<p align="center">
+  <img src="docs/screenshots/today.png" width="200" alt="Today">
+  <img src="docs/screenshots/calendar.png" width="200" alt="Calendar">
+  <img src="docs/screenshots/messages.png" width="200" alt="Messages">
+  <img src="docs/screenshots/thread.png" width="200" alt="A message thread">
+</p>
+
+<p align="center"><sub>Screenshots from <a href="#demo-mode">demo mode</a>: every name and message is invented.</sub></p>
 
 ## What it does
 
@@ -30,13 +39,13 @@
 
 Sala has no server. The app talks to Aula directly from the phone, and you log in with MitID inside the app. Your Aula session stays in the device's Keychain.
 
-The Aula calls began as a Swift port of a small Python server built on [`aula`](https://github.com/nickknissen/aula) (`nickknissen/aula`), a Python API wrapper for Aula. Thanks to its authors for working out how Aula's API behaves.
+The Aula calls began as a Swift port of a small Python server built on [`aula`](https://github.com/nickknissen/aula) (`nickknissen/aula`), a Python API wrapper for Aula. Thanks to its authors for working out how Aula's API behaves. Aula has no public API: Sala uses the same private API as Aula's own app and web portal, and logs in as Aula's app does, so it may break whenever Aula changes, and using it may go against Aula's terms.
 
 ## Building
 
 Requires Xcode with the iOS 27 SDK (the app needs iOS 27) and [XcodeGen](https://github.com/yonaskolb/XcodeGen).
 
-1. Copy `ios/Config/Local.example.xcconfig` to `ios/Config/Local.xcconfig` (gitignored) and set your `DEVELOPMENT_TEAM` and a `SALA_BUNDLE_ID` your team can register. A free personal team works: the app and widget share data through a keychain access group, not an app group. Simulator builds need this too, since an unsigned build has no Keychain access.
+1. Copy `ios/Config/Local.example.xcconfig` to `ios/Config/Local.xcconfig` (gitignored) and set your `DEVELOPMENT_TEAM` and a `SALA_BUNDLE_ID` your team can register. A free personal team works: the app and widget share data through a keychain access group, not an app group. Running the app in the simulator needs this too, since an unsigned build has no Keychain access. The tests don't.
 2. Open `ios/Sala.xcodeproj` and run, or install on a connected phone with `ios/scripts/install-device.sh "<device name>"`.
 
 ### Demo mode
@@ -55,11 +64,17 @@ cd ios && xcodebuild test -project Sala.xcodeproj -scheme Sala -destination 'pla
 
 `DemoTests` fail when the app calls an Aula method that has no fixture in `ios/DemoAula/`, when a fixture's method is no longer called, or when a screen's route can't be answered from the fixtures.
 
+## Security
+
+Report vulnerabilities privately, and never post real Aula data in issues: see [`SECURITY.md`](SECURITY.md).
+
 ## Docs
 
 - [`API.md`](API.md): the in-app routes between the views and Aula.
-- [`docs/aula-shapes/`](docs/aula-shapes/): where fields sit in Aula's responses, captured from real Aula and anonymised.
+- [`docs/aula-shapes/`](docs/aula-shapes/): where fields sit in Aula's responses, the structure and field types of real responses, with no values.
 
 ## License
 
 [PolyForm Noncommercial 1.0.0](LICENSE). You may use, change and share Sala for noncommercial purposes only. You may not sell it, rent it, charge for access to it, or use it in any other commercial way. Commercial rights are reserved to the copyright holder.
+
+Sala includes work by others under their own licenses: see [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
