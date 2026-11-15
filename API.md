@@ -93,11 +93,11 @@ Nullable here: `opensAt`, `closesAt`, `current.time`, `current.by`.
 
 `POST /absences` body `{"childIds":[123],"startDate":"2026-12-27","endDate":"2026-12-30","comment":""}` → `{"ok":true}`. Registers a holiday or days off (Aula's "Ferie/fri"). `endDate` may equal `startDate` for one day. Start in the past, end before start, end more than a year after start, a comment over 250 characters, no children, an unknown child, or a child Aula won't take an absence for (no custody, or the institution doesn't let guardians register absences; when that can't be read, Aula decides) → `400` with the reason in `message`.
 
-`GET /holiday-requests` → the requests that can still be answered (Aula marks them editable and the deadline is today or later, or none), answered or not, by deadline:
+`GET /holiday-requests` → the requests whose period hasn't ended (`endDate` today or later, or none), answered or not, like Aula's own list, by deadline:
 ```json
-[{"id":"vacation-55","title":"Juleferie","startDate":"2026-12-21","endDate":"2026-12-23","deadline":"2026-11-13","answered":true}]
+[{"id":"vacation-55","title":"Juleferie","startDate":"2026-12-21","endDate":"2026-12-23","deadline":"2026-11-13","answered":true,"editable":true}]
 ```
-Open one with `GET /holiday-requests/{id}`; `POST` changes the answer until the deadline. Nullable: `startDate`, `endDate`, `deadline`.
+`editable` is false once the deadline has passed, or when Aula has locked every child's answer (as `GET /holiday-requests/{id}`). Open one with `GET /holiday-requests/{id}`; `POST` changes the answer until the deadline. Nullable: `startDate`, `endDate`, `deadline`.
 
 `GET /absences` → the registered holidays and days off that haven't ended, by start date:
 ```json

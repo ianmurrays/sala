@@ -376,7 +376,7 @@ struct AbsenceRequest: Encodable, Sendable {
     var comment: String
 }
 
-/// `GET /holiday-requests`: one that can still be answered.
+/// `GET /holiday-requests`: one whose period hasn't ended.
 struct HolidayRequestSummary: Decodable, Sendable, Equatable, Identifiable {
     var id: String
     var title: String
@@ -384,6 +384,8 @@ struct HolidayRequestSummary: Decodable, Sendable, Equatable, Identifiable {
     var endDate: String?
     var deadline: String?
     var answered: Bool
+    /// False once the deadline has passed, or Aula has locked it.
+    var editable: Bool
 }
 
 /// `GET /absences`: a registered holiday or days off.

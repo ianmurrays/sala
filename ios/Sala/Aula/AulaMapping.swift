@@ -896,16 +896,15 @@ extension Aula {
         try await addVacation(unique, start: start, end: end, comment: comment)
     }
 
-    /// `GET /holiday-requests`: requests whose deadline hasn't passed, answered or not, so an answer
-    /// can be changed. Same rows and deadline rule as `holiday`.
+    /// `GET /holiday-requests`: requests whose period hasn't ended, answered or not, like the portal's
+    /// list. Past the deadline (or locked by Aula) they stay, read-only: `holiday` says so.
     func openHolidayRequests(_ profile: AulaProfile) async throws -> [JSONObject] {
         let today = AulaTime.today()
         var order: [Int] = []
         var rows: [Int: [VacationRegistration]] = [:]
         for reg in try await getVacationRegistrations(profile.children.map(\.id)) {
             guard let id = reg.id, id != 0 else { continue }
-            if !reg.isEditable { continue }
-            if let d = Self.localDate(reg.responseDeadline), d < today { continue }
+            if let end = Self.localDate(reg.endDate), end < today { continue }
             if rows[id] == nil { order.append(id) }
             rows[id, default: []].append(reg)
         }
@@ -919,6 +918,7 @@ extension Aula {
                 "endDate": J.out(Self.localDate(first.endDate)?.iso),
                 "deadline": J.out(deadline?.iso),
                 "answered": regs.allSatisfy { !$0.isMissingAnswer },
+                "editable": (deadline.map { today <= $0 } ?? true) && regs.contains(where: \.isEditable),
             ], deadline ?? Day(ordinal: Int.max))
         }
         return out.enumerated().sorted { ($0.element.1, $0.offset) < ($1.element.1, $1.offset) }.map(\.element.0)
