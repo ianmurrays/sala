@@ -33,7 +33,7 @@ Live app logs (warnings for skipped parts, refusals): Console.app on the Mac, th
 
 - **Never start MitID or log in yourself**, and never ask the user to retry a failed MitID login in a loop: repeated failures can lock their identity.
 - **Captured traffic is real children's and families' data.** Keep it in `.cache/` (gitignored). Never paste it into commits, PRs, issues or docs as is.
-- To keep a shape, anonymise it into `docs/aula-shapes/<method>.json`: same structure and types, invented names, ids, phone numbers, addresses, URLs (keep the host), and dates shifted. Look at an existing file there first.
+- To keep a shape, write it to `docs/aula-shapes/<method>.json` with the same structure and every value replaced by its type (`"str"`, `"int|null"`, ...), so no real value is kept. Look at an existing file there first.
 - **Writes to live Aula change a real child's record** (pickup, sick, holidays, messages). Never trigger one to test without the user saying so for that write; prefer reversible ones (save then unsave a post).
 
 ## Then change the code

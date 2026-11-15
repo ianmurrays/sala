@@ -1,5 +1,5 @@
 #!/bin/sh
-# Build Sala and install it on a connected device: scripts/install-device.sh "<device name>"
+# Build Sala and install it on a connected device: ios/scripts/install-device.sh "<device name>"
 # Signing comes from Config/Local.xcconfig (see Config/Local.example.xcconfig).
 set -eu
 device=${1:?usage: $0 "<device name, as in xcrun devicectl list devices>"}

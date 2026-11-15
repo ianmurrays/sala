@@ -58,7 +58,7 @@ enum AI {
     static func customPrompt(_ action: Action) -> String { d.string(forKey: "ai.prompt.\(action.rawValue)") ?? "" }
     static func setCustomPrompt(_ action: Action, _ text: String) { d.set(text, forKey: "ai.prompt.\(action.rawValue)") }
 
-    // Adapted from the old server's prompt (git show 222c162:server/sala/translate.py), one text per call.
+    // Adapted from the old server's prompt (translate.py), one text per call.
     static func defaultPrompt(_ action: Action) -> String {
         switch action {
         case .translate:
