@@ -23,10 +23,13 @@ final class PushTests: XCTestCase {
 
         XCTAssertEqual(Push.messageEvent(thread(recipients: [person(1, "Me"), person(2, "Mette Lund")], read: true), mine: mine)?.notify, false, "read: mine or already seen")
         XCTAssertEqual(Push.messageEvent(thread(recipients: [person(1, "Me"), person(2, "Mette Lund")], muted: true), mine: mine)?.notify, false)
-        XCTAssertEqual(Push.messageEvent(thread(recipients: [person(1, "Me"), person(2, "A"), person(3, "B")]), mine: mine)?.notify, false, "group")
-        XCTAssertEqual(Push.messageEvent(thread(recipients: [person(1, "Me"), person(2, "A")], extra: 1), mine: mine)?.notify, false, "one listed + one extra")
+        XCTAssertEqual(Push.messageEvent(thread(recipients: [person(1, "Me"), person(2, "A"), person(3, "B")]), mine: mine)?.notify, true, "group")
+        XCTAssertEqual(Push.messageEvent(thread(recipients: [person(1, "Me"), person(2, "A")], extra: 1), mine: mine)?.notify, true, "one listed + one extra")
 
-        // Only the extra one: direct, but who it is isn't listed.
+        // Several others: no single name to show.
+        XCTAssertEqual(Push.messageEvent(thread(recipients: [person(1, "Me"), person(2, "A"), person(3, "B")]), mine: mine)?.title, "New message")
+
+        // Only the extra one: who it is isn't listed.
         var unknown = thread(recipients: [person(1, "Me")], extra: 1)
         unknown["creator"] = person(1, "Me")
         XCTAssertEqual(Push.messageEvent(unknown, mine: mine)?.title, "New message")
