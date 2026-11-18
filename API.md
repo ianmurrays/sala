@@ -225,11 +225,11 @@ Not routes. The app translates or summarizes one message or post on a tap, in `i
 
 ## Push
 
-Local notifications from iOS background refresh (`ios/Sala/BackgroundRefresh.swift`, rules in `ios/Sala/Aula/AulaPush.swift`), best effort: iOS decides when it runs. Turned on in Settings. These were the old server's rules (it pushed through ntfy), the spec to keep (titles only, never message or post bodies). Differences on the phone: "not from me" is the thread being unread (live `getThreads` rows carry no `latestMessage.sender`, and reading the thread could mark it read); there is no priority (a time-sensitive notification needs an entitlement); a reminder held until 07:00 is scheduled for 07:00; a deliberate logout does not notify.
+Local notifications from iOS background refresh (`ios/Sala/BackgroundRefresh.swift`, rules in `ios/Sala/Aula/AulaPush.swift`), best effort: iOS decides when it runs. Turned on in Settings. These were the old server's rules (it pushed through ntfy), the spec to keep (titles only, never message or post bodies). Differences on the phone: group threads notify too, as in the Aula app (the server notified only threads with one other person); "not from me" is the thread being unread (live `getThreads` rows carry no `latestMessage.sender`, and reading the thread could mark it read); there is no priority (a time-sensitive notification needs an entitlement); a reminder held until 07:00 is scheduled for 07:00; a deliberate logout does not notify.
 
 | Event | Title | Priority | Click |
 | --- | --- | --- | --- |
-| New message (not from me) in an unmuted thread with me and exactly one other person | `New message from Mette Lund` (`New message` when the sender can't be determined) | default | `sala://thread/<threadId>` |
+| New message (not from me) in an unmuted thread, group threads included | `New message from Mette Lund` (`New message` when the sender can't be determined) | default | `sala://thread/<threadId>` |
 | New important post | `Important post: <post title>` | default | `sala://today` |
 | New unanswered holiday request (held until 07:00 when its deadline is today or tomorrow) | `Holiday request 21–23 Dec · answer by 13 Nov` | high when the deadline is 2 days away or less | `sala://today` |
 | Unanswered holiday request, the day before its deadline, from 07:00 (not sent when the new-request notification above goes out in the same poll) | `Holiday request 21–23 Dec · answer by tomorrow` | high | `sala://today` |
