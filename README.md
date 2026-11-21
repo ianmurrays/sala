@@ -30,7 +30,7 @@
 - **Holidays**: register holidays and days off, change or cancel them, and answer the institution's holiday requests (and change an answer until the deadline).
 - **Calendar**: Aula's calendar, optionally synced to the iOS Calendar.
 - **Messages**: threads, replies (to everyone or only the sender), and your own folders.
-- **Gallery**: albums with their photos and videos; save either to Photos.
+- **Gallery**: albums with their photos and videos; save either to Photos. A blue dot marks photos uploaded since you last left the album, and albums made since then.
 - **Search**: Aula's search across messages, posts and photos, from the search button in the tab bar.
 - **Contacts**: Aula's contact book for each child's groups, from the button next to Settings on Today, with call, text, e-mail and Add to Contacts.
 - **Translate and summarize** (off by default): a Translate or Summarize button on each message and post, into the iPhone's language. Settings → AI picks where it runs: Apple's model on the phone (nothing leaves it), or your own OpenAI-compatible endpoint or Anthropic API key. The prompts are editable.
@@ -45,7 +45,7 @@ The Aula calls began as a Swift port of a small Python server built on [`aula`](
 
 Requires Xcode with the iOS 27 SDK (the app needs iOS 27) and [XcodeGen](https://github.com/yonaskolb/XcodeGen).
 
-1. Copy `ios/Config/Local.example.xcconfig` to `ios/Config/Local.xcconfig` (gitignored) and set your `DEVELOPMENT_TEAM` and a `SALA_BUNDLE_ID` your team can register. A free personal team works: the app and widget share data through a keychain access group, not an app group. Running the app in the simulator needs this too, since an unsigned build has no Keychain access. The tests don't.
+1. Copy `ios/Config/Local.example.xcconfig` to `ios/Config/Local.xcconfig` (gitignored) and set your `DEVELOPMENT_TEAM` and a `SALA_BUNDLE_ID` your team can register. A free personal team works: the app and widget share data through a keychain access group, not an app group. Its profiles expire after 7 days; after that iOS won't start Sala, background refresh and notifications included, until you install it again. Running the app in the simulator needs this too, since an unsigned build has no Keychain access. The tests don't.
 2. Open `ios/Sala.xcodeproj` and run, or install on a connected phone with `ios/scripts/install-device.sh "<device name>"`.
 
 ### Demo mode

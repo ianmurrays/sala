@@ -1,4 +1,5 @@
 import SwiftUI
+import UserNotifications
 
 struct SettingsView: View {
     @Environment(Store.self) private var store
@@ -10,7 +11,8 @@ struct SettingsView: View {
     @State private var appLock = AppLock.enabled
     @State private var notifications = Notifier.enabled
     @State private var notificationsDenied = false
-    @State private var refreshStatus = BackgroundRefresh.status
+    @State private var refreshLog = BackgroundRefresh.log
+    @State private var notificationAuth = ""
     #if DEBUG
     @State private var captureTraffic = TrafficLog.enabled
     #endif
@@ -104,8 +106,8 @@ struct SettingsView: View {
                     }
                     Button("Run background refresh now") {
                         Task {
-                            await BackgroundRefresh.run()
-                            refreshStatus = BackgroundRefresh.status
+                            await BackgroundRefresh.run(manual: true)
+                            refreshLog = BackgroundRefresh.log
                         }
                     }
                     Button("Test still-sick notification in 5 s") {
@@ -114,7 +116,18 @@ struct SettingsView: View {
                     }
                 } footer: {
                     // Background runs write it too, so this also shows whether iOS has run one.
-                    Text("Last background refresh: \(refreshStatus ?? "never")")
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Background App Refresh: \(Self.label(UIApplication.shared.backgroundRefreshStatus))"
+                            + (ProcessInfo.processInfo.isLowPowerModeEnabled ? " · Low Power Mode on" : "")
+                            + " · notifications \(notificationAuth)")
+                        if let e = BackgroundRefresh.scheduleError { Text("Scheduling failed: \(e)") }
+                        Text("Last background refreshes:")
+                        Text(refreshLog.isEmpty ? "never" : refreshLog.reversed().joined(separator: "\n"))
+                    }
+                    .task {
+                        let s = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
+                        notificationAuth = s == .authorized ? "allowed" : s == .denied ? "denied" : "status \(s.rawValue)"
+                    }
                 }
                 #endif
             }
@@ -133,6 +146,15 @@ struct SettingsView: View {
                     }
                 }
             }
+        }
+    }
+
+    private static func label(_ s: UIBackgroundRefreshStatus) -> String {
+        switch s {
+        case .available: "on"
+        case .denied: "off for Sala (Settings app → General → Background App Refresh)"
+        case .restricted: "restricted"
+        @unknown default: "unknown"
         }
     }
 }
