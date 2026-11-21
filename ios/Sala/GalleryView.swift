@@ -76,7 +76,7 @@ private struct AlbumCard: View {
     /// Made since the album was last left (or, never opened, since Sala first showed the gallery).
     /// ponytail: Aula's album rows carry only creationDate, so an older album that gains photos isn't flagged here.
     /// Not the tagged album: it's virtual, and what date Aula gives it isn't known.
-    private var isNew: Bool { !album.tagged && NewPhotos.isNew(album.date, after: NewPhotos.mark(album: album.id)) }
+    private var isNew: Bool { !album.tagged && NewPhotos.isNew(album.date, after: NewPhotos.shared.mark(album: album.id)) }
 
     var body: some View {
         Color.clear
@@ -108,7 +108,7 @@ private struct AlbumCard: View {
 struct AlbumView: View {
     let title: String
     /// Nil for search results: no album to remember what was seen in.
-    var albumId: Int?
+    var album: Album?
     /// Photos uploaded after this are new; fixed for the visit, so a reload doesn't clear them.
     @State private var newAfter: Date?
     @Environment(Store.self) private var store
@@ -124,7 +124,7 @@ struct AlbumView: View {
 
     init(album: Album) {
         self.init(title: album.title, photos: Paged { client, page in try await client.photos(album: album.id, page: page) })
-        albumId = album.id
+        self.album = album
     }
 
     init(title: String, photos: Paged<Photo>) {
@@ -160,7 +160,7 @@ struct AlbumView: View {
         .toolbarVisibility(selection == nil ? .automatic : .hidden, for: .tabBar)
         .refreshable { await photos.load(store, reset: true) }
         .task {
-            if newAfter == nil, let albumId { newAfter = NewPhotos.mark(album: albumId) }
+            if newAfter == nil, let album { newAfter = NewPhotos.shared.mark(album: album.id) }
             if photos.items == nil { await photos.load(store, reset: true) }
             #if DEBUG
             // A photo followed by another, so SalaUITests can swipe from one photo to the next.
@@ -172,13 +172,21 @@ struct AlbumView: View {
             }
             #endif
         }
-        .onChange(of: scenePhase) { if scenePhase == .active { Task { await photos.refreshURLs(store) } } }
-        .onDisappear { if let albumId, let items = photos.items { NewPhotos.seen(items.map(\.date), album: albumId) } }
+        .onChange(of: scenePhase) {
+            if scenePhase == .active { Task { await photos.refreshURLs(store) } }
+            // onDisappear never runs if iOS ends the app while it's in the background.
+            if scenePhase == .background { markSeen() }
+        }
+        .onDisappear { markSeen() }
         .fullScreenCover(isPresented: $viewing) {
             PhotoViewer(photos: photos, title: title, current: $current)
                 .navigationTransition(.zoom(sourceID: current, in: zoom))
         }
         .toast($message)
+    }
+
+    private func markSeen() {
+        if let album, let items = photos.items { NewPhotos.shared.seen(items.map(\.date) + [album.date], album: album.id) }
     }
 
     private func cell(_ photo: Photo, index: Int, last: Bool) -> some View {
@@ -575,27 +583,27 @@ private struct GalleryImage<Placeholder: View>: View {
 
 /// Which gallery items are new: uploaded after the newest photo seen when the album was last left.
 /// An album never opened counts from when Sala first showed the gallery, so nothing older lights up.
-@MainActor enum NewPhotos {
+@MainActor @Observable final class NewPhotos {
+    static let shared = NewPhotos()
     private static let marksKey = "galleryMarks", baselineKey = "galleryBaseline"
+    // Observed, so an album card redraws when leaving its album moves the mark. Demo: kept in memory only.
+    private var marks = DemoTransport.enabled ? [:] : UserDefaults.standard.dictionary(forKey: NewPhotos.marksKey) as? [String: Date] ?? [:]
 
-    static func mark(album: Int) -> Date {
-        // Demo: nothing saved, so every launch shows the fixtures' photos from today as new.
+    func mark(album: Int) -> Date {
+        if let m = marks[String(album)] { return m }
+        // Demo: every launch shows the fixtures' photos from today as new.
         if DemoTransport.enabled { return Calendar.current.startOfDay(for: .now) }
         let d = UserDefaults.standard
-        let baseline = d.object(forKey: baselineKey) as? Date ?? {
-            d.set(Date.now, forKey: baselineKey)
-            return .now
-        }()
-        return d.dictionary(forKey: marksKey)?[String(album)] as? Date ?? baseline
+        if let b = d.object(forKey: Self.baselineKey) as? Date { return b }
+        d.set(Date.now, forKey: Self.baselineKey)
+        return .now
     }
 
-    /// Leaving an album: its newest loaded photo is the new mark, never moved back.
-    static func seen(_ dates: [String?], album: Int) {
-        guard !DemoTransport.enabled, let newest = dates.compactMap({ $0.flatMap(Fmt.timestamp) }).max(),
-              newest > mark(album: album) else { return }
-        var marks = UserDefaults.standard.dictionary(forKey: marksKey) ?? [:]
+    /// Leaving an album: the newest of its loaded photos and its own creation date is the new mark, never moved back.
+    func seen(_ dates: [String?], album: Int) {
+        guard let newest = dates.compactMap({ $0.flatMap(Fmt.timestamp) }).max(), newest > mark(album: album) else { return }
         marks[String(album)] = newest
-        UserDefaults.standard.set(marks, forKey: marksKey)
+        if !DemoTransport.enabled { UserDefaults.standard.set(marks, forKey: Self.marksKey) }
     }
 
     nonisolated static func isNew(_ date: String?, after mark: Date) -> Bool {
