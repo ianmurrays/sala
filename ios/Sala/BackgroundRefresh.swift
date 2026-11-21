@@ -27,8 +27,11 @@ enum BackgroundRefresh {
     static var log: [String] { UserDefaults.standard.stringArray(forKey: "backgroundRefreshLog") ?? [] }
     static var scheduleError: String? { UserDefaults.standard.string(forKey: "backgroundRefreshScheduleError") }
 
-    private static func appendLog(_ line: String) {
-        UserDefaults.standard.set(Array((log + [line]).suffix(10)), forKey: "backgroundRefreshLog")
+    /// Adds `line`, or puts it in place of `replacing` (the run's "started" line), keeping 10 runs.
+    private static func appendLog(_ line: String, replacing: String? = nil) {
+        var lines = log
+        if let replacing, let i = lines.lastIndex(of: replacing) { lines[i] = line } else { lines.append(line) }
+        UserDefaults.standard.set(Array(lines.suffix(10)), forKey: "backgroundRefreshLog")
     }
 
     /// One run. Also the Debug button in Settings (`manual`).
@@ -36,8 +39,9 @@ enum BackgroundRefresh {
         schedule()
         let started = Date.now
         var parts = [started.formatted(date: .abbreviated, time: .shortened), manual ? "manual" : "background"]
-        appendLog((parts + ["started"]).joined(separator: " · "))
-        defer { appendLog((parts + ["\(Int(Date.now.timeIntervalSince(started))) s"]).joined(separator: " · ")) }
+        let startLine = (parts + ["started"]).joined(separator: " · ")
+        appendLog(startLine)
+        defer { appendLog((parts + ["\(Int(Date.now.timeIntervalSince(started))) s"]).joined(separator: " · "), replacing: startLine) }
         do {
             let t = try await APIClient().today()
             Shared.saveSnapshot(TodaySnapshot(date: t.date, children: t.children, fetchedAt: .now))
