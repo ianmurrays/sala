@@ -73,6 +73,11 @@ private struct AlbumCard: View {
     let album: Album
     let hero: Bool
 
+    /// Made since the album was last left (or, never opened, since Sala first showed the gallery).
+    /// ponytail: Aula's album rows carry only creationDate, so an older album that gains photos isn't flagged here.
+    /// Not the tagged album: it's virtual, and what date Aula gives it isn't known.
+    private var isNew: Bool { !album.tagged && NewPhotos.isNew(album.date, after: NewPhotos.mark(album: album.id)) }
+
     var body: some View {
         Color.clear
             .aspectRatio(hero ? 4 / 3 : 1, contentMode: .fit)
@@ -92,14 +97,20 @@ private struct AlbumCard: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(LinearGradient(colors: [.clear, .black.opacity(0.6)], startPoint: .top, endPoint: .bottom))
             }
+            .overlay(alignment: .topTrailing) { if isNew { NewDot().padding(10) } }
             .clipShape(.rect(cornerRadius: hero ? 24 : 18, style: .continuous))
             .contentShape(.rect(cornerRadius: hero ? 24 : 18, style: .continuous))
+            .accessibilityValue(isNew ? "New" : "")
     }
 }
 
 /// A photo grid with the viewer and Save to Photos: an album, or the photos of a search.
 struct AlbumView: View {
     let title: String
+    /// Nil for search results: no album to remember what was seen in.
+    var albumId: Int?
+    /// Photos uploaded after this are new; fixed for the visit, so a reload doesn't clear them.
+    @State private var newAfter: Date?
     @Environment(Store.self) private var store
     @State private var photos: Paged<Photo>
     @State private var current = 0
@@ -113,6 +124,7 @@ struct AlbumView: View {
 
     init(album: Album) {
         self.init(title: album.title, photos: Paged { client, page in try await client.photos(album: album.id, page: page) })
+        albumId = album.id
     }
 
     init(title: String, photos: Paged<Photo>) {
@@ -148,6 +160,7 @@ struct AlbumView: View {
         .toolbarVisibility(selection == nil ? .automatic : .hidden, for: .tabBar)
         .refreshable { await photos.load(store, reset: true) }
         .task {
+            if newAfter == nil, let albumId { newAfter = NewPhotos.mark(album: albumId) }
             if photos.items == nil { await photos.load(store, reset: true) }
             #if DEBUG
             // A photo followed by another, so SalaUITests can swipe from one photo to the next.
@@ -160,6 +173,7 @@ struct AlbumView: View {
             #endif
         }
         .onChange(of: scenePhase) { if scenePhase == .active { Task { await photos.refreshURLs(store) } } }
+        .onDisappear { if let albumId, let items = photos.items { NewPhotos.seen(items.map(\.date), album: albumId) } }
         .fullScreenCover(isPresented: $viewing) {
             PhotoViewer(photos: photos, title: title, current: $current)
                 .navigationTransition(.zoom(sourceID: current, in: zoom))
@@ -169,6 +183,7 @@ struct AlbumView: View {
 
     private func cell(_ photo: Photo, index: Int, last: Bool) -> some View {
         let selected = selection?.contains(photo.id) == true
+        let new = newAfter.map { NewPhotos.isNew(photo.date, after: $0) } ?? false
         return Button {
             if selection != nil {
                 selection?.formSymmetricDifference([photo.id])
@@ -187,6 +202,7 @@ struct AlbumView: View {
                         Image(systemName: "play.fill").font(.caption).foregroundStyle(.white).shadow(radius: 2).padding(6)
                     }
                 }
+                .overlay(alignment: .topTrailing) { if new { NewDot().padding(5) } }
                 .overlay(alignment: .bottomTrailing) {
                     if selected {
                         Image(systemName: "checkmark.circle.fill")
@@ -201,7 +217,7 @@ struct AlbumView: View {
         .buttonStyle(.plain)
         .matchedTransitionSource(id: photo.id, in: zoom)
         .id(photo.id)
-        .accessibilityLabel(photo.video == nil ? "Photo \(index + 1)" : "Video \(index + 1)")
+        .accessibilityLabel((photo.video == nil ? "Photo \(index + 1)" : "Video \(index + 1)") + (new ? ", new" : ""))
         .accessibilityAddTraits(selected ? .isSelected : [])
         .onAppear { if last { Task { await photos.load(store) } } }
     }
@@ -554,6 +570,42 @@ private struct GalleryImage<Placeholder: View>: View {
             if cache { thumbnailCache.setObject(loaded, forKey: id as NSString) }
             image = loaded
         }
+    }
+}
+
+/// Which gallery items are new: uploaded after the newest photo seen when the album was last left.
+/// An album never opened counts from when Sala first showed the gallery, so nothing older lights up.
+@MainActor enum NewPhotos {
+    private static let marksKey = "galleryMarks", baselineKey = "galleryBaseline"
+
+    static func mark(album: Int) -> Date {
+        // Demo: nothing saved, so every launch shows the fixtures' photos from today as new.
+        if DemoTransport.enabled { return Calendar.current.startOfDay(for: .now) }
+        let d = UserDefaults.standard
+        let baseline = d.object(forKey: baselineKey) as? Date ?? {
+            d.set(Date.now, forKey: baselineKey)
+            return .now
+        }()
+        return d.dictionary(forKey: marksKey)?[String(album)] as? Date ?? baseline
+    }
+
+    /// Leaving an album: its newest loaded photo is the new mark, never moved back.
+    static func seen(_ dates: [String?], album: Int) {
+        guard !DemoTransport.enabled, let newest = dates.compactMap({ $0.flatMap(Fmt.timestamp) }).max(),
+              newest > mark(album: album) else { return }
+        var marks = UserDefaults.standard.dictionary(forKey: marksKey) ?? [:]
+        marks[String(album)] = newest
+        UserDefaults.standard.set(marks, forKey: marksKey)
+    }
+
+    nonisolated static func isNew(_ date: String?, after mark: Date) -> Bool {
+        date.flatMap(Fmt.timestamp).map { $0 > mark } ?? false
+    }
+}
+
+private struct NewDot: View {
+    var body: some View {
+        Circle().fill(.blue).frame(width: 10, height: 10).overlay(Circle().stroke(.white, lineWidth: 1.5)).shadow(radius: 1)
     }
 }
 

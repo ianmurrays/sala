@@ -13,17 +13,31 @@ enum BackgroundRefresh {
     static func schedule() {
         let request = BGAppRefreshTaskRequest(identifier: id)
         request.earliestBeginDate = Date(timeIntervalSinceNow: 30 * 60)
-        try? BGTaskScheduler.shared.submit(request)
+        do {
+            try BGTaskScheduler.shared.submit(request)
+            UserDefaults.standard.removeObject(forKey: "backgroundRefreshScheduleError")
+        } catch {
+            // Where iOS says background refresh is off for Sala; shown in Settings → Debug.
+            UserDefaults.standard.set("\(Date.now.formatted(date: .abbreviated, time: .shortened)): \(error)", forKey: "backgroundRefreshScheduleError")
+        }
     }
 
-    /// What the last run did, for Settings → Debug: "14:32 · widget saved · 20 threads, 3 posts, 0 holiday requests · 0 posted".
-    static var status: String? { UserDefaults.standard.string(forKey: "backgroundRefreshStatus") }
+    /// The last runs, newest last, for Settings → Debug: "14:32 · background · widget saved · 20 threads, ... · 0 posted, 1 silenced · 4 s".
+    /// A run iOS cut short leaves only its "started" line.
+    static var log: [String] { UserDefaults.standard.stringArray(forKey: "backgroundRefreshLog") ?? [] }
+    static var scheduleError: String? { UserDefaults.standard.string(forKey: "backgroundRefreshScheduleError") }
 
-    /// One run. Also the Debug button in Settings.
-    static func run() async {
+    private static func appendLog(_ line: String) {
+        UserDefaults.standard.set(Array((log + [line]).suffix(10)), forKey: "backgroundRefreshLog")
+    }
+
+    /// One run. Also the Debug button in Settings (`manual`).
+    static func run(manual: Bool = false) async {
         schedule()
-        var parts = [Date.now.formatted(date: .abbreviated, time: .shortened)]
-        defer { UserDefaults.standard.set(parts.joined(separator: " · "), forKey: "backgroundRefreshStatus") }
+        let started = Date.now
+        var parts = [started.formatted(date: .abbreviated, time: .shortened), manual ? "manual" : "background"]
+        appendLog((parts + ["started"]).joined(separator: " · "))
+        defer { appendLog((parts + ["\(Int(Date.now.timeIntervalSince(started))) s"]).joined(separator: " · ")) }
         do {
             let t = try await APIClient().today()
             Shared.saveSnapshot(TodaySnapshot(date: t.date, children: t.children, fetchedAt: .now))
@@ -142,7 +156,7 @@ enum Notifier {
             await removeHeldHolidays(keep: Set(holidays.map(\.key)))
         }
         let names = ["message": "threads", "post": "important posts", "holiday": "holiday items"]
-        var counts: [String] = [], posted = 0
+        var counts: [String] = [], posted = 0, silenced = 0
         for kind in Push.kinds {
             guard let events = found[kind] ?? nil else {  // read failed: neither seed nor notify
                 counts.append("\(names[kind]!) failed")
@@ -161,13 +175,14 @@ enum Notifier {
                 // Older than seeding (slid into the page when a newer item went): remember it, don't notify.
                 if !e.notify || (e.at.map { $0 < seededAt } ?? false) {
                     markSeen([e.key])
+                    silenced += 1
                 } else if await post(e) {
                     markSeen([e.key] + e.covers)
                     posted += 1
                 }
             }
         }
-        return counts.joined(separator: ", ") + " · \(posted) posted"
+        return counts.joined(separator: ", ") + " · \(posted) posted, \(silenced) silenced"
     }
 
     /// Titles only, never message or post bodies. True once iOS has accepted it.
