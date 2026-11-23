@@ -7,6 +7,9 @@ import Foundation
 struct PushEvent: Equatable, Sendable {
     var key: String
     var title: String
+    var subtitle: String?
+    /// A one-line excerpt of the message; nil for a sensitive thread (Aula hides those behind a second login).
+    var body: String?
     var link: String = "sala://today"
     /// False: only remember it (a group or muted thread, a read one).
     var notify = true
@@ -45,17 +48,21 @@ enum Push {
     ///
     /// Live rows have no `latestMessage.sender`, and reading the thread to find it could mark it read
     /// in Aula, so "not from me" is the row's `read == false` (sending marks a thread read). Any unread,
-    /// unmuted thread notifies, group threads too, as the Aula app does. The name is the one other person
-    /// when the row lists only one, else "New message".
+    /// unmuted thread notifies, group threads too, as the Aula app does. The title is the one other person
+    /// when the row lists only one (subject as subtitle), else the subject, else "New message".
     static func messageEvent(_ raw: JSONObject, mine: Set<Int>) -> PushEvent? {
         let latest = J.get(raw, "latestMessage")
         guard let tid = J.val(raw["id"]), let mid = J.val(J.or(J.get(latest, "id"), J.get(latest, "sendDateTime"))) else { return nil }
         let people = others(raw, mine: mine).people
         let unread = !J.truthy(J.get(raw, "read", default: true))
         let name = people.count == 1 ? J.str(Aula.senderName(people.first!.value)).flatMap(Aula.nonEmpty) : nil
+        let subject = J.str(raw["subject"]).flatMap(Aula.nonEmpty)
+        let excerpt = J.truthy(raw["sensitive"]) ? nil : J.str(J.getIn(latest, "text.html")).map(Aula.preview).flatMap(Aula.nonEmpty)
         return PushEvent(
             key: "message:\(J.pyStr(tid)):\(J.pyStr(mid))",
-            title: name.map { "New message from \($0)" } ?? "New message",
+            title: name ?? subject ?? "New message",
+            subtitle: name == nil ? nil : subject,
+            body: excerpt,
             link: "sala://thread/\(J.pyStr(tid))",
             notify: unread && !J.truthy(raw["muted"]),
             at: date(J.get(latest, "sendDateTime")))
