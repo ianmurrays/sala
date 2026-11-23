@@ -142,12 +142,17 @@ final class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCent
         [.banner, .sound]
     }
 
-    /// Returning ends the call, which tells iOS the work is done (it may suspend the app then).
-    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter,
-                                            didReceive response: UNNotificationResponse) async {
+    /// Calling the handler tells iOS the work is done (it may suspend the app then).
+    /// Not the async variant: that calls the handler off the main thread, and UIKit aborts (seen on a cold launch from a tap).
+    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse,
+                                            withCompletionHandler completionHandler: @escaping @Sendable () -> Void) {
         let info = response.notification.request.content.userInfo
-        await handle(action: response.actionIdentifier, child: info["child"] as? Int,
-                     name: info["name"] as? String ?? "Your child", link: info["link"] as? String)
+        let action = response.actionIdentifier, child = info["child"] as? Int
+        let name = info["name"] as? String ?? "Your child", link = info["link"] as? String
+        Task { @MainActor in
+            await handle(action: action, child: child, name: name, link: link)
+            completionHandler()
+        }
     }
 
     private func handle(action: String, child: Int?, name: String, link: String?) async {

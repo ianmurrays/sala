@@ -189,11 +189,13 @@ enum Notifier {
         return counts.joined(separator: ", ") + " · \(posted) posted, \(silenced) silenced"
     }
 
-    /// Titles only, never message or post bodies. True once iOS has accepted it.
+    /// A message shows its excerpt; iOS's "Show Previews" setting decides whether the lock screen does. True once iOS has accepted it.
     private static func post(_ e: PushEvent) async -> Bool {
         guard enabled else { return false }  // turned off while this run was reading Aula
         let content = UNMutableNotificationContent()
         content.title = e.title
+        content.subtitle = e.subtitle ?? ""
+        content.body = e.body ?? ""
         content.sound = .default
         content.userInfo = ["link": e.link]
         var trigger: UNNotificationTrigger?

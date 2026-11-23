@@ -10,14 +10,17 @@ final class PushTests: XCTestCase {
     private func thread(recipients: [JSONObject], extra: Int = 0, read: Bool = false, muted: Bool = false) -> JSONObject {
         ["id": 7, "mailBoxOwner": ["id": 1], "read": read, "muted": muted, "extraRecipientsCount": extra,
          "creator": person(2, "Mette Lund"), "recipients": recipients,
-         "latestMessage": ["id": "m9", "sendDateTime": "2026-11-12T10:00:00+01:00"]]
+         "subject": "Tur i skoven",
+         "latestMessage": ["id": "m9", "sendDateTime": "2026-11-12T10:00:00+01:00", "text": ["html": "<p>Husk gummistøvler</p><p>på fredag.</p>"]]]
     }
 
     func testMessages() {
         let mine: Set<Int> = [1]
         let direct = Push.messageEvent(thread(recipients: [person(1, "Me"), person(2, "Mette Lund")]), mine: mine)
         XCTAssertEqual(direct?.key, "message:7:m9")
-        XCTAssertEqual(direct?.title, "New message from Mette Lund")
+        XCTAssertEqual(direct?.title, "Mette Lund")
+        XCTAssertEqual(direct?.subtitle, "Tur i skoven")
+        XCTAssertEqual(direct?.body, "Husk gummistøvler på fredag.")
         XCTAssertEqual(direct?.link, "sala://thread/7")
         XCTAssertEqual(direct?.notify, true)
 
@@ -26,12 +29,20 @@ final class PushTests: XCTestCase {
         XCTAssertEqual(Push.messageEvent(thread(recipients: [person(1, "Me"), person(2, "A"), person(3, "B")]), mine: mine)?.notify, true, "group")
         XCTAssertEqual(Push.messageEvent(thread(recipients: [person(1, "Me"), person(2, "A")], extra: 1), mine: mine)?.notify, true, "one listed + one extra")
 
-        // Several others: no single name to show.
-        XCTAssertEqual(Push.messageEvent(thread(recipients: [person(1, "Me"), person(2, "A"), person(3, "B")]), mine: mine)?.title, "New message")
+        // Several others: no single name to show, so the subject.
+        let group = Push.messageEvent(thread(recipients: [person(1, "Me"), person(2, "A"), person(3, "B")]), mine: mine)
+        XCTAssertEqual(group?.title, "Tur i skoven")
+        XCTAssertNil(group?.subtitle)
+
+        // Sensitive: no excerpt.
+        var sensitive = thread(recipients: [person(1, "Me"), person(2, "Mette Lund")])
+        sensitive["sensitive"] = true
+        XCTAssertNil(Push.messageEvent(sensitive, mine: mine)?.body)
 
         // Only the extra one: who it is isn't listed.
         var unknown = thread(recipients: [person(1, "Me")], extra: 1)
         unknown["creator"] = person(1, "Me")
+        unknown["subject"] = ""
         XCTAssertEqual(Push.messageEvent(unknown, mine: mine)?.title, "New message")
         XCTAssertEqual(Push.messageEvent(unknown, mine: mine)?.notify, true)
     }
