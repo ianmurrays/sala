@@ -69,7 +69,11 @@ final class DemoTests: XCTestCase {
         let today = try await send("GET", "/today") as? [String: Any] ?? [:]
         let children = today["children"] as? [[String: Any]] ?? []
         XCTAssertFalse(children.isEmpty, "/today: no children")
-        for child in children { _ = try await send("GET", "/children/\(child["id"]!)/pickup") }
+        for child in children {
+            let pickup = try await send("GET", "/children/\(child["id"]!)/pickup") as? [String: Any] ?? [:]
+            // An empty pickup list leaves the sheet's Save disabled.
+            XCTAssertFalse((pickup["people"] as? [Any] ?? []).isEmpty, "\(now) \(child["name"]!): no pickup people")
+        }
         for item in today["attention"] as? [[String: Any]] ?? [] where item["kind"] as? String == "holiday_request" {
             _ = try await send("GET", "/holiday-requests/\(item["id"]!)")
         }
