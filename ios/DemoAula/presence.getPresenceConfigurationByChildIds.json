@@ -40,6 +40,45 @@
       "selfDecider": false
      },
      "uniStudentId": 2001
+    },
+    {
+     "presenceConfiguration": {
+      "dashboardModuleSettings": [
+       {
+        "presenceDashboardContext": "guardian_dashboard",
+        "presenceModules": [
+         {
+          "moduleType": "pickup_times",
+          "permission": "editable"
+         },
+         {
+          "moduleType": "drop_off_time",
+          "permission": "editable"
+         },
+         {
+          "moduleType": "report_sick",
+          "permission": "editable"
+         },
+         {
+          "moduleType": "vacation",
+          "permission": "editable"
+         },
+         {
+          "moduleType": "pickup_type",
+          "permission": "editable"
+         }
+        ]
+       }
+      ],
+      "goHomeWith": false,
+      "institution": {
+       "institutionCode": "999001",
+       "name": "Børnehuset"
+      },
+      "pickup": true,
+      "selfDecider": false
+     },
+     "uniStudentId": 2002
     }
    ],
    "status": {

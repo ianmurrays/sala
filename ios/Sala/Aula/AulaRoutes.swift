@@ -125,9 +125,14 @@ extension Aula {
             let time = try Input.str(b, "time")
             let by = try Input.str(b, "by")
             let note = try Input.optStr(b, "note")
+            let dropoff = try Input.optStr(b, "dropoff")
             if !Self.validHHmm(time) { throw APIError.http(400, "time must be HH:mm") }
+            if let dropoff {
+                if !Self.validHHmm(dropoff) { throw APIError.http(400, "dropoff must be HH:mm") }
+                if dropoff >= time { throw APIError.http(400, "dropoff must be before time") }
+            }
             let child = try findChild(try await profile(), childId)
-            try await setPickup(child, when: time, by: by, note: note)
+            try await setPickup(child, when: time, by: by, note: note, dropoff: dropoff)
             return childOut(try await loadChildDay(child))
 
         case let (.sick(id), _):

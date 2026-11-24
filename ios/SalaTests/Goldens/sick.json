@@ -80,7 +80,8 @@
      "by": "Jonas Hansen (Far)"
     },
     "closesAt": "16:45",
-    "canReportSick": true
+    "canReportSick": true,
+    "dropoff": "07:45"
    },
    "aula": [
     {
@@ -434,7 +435,8 @@
      "by": "Jonas Hansen (Far)"
     },
     "closesAt": "16:45",
-    "canReportSick": true
+    "canReportSick": true,
+    "dropoff": "07:45"
    },
    "aula": [
     {
@@ -763,7 +765,8 @@
      "by": "Jonas Hansen (Far)"
     },
     "closesAt": "16:45",
-    "canReportSick": true
+    "canReportSick": true,
+    "dropoff": "07:45"
    },
    "aula": [
     {
@@ -1039,7 +1042,8 @@
      "by": "Jonas Hansen (Far)"
     },
     "closesAt": "16:45",
-    "canReportSick": true
+    "canReportSick": true,
+    "dropoff": "07:45"
    },
    "aula": [
     {

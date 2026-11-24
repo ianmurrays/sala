@@ -69,7 +69,11 @@ final class DemoTests: XCTestCase {
         let today = try await send("GET", "/today") as? [String: Any] ?? [:]
         let children = today["children"] as? [[String: Any]] ?? []
         XCTAssertFalse(children.isEmpty, "/today: no children")
-        for child in children { _ = try await send("GET", "/children/\(child["id"]!)/pickup") }
+        for child in children {
+            let pickup = try await send("GET", "/children/\(child["id"]!)/pickup") as? [String: Any] ?? [:]
+            // An empty pickup list leaves the sheet's Save disabled.
+            XCTAssertFalse((pickup["people"] as? [Any] ?? []).isEmpty, "\(now) \(child["name"]!): no pickup people")
+        }
         for item in today["attention"] as? [[String: Any]] ?? [] where item["kind"] as? String == "holiday_request" {
             _ = try await send("GET", "/holiday-requests/\(item["id"]!)")
         }
@@ -97,6 +101,8 @@ final class DemoTests: XCTestCase {
                 if step["verb"] as? String == "POST", step["path"] as? String == "/folders" { continue }
                 // ponytail: the demo's absence 7001 hasn't started, so a past start is refused there.
                 if step["note"] as? String == "shorten a started absence" { continue }
+                // ponytail: the demo's Oskar is checked in, so a drop-off change is refused there.
+                if step["note"] as? String == "drop-off changed before arrival" { continue }
                 let body = (step["body"].flatMap { $0 is NSNull ? nil : $0 })
                     .map { DemoTransport.shiftDates(String(decoding: try! JSONSerialization.data(withJSONObject: $0, options: [.fragmentsAllowed]), as: UTF8.self), by: shift) }
                 _ = try await send(step["verb"] as! String, step["path"] as! String, body.map { Data($0.utf8) })

@@ -20,6 +20,18 @@
          "url": "https://fake-files.aula.dk/files/profile.png?sig=2"
         },
         "userId": "oskar01"
+       },
+       {
+        "hasCustodyOrExtendedAccess": true,
+        "id": 2002,
+        "institutionProfile": {
+         "institutionCode": "999001",
+         "institutionName": "Børnehuset",
+         "metadata": "Vuggestue"
+        },
+        "name": "Alma",
+        "profileId": 602,
+        "userId": "alma01"
        }
       ],
       "displayName": "Jonas Hansen",

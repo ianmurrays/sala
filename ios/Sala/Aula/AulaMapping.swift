@@ -381,6 +381,8 @@ extension Aula {
         return (when, who, note)
     }
 
+    static func currentDropoff(_ day: ChildDay) -> String? { hhmm(nonEmpty(day.template?.entryTime) ?? day.overview?.entryTime) }
+
     static func nonEmpty(_ s: String?) -> String? { s?.isEmpty == false ? s : nil }
 
     func childOut(_ day: ChildDay) -> JSONObject {
@@ -402,6 +404,7 @@ extension Aula {
             "leftAt": J.out(Self.hhmm(ov?.checkOutTime)),
             "pickup": ["time": J.out(when), "by": J.out(who)] as JSONObject,
             "closesAt": J.out(day.closesAt),
+            "dropoff": J.out(Self.currentDropoff(day)),
             "canReportSick": day.config?.canEdit(.reportSick) ?? false,
         ]
     }
@@ -438,13 +441,14 @@ extension Aula {
             "times": try Self.pickupTimes(current: when, opensAt: day.opensAt, closesAt: day.closesAt, nowMinutes: AulaTime.nowMinutes()),
             "people": day.people ?? [],
             "current": ["time": J.out(when), "by": J.out(who)] as JSONObject,
+            "dropoff": J.out(Self.currentDropoff(day)),
             "note": note,
         ]
     }
 
     /// Change today's pickup only, the way the portal's guardian dashboard does.
     ///
-    /// Today's existing day template supplies the entry time and (unless the app sent a note) the
+    /// Today's existing day template supplies the entry time (unless the app sent a dropoff) and (unless the app sent a note) the
     /// comment. If that template repeats (weekly etc.) it is left alone: we write a single-day
     /// template for today with no id and repeatPattern "never". So does a template whose
     /// repeatPattern is missing. That matches the portal's "edit today" drawer (app.*.js
@@ -452,7 +456,7 @@ extension Aula {
     /// id; the week editor doesn't send an id either). Only a template that is already a one-off for
     /// today is updated by id, as `aula update-presence` does (cli.py ~3770). A day the child is
     /// registered absent (vacation) is refused (-> 409) rather than overwritten.
-    func setPickup(_ child: AulaChild, when: String, by: String, note inputNote: String?) async throws {
+    func setPickup(_ child: AulaChild, when: String, by: String, note inputNote: String?, dropoff: String? = nil) async throws {
         let today = AulaTime.today()
         // These reads decide what gets written, so a failure stops the write (-> 502) instead of
         // posting a blank entry time / comment over real ones.
@@ -468,9 +472,13 @@ extension Aula {
         if !people.contains(by) { throw MapError.badRequest("by must be one of people") }
         if let t, t.isOnVacation { throw MapError.conflict("\(child.name ?? "None") is registered absent today") }
         let ov = try await Self.optional("daily overview") { try await self.getDailyOverview(child.id) } ?? nil
+        // Drop-off can't change once the child is checked in (an unreadable overview doesn't block it).
+        if dropoff != nil, Self.nonEmpty(ov?.checkInTime) != nil {
+            throw MapError.conflict("\(child.name ?? "None") has already been dropped off")
+        }
         // No invented default: the portal sends entryTime null when drop-off time isn't set
         // (preparePresenceTemplateParams), so nil is passed through.
-        let entry = Self.hhmm(Self.nonEmpty(t?.entryTime) ?? ov?.entryTime)
+        let entry = dropoff ?? Self.hhmm(Self.nonEmpty(t?.entryTime) ?? ov?.entryTime)
         let note = inputNote ?? Self.nonEmpty(t?.comment) ?? Self.nonEmpty(ov?.comment) ?? ""
         // Only an explicit one-off ("never") is updated in place; a missing or unknown repeatPattern
         // may be a series, so it gets a new day override.

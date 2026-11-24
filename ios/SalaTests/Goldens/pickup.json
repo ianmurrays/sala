@@ -87,7 +87,8 @@
      "time": "16:00",
      "by": "Jonas Hansen (Far)"
     },
-    "note": "Har madpakke med"
+    "note": "Har madpakke med",
+    "dropoff": "07:45"
    },
    "aula": [
     {
@@ -456,7 +457,8 @@
      "by": "Maria Hansen (Mor)"
     },
     "closesAt": "16:45",
-    "canReportSick": true
+    "canReportSick": true,
+    "dropoff": "07:45"
    },
    "aula": [
     {
@@ -905,7 +907,8 @@
      "by": "Mormor Lis"
     },
     "closesAt": "16:45",
-    "canReportSick": true
+    "canReportSick": true,
+    "dropoff": "07:45"
    },
    "aula": [
     {
@@ -1331,6 +1334,627 @@
    ]
   },
   {
+   "note": "drop-off changed before arrival",
+   "verb": "PUT",
+   "path": "/children/2001/pickup",
+   "body": {
+    "time": "15:30",
+    "by": "Mormor Lis",
+    "dropoff": "08:00"
+   },
+   "status": 200,
+   "response": {
+    "id": 2001,
+    "name": "Oskar",
+    "picture": "f31f36216c157540666c85d9",
+    "institution": "Børnehuset",
+    "group": "Stue",
+    "status": "not_arrived",
+    "statusLabel": "Not Present",
+    "arrivedAt": null,
+    "leftAt": null,
+    "pickup": {
+     "time": "15:30",
+     "by": "Mormor Lis"
+    },
+    "closesAt": "16:45",
+    "canReportSick": true,
+    "dropoff": "08:00"
+   },
+   "aula": [
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getPickupResponsibles"
+      ],
+      [
+       "uniStudentIds[]",
+       "2001"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": [
+       {
+        "uniStudentId": 2001,
+        "relatedPersons": [
+         {
+          "name": "Jonas Hansen",
+          "relation": "Far",
+          "institutionProfileId": 1001
+         },
+         {
+          "name": "Maria Hansen",
+          "relation": "Mor",
+          "institutionProfileId": 1002
+         }
+        ],
+        "pickupSuggestions": [
+         {
+          "id": 81,
+          "pickUpName": "Mormor Lis"
+         }
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getPresenceTemplates"
+      ],
+      [
+       "filterInstitutionProfileIds[]",
+       "2001"
+      ],
+      [
+       "fromDate",
+       "2026-11-13"
+      ],
+      [
+       "toDate",
+       "2026-11-13"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": {
+       "presenceWeekTemplates": [
+        {
+         "institutionProfile": {
+          "id": 2001,
+          "name": "Oskar",
+          "institutionCode": "999001"
+         },
+         "dayTemplates": [
+          {
+           "id": 7101,
+           "byDate": "2026-11-13",
+           "dayOfWeek": 5,
+           "repeatPattern": "never",
+           "isOnVacation": false,
+           "activityType": 0,
+           "entryTime": "07:45",
+           "exitTime": "16:30",
+           "exitWith": "Maria Hansen (Mor)",
+           "comment": "",
+           "spareTimeActivity": null
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getDailyOverview"
+      ],
+      [
+       "childIds[]",
+       "2001"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": [
+       {
+        "id": 88001,
+        "institutionProfile": {
+         "id": 2001,
+         "profileId": 601,
+         "name": "Oskar",
+         "institutionCode": "999001",
+         "institutionName": "Børnehuset",
+         "role": "child",
+         "profilePicture": {
+          "id": 77,
+          "url": "https://fake-files.aula.dk/files/profile.png?sig=14"
+         }
+        },
+        "mainGroup": {
+         "id": 3001,
+         "name": "Stue",
+         "shortName": "Stue",
+         "institutionCode": "999001"
+        },
+        "status": 0,
+        "location": null,
+        "sleepIntervals": [],
+        "checkInTime": null,
+        "checkOutTime": null,
+        "entryTime": "07:45",
+        "exitTime": "16:30",
+        "exitWith": "Maria Hansen (Mor)",
+        "comment": ""
+       }
+      ]
+     }
+    },
+    {
+     "verb": "POST",
+     "query": [
+      [
+       "method",
+       "presence.updatePresenceTemplate"
+      ]
+     ],
+     "body": {
+      "institutionProfileId": 2001,
+      "byDate": "2026-11-13",
+      "presenceActivity": {
+       "activityType": 0,
+       "pickup": {
+        "entryTime": "08:00",
+        "exitTime": "15:30",
+        "exitWith": "Mormor Lis"
+       }
+      },
+      "comment": "",
+      "repeatPattern": "never",
+      "expiresAt": "2027-06-30T00:00:00+00:00",
+      "id": 7101
+     },
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": null
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getDailyOverview"
+      ],
+      [
+       "childIds[]",
+       "2001"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": [
+       {
+        "id": 88001,
+        "institutionProfile": {
+         "id": 2001,
+         "profileId": 601,
+         "name": "Oskar",
+         "institutionCode": "999001",
+         "institutionName": "Børnehuset",
+         "role": "child",
+         "profilePicture": {
+          "id": 77,
+          "url": "https://fake-files.aula.dk/files/profile.png?sig=15"
+         }
+        },
+        "mainGroup": {
+         "id": 3001,
+         "name": "Stue",
+         "shortName": "Stue",
+         "institutionCode": "999001"
+        },
+        "status": 0,
+        "location": null,
+        "sleepIntervals": [],
+        "checkInTime": null,
+        "checkOutTime": null,
+        "entryTime": "08:00",
+        "exitTime": "15:30",
+        "exitWith": "Mormor Lis",
+        "comment": ""
+       }
+      ]
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getPresenceTemplates"
+      ],
+      [
+       "filterInstitutionProfileIds[]",
+       "2001"
+      ],
+      [
+       "fromDate",
+       "2026-11-13"
+      ],
+      [
+       "toDate",
+       "2026-11-13"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": {
+       "presenceWeekTemplates": [
+        {
+         "institutionProfile": {
+          "id": 2001,
+          "name": "Oskar",
+          "institutionCode": "999001"
+         },
+         "dayTemplates": [
+          {
+           "id": 7101,
+           "byDate": "2026-11-13",
+           "dayOfWeek": 5,
+           "repeatPattern": "never",
+           "isOnVacation": false,
+           "activityType": 0,
+           "entryTime": "08:00",
+           "exitTime": "15:30",
+           "exitWith": "Mormor Lis",
+           "comment": "",
+           "spareTimeActivity": null
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getPresenceConfigurationByChildIds"
+      ],
+      [
+       "childIds[]",
+       "2001"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": [
+       {
+        "uniStudentId": 2001,
+        "presenceConfiguration": {
+         "institution": {
+          "institutionCode": "999001",
+          "name": "Børnehuset"
+         },
+         "pickup": true,
+         "goHomeWith": false,
+         "selfDecider": false,
+         "dashboardModuleSettings": [
+          {
+           "presenceDashboardContext": "guardian_dashboard",
+           "presenceModules": [
+            {
+             "moduleType": "pickup_times",
+             "permission": "editable"
+            },
+            {
+             "moduleType": "drop_off_time",
+             "permission": "editable"
+            },
+            {
+             "moduleType": "report_sick",
+             "permission": "editable"
+            },
+            {
+             "moduleType": "vacation",
+             "permission": "editable"
+            },
+            {
+             "moduleType": "pickup_type",
+             "permission": "editable"
+            }
+           ]
+          }
+         ]
+        }
+       }
+      ]
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getOpeningHoursByInstitutionCodes"
+      ],
+      [
+       "institutionCodes[]",
+       "999001"
+      ],
+      [
+       "startDate",
+       "2026-11-13"
+      ],
+      [
+       "endDate",
+       "2026-11-13"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": {
+       "openingHoursOverviewDto": [
+        {
+         "institutionCode": "999001",
+         "openingHoursDto": [
+          {
+           "date": "2026-11-13",
+           "type": "general_opening_hours",
+           "openTime": "06:30",
+           "closeTime": "16:45"
+          }
+         ]
+        }
+       ]
+      }
+     }
+    }
+   ],
+   "writes": [
+    {
+     "method": "presence.updatePresenceTemplate",
+     "payload": {
+      "institutionProfileId": 2001,
+      "byDate": "2026-11-13",
+      "presenceActivity": {
+       "activityType": 0,
+       "pickup": {
+        "entryTime": "08:00",
+        "exitTime": "15:30",
+        "exitWith": "Mormor Lis"
+       }
+      },
+      "comment": "",
+      "repeatPattern": "never",
+      "expiresAt": "2027-06-30T00:00:00+00:00",
+      "id": 7101
+     }
+    }
+   ]
+  },
+  {
+   "note": "drop-off after arrival refused",
+   "verb": "PUT",
+   "path": "/children/2001/pickup",
+   "body": {
+    "time": "15:30",
+    "by": "Mormor Lis",
+    "dropoff": "08:00"
+   },
+   "status": 409,
+   "response": {
+    "error": "conflict",
+    "message": "Oskar has already been dropped off"
+   },
+   "aula": [
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getPickupResponsibles"
+      ],
+      [
+       "uniStudentIds[]",
+       "2001"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": [
+       {
+        "uniStudentId": 2001,
+        "relatedPersons": [
+         {
+          "name": "Jonas Hansen",
+          "relation": "Far",
+          "institutionProfileId": 1001
+         },
+         {
+          "name": "Maria Hansen",
+          "relation": "Mor",
+          "institutionProfileId": 1002
+         }
+        ],
+        "pickupSuggestions": [
+         {
+          "id": 81,
+          "pickUpName": "Mormor Lis"
+         }
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getPresenceTemplates"
+      ],
+      [
+       "filterInstitutionProfileIds[]",
+       "2001"
+      ],
+      [
+       "fromDate",
+       "2026-11-13"
+      ],
+      [
+       "toDate",
+       "2026-11-13"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": {
+       "presenceWeekTemplates": [
+        {
+         "institutionProfile": {
+          "id": 2001,
+          "name": "Oskar",
+          "institutionCode": "999001"
+         },
+         "dayTemplates": [
+          {
+           "id": 7101,
+           "byDate": "2026-11-13",
+           "dayOfWeek": 5,
+           "repeatPattern": "never",
+           "isOnVacation": false,
+           "activityType": 0,
+           "entryTime": "07:45",
+           "exitTime": "16:30",
+           "exitWith": "Maria Hansen (Mor)",
+           "comment": "",
+           "spareTimeActivity": null
+          }
+         ]
+        }
+       ]
+      }
+     }
+    },
+    {
+     "verb": "GET",
+     "query": [
+      [
+       "method",
+       "presence.getDailyOverview"
+      ],
+      [
+       "childIds[]",
+       "2001"
+      ]
+     ],
+     "body": null,
+     "status": 200,
+     "answer": {
+      "status": {
+       "code": 0,
+       "message": "OK"
+      },
+      "data": [
+       {
+        "id": 88001,
+        "institutionProfile": {
+         "id": 2001,
+         "profileId": 601,
+         "name": "Oskar",
+         "institutionCode": "999001",
+         "institutionName": "Børnehuset",
+         "role": "child",
+         "profilePicture": {
+          "id": 77,
+          "url": "https://fake-files.aula.dk/files/profile.png?sig=14"
+         }
+        },
+        "mainGroup": {
+         "id": 3001,
+         "name": "Stue",
+         "shortName": "Stue",
+         "institutionCode": "999001"
+        },
+        "status": 3,
+        "location": null,
+        "sleepIntervals": [],
+        "checkInTime": "07:40",
+        "checkOutTime": null,
+        "entryTime": "07:45",
+        "exitTime": "16:30",
+        "exitWith": "Maria Hansen (Mor)",
+        "comment": ""
+       }
+      ]
+     }
+    }
+   ],
+   "writes": []
+  },
+  {
    "note": "",
    "verb": "GET",
    "path": "/children/2001/pickup",
@@ -1358,7 +1982,8 @@
      "time": "15:30",
      "by": "Mormor Lis"
     },
-    "note": ""
+    "note": "",
+    "dropoff": "07:45"
    },
    "aula": [
     {
@@ -1752,6 +2377,40 @@
    "response": {
     "error": "bad_request",
     "message": "time must be HH:mm"
+   },
+   "aula": [],
+   "writes": []
+  },
+  {
+   "note": "bad time",
+   "verb": "PUT",
+   "path": "/children/2001/pickup",
+   "body": {
+    "time": "16:00",
+    "by": "Jonas Hansen (Far)",
+    "dropoff": "8:00"
+   },
+   "status": 400,
+   "response": {
+    "error": "bad_request",
+    "message": "dropoff must be HH:mm"
+   },
+   "aula": [],
+   "writes": []
+  },
+  {
+   "note": "bad time",
+   "verb": "PUT",
+   "path": "/children/2001/pickup",
+   "body": {
+    "time": "16:00",
+    "by": "Jonas Hansen (Far)",
+    "dropoff": "16:00"
+   },
+   "status": 400,
+   "response": {
+    "error": "bad_request",
+    "message": "dropoff must be before time"
    },
    "aula": [],
    "writes": []

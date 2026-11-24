@@ -25,8 +25,8 @@
 
 ## What it does
 
-- **Today**: each child's status (present, sick, gone home, ...), pickup time and who picks up, closing time, holiday requests and messages that need an answer, upcoming events and posts.
-- **Pickup and sick**: set the pickup time, report a child sick.
+- **Today**: each child's status (present, sick, gone home, ...), drop-off time until the child arrives, pickup time and who picks up, closing time, holiday requests and messages that need an answer, upcoming events and posts.
+- **Pickup and sick**: set the pickup and drop-off times, report a child sick.
 - **Holidays**: register holidays and days off, change or cancel them, and answer the institution's holiday requests (and change an answer until the deadline).
 - **Calendar**: Aula's calendar, optionally synced to the iOS Calendar.
 - **Messages**: threads, replies (to everyone or only the sender), and your own folders.

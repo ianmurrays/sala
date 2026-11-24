@@ -24,7 +24,8 @@ Other upstream failures → `502 {"error":"upstream","message":"..."}`. JSON key
     "leftAt": null,
     "pickup": {"time": "16:15", "by": "Jonas (Far)"},
     "closesAt": "16:45",
-    "canReportSick": true
+    "canReportSick": true,
+    "dropoff": "07:45"
   }],
   "attention": [{
     "id": "vacation-55",
@@ -52,18 +53,18 @@ Other upstream failures → `502 {"error":"upstream","message":"..."}`. JSON key
 
 Profile pictures: `picture` (child, thread summary, message) and `authorPicture` (post) are opaque ids for `GET /attachments/{id}`, `null` when the person has no picture. Draw initials when it is `null` or the fetch fails. The id stays the same while the picture does (Aula's URL may be re-signed on every load), so the client can cache the image by id. `GET /attachments/{id}` sends `Cache-Control: private, max-age=604800` (a week).
 
-Nullable: `arrivedAt`, `leftAt`, `pickup.time`, `pickup.by`, `closesAt`, `threadId`, `subtitle`, Attachment `id` (links), `picture`, `authorPicture`, and `threadId` in the `sender` reply response when Aula doesn't return the new thread's id. Every other field is always present and non-null; posts, threads and messages Aula sends without a timestamp are left out.
+Nullable: `arrivedAt`, `leftAt`, `pickup.time`, `pickup.by`, `closesAt`, `dropoff` (today's drop-off time), `threadId`, `subtitle`, Attachment `id` (links), `picture`, `authorPicture`, and `threadId` in the `sender` reply response when Aula doesn't return the new thread's id. Every other field is always present and non-null; posts, threads and messages Aula sends without a timestamp are left out.
 
 ## Pickup and sick
 
 `GET /children/{id}/pickup` →
 ```json
 {"date":"2026-11-12","opensAt":"06:30","closesAt":"16:45","times":["15:30","16:00","16:15","16:30","16:45"],
- "people":["Jonas (Far)","Mor (Mor)"],"current":{"time":"16:15","by":"Jonas (Far)"},"note":""}
+ "people":["Jonas (Far)","Mor (Mor)"],"current":{"time":"16:15","by":"Jonas (Far)"},"dropoff":"07:45","note":""}
 ```
-Nullable here: `opensAt`, `closesAt`, `current.time`, `current.by`.
+Nullable here: `opensAt`, `closesAt`, `current.time`, `current.by`, `dropoff`. `dropoff` is today's drop-off time.
 
-`PUT /children/{id}/pickup` body `{"time":"16:15","by":"Jonas (Far)","note":""}` → the updated child object (same shape as in `/today`). Changes today only. `time` must be a valid `HH:mm` and `by` one of `people`, else `400`. When the child is registered absent today (vacation) → `409 {"error":"conflict","message":"Oskar is registered absent today"}` and nothing is written.
+`PUT /children/{id}/pickup` body `{"time":"16:15","by":"Jonas (Far)","note":"","dropoff":"08:00"}` → the updated child object (same shape as in `/today`). Changes today only. `time` must be a valid `HH:mm` and `by` one of `people`, else `400`. `dropoff` is optional: omitted keeps today's drop-off time; sent, it must be a valid `HH:mm` before `time`, else `400`, and once the child is checked in today → `409 {"error":"conflict","message":"Oskar has already been dropped off"}` and nothing is written. When the child is registered absent today (vacation) → `409 {"error":"conflict","message":"Oskar is registered absent today"}` and nothing is written.
 
 `POST /children/{id}/sick` → updated child (status `sick`). `DELETE /children/{id}/sick` → takes the report back, returns the updated child: status goes back to present if the child was checked in today and not checked out, otherwise to not arrived.
 

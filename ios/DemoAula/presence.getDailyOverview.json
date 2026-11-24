@@ -39,5 +39,44 @@
    }
   },
   "when": {}
+ },
+ {
+  "answer": {
+   "data": [
+    {
+     "checkInTime": null,
+     "checkOutTime": null,
+     "comment": "",
+     "entryTime": "08:30",
+     "exitTime": "15:00",
+     "exitWith": "Maria Hansen (Mor)",
+     "id": 88002,
+     "institutionProfile": {
+      "id": 2002,
+      "institutionCode": "999001",
+      "institutionName": "Børnehuset",
+      "name": "Alma",
+      "profileId": 602,
+      "role": "child"
+     },
+     "location": null,
+     "mainGroup": {
+      "id": 3002,
+      "institutionCode": "999001",
+      "name": "Vuggestue",
+      "shortName": "Vuggestue"
+     },
+     "sleepIntervals": [],
+     "status": 0
+    }
+   ],
+   "status": {
+    "code": 0,
+    "message": "OK"
+   }
+  },
+  "when": {
+   "childIds[]": "2002"
+  }
  }
 ]
