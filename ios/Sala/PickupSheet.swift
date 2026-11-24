@@ -13,6 +13,8 @@ struct PickupSheet: View {
     /// Set when the chosen time isn't one of the offered chips.
     @State private var customTime: String?
     @State private var showWheel = false
+    @State private var dropoff: String?
+    @State private var showDropoffWheel = false
     @State private var saving = false
     @State private var saveError: String?
 
@@ -51,7 +53,7 @@ struct PickupSheet: View {
                         ProgressView()
                     } else {
                         Button("Save", systemImage: "checkmark", role: .confirm) { Task { await save() } }
-                            .disabled(time == nil || by == nil || options == nil)
+                            .disabled(time == nil || by == nil || options == nil || dropoffError != nil)
                     }
                 }
             }
@@ -64,6 +66,11 @@ struct PickupSheet: View {
                     customTime = picked
                     time = picked
                 }
+            }
+        }
+        .sheet(isPresented: $showDropoffWheel) {
+            if let options {
+                TimeWheel(title: "Drop-off", slots: slots(options), initial: dropoff ?? options.opensAt) { dropoff = $0 }
             }
         }
     }
@@ -100,6 +107,23 @@ struct PickupSheet: View {
                     if let open = openingText(o) {
                         Text(open).textCase(nil)
                     }
+                }
+            }
+
+            Section {
+                Button {
+                    showDropoffWheel = true
+                } label: {
+                    LabeledContent("Drop-off") {
+                        Text(dropoff ?? "Not set").monospacedDigit()
+                    }
+                    .foregroundStyle(Color.primary)
+                    .contentShape(.rect)
+                }
+                .tint(Color.primary)
+            } footer: {
+                if let dropoffError {
+                    Text(dropoffError).foregroundStyle(Color.sickText)
                 }
             }
 
@@ -158,6 +182,11 @@ struct PickupSheet: View {
         .accessibilityAddTraits(selected ? .isSelected : [])
     }
 
+    private var dropoffError: String? {
+        guard let dropoff, let time, dropoff >= time else { return nil }
+        return "Drop-off must be before pickup"
+    }
+
     private func openingText(_ o: PickupOptions) -> String? {
         switch (o.opensAt, o.closesAt) {
         case let (a?, b?): "Open \(a)–\(b)"
@@ -186,6 +215,7 @@ struct PickupSheet: View {
             time = o.current?.time
             by = o.current?.by.flatMap { o.people.contains($0) ? $0 : nil }
             if let t = time, !o.times.contains(t) { customTime = t }
+            dropoff = o.dropoff
             note = o.note ?? ""
         } catch is CancellationError {
         } catch {
@@ -200,7 +230,9 @@ struct PickupSheet: View {
         saveError = nil
         defer { saving = false }
         do {
-            try await store.savePickup(child: child.id, PickupUpdate(time: time, by: by, note: note))
+            // Only a changed drop-off is sent; otherwise the server keeps today's.
+            let newDropoff = dropoff != options?.dropoff ? dropoff : nil
+            try await store.savePickup(child: child.id, PickupUpdate(time: time, by: by, note: note, dropoff: newDropoff))
             dismiss()
         } catch is CancellationError {
         } catch {
@@ -212,11 +244,13 @@ struct PickupSheet: View {
 /// Wheel picker over 5-minute slots.
 struct TimeWheel: View {
     @Environment(\.dismiss) private var dismiss
+    let title: String
     let slots: [String]
     let onPick: (String) -> Void
     @State private var selection: String
 
-    init(slots: [String], initial: String?, onPick: @escaping (String) -> Void) {
+    init(title: String = "Other time", slots: [String], initial: String?, onPick: @escaping (String) -> Void) {
+        self.title = title
         self.slots = slots
         self.onPick = onPick
         let fallback = slots.isEmpty ? "" : slots[slots.count / 2]
@@ -232,14 +266,14 @@ struct TimeWheel: View {
                 if slots.isEmpty {
                     ContentUnavailableView("No times available", systemImage: "clock")
                 } else {
-                    Picker("Pickup time", selection: $selection) {
+                    Picker(title, selection: $selection) {
                         ForEach(slots, id: \.self) { Text($0).monospacedDigit().tag($0) }
                     }
                     .pickerStyle(.wheel)
                     .labelsHidden()
                 }
             }
-            .navigationTitle("Other time")
+            .navigationTitle(title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

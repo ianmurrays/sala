@@ -190,6 +190,8 @@ struct PickupOptions: Codable, Sendable, Equatable {
     var times: [String]
     var people: [String]
     var current: Pickup?
+    /// Today's drop-off time (Aula's entryTime).
+    var dropoff: String?
     var note: String?
 }
 
@@ -197,6 +199,8 @@ struct PickupUpdate: Codable, Sendable {
     var time: String
     var by: String
     var note: String
+    /// nil keeps today's drop-off time.
+    var dropoff: String?
 }
 
 struct SavedResponse: Codable, Sendable { var saved: Bool }

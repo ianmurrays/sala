@@ -87,7 +87,8 @@
      "time": "16:00",
      "by": "Jonas Hansen (Far)"
     },
-    "note": "Har madpakke med"
+    "note": "Har madpakke med",
+    "dropoff": "07:45"
    },
    "aula": [
     {
@@ -456,7 +457,8 @@
      "by": "Maria Hansen (Mor)"
     },
     "closesAt": "16:45",
-    "canReportSick": true
+    "canReportSick": true,
+    "dropoff": "07:45"
    },
    "aula": [
     {
@@ -887,7 +889,8 @@
    "path": "/children/2001/pickup",
    "body": {
     "time": "15:30",
-    "by": "Mormor Lis"
+    "by": "Mormor Lis",
+    "dropoff": "08:00"
    },
    "status": 200,
    "response": {
@@ -905,7 +908,8 @@
      "by": "Mormor Lis"
     },
     "closesAt": "16:45",
-    "canReportSick": true
+    "canReportSick": true,
+    "dropoff": "07:45"
    },
    "aula": [
     {
@@ -1074,7 +1078,7 @@
       "presenceActivity": {
        "activityType": 0,
        "pickup": {
-        "entryTime": "07:45",
+        "entryTime": "08:00",
         "exitTime": "15:30",
         "exitWith": "Mormor Lis"
        }
@@ -1317,7 +1321,7 @@
       "presenceActivity": {
        "activityType": 0,
        "pickup": {
-        "entryTime": "07:45",
+        "entryTime": "08:00",
         "exitTime": "15:30",
         "exitWith": "Mormor Lis"
        }
@@ -1358,7 +1362,8 @@
      "time": "15:30",
      "by": "Mormor Lis"
     },
-    "note": ""
+    "note": "",
+    "dropoff": "07:45"
    },
    "aula": [
     {
@@ -1752,6 +1757,40 @@
    "response": {
     "error": "bad_request",
     "message": "time must be HH:mm"
+   },
+   "aula": [],
+   "writes": []
+  },
+  {
+   "note": "bad time",
+   "verb": "PUT",
+   "path": "/children/2001/pickup",
+   "body": {
+    "time": "16:00",
+    "by": "Jonas Hansen (Far)",
+    "dropoff": "8:00"
+   },
+   "status": 400,
+   "response": {
+    "error": "bad_request",
+    "message": "dropoff must be HH:mm"
+   },
+   "aula": [],
+   "writes": []
+  },
+  {
+   "note": "bad time",
+   "verb": "PUT",
+   "path": "/children/2001/pickup",
+   "body": {
+    "time": "16:00",
+    "by": "Jonas Hansen (Far)",
+    "dropoff": "16:00"
+   },
+   "status": 400,
+   "response": {
+    "error": "bad_request",
+    "message": "dropoff must be before time"
    },
    "aula": [],
    "writes": []

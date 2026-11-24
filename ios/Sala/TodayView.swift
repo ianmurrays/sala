@@ -350,13 +350,18 @@ struct ChildCard: View {
     private var busy: Bool { store.sickInFlight.contains(child.id) }
     @State private var confirmSick = false
 
+    /// Drop-off only matters until the child arrives; after that the status shows the arrival time.
+    private var dropoff: String? { child.status == "not_arrived" ? child.dropoff : nil }
+
     private var pickupHeader: String {
-        child.closesAt.map { "Pickup today · closes \($0)" } ?? "Pickup today"
+        let title = dropoff == nil ? "Pickup today" : "Today"
+        return child.closesAt.map { "\(title) · closes \($0)" } ?? title
     }
 
     private var pickupText: String {
         let parts = [child.pickup?.time, child.pickup?.by].compactMap { $0 }.filter { !$0.isEmpty }
-        return parts.isEmpty ? "No pickup set" : parts.joined(separator: " · ")
+        if parts.isEmpty { return "No pickup set" }
+        return (dropoff == nil ? "" : "Pickup ") + parts.joined(separator: " · ")
     }
 
     var body: some View {
@@ -379,6 +384,10 @@ struct ChildCard: View {
                 Text(pickupHeader)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
+                if let dropoff {
+                    Text("Drop-off \(dropoff)")
+                        .font(.title3.weight(.semibold))
+                }
                 Text(pickupText)
                     .font(.title3.weight(.semibold))
                     .foregroundStyle(child.pickup?.time == nil && child.pickup?.by == nil ? .secondary : .primary)
@@ -420,7 +429,7 @@ struct ChildCard: View {
     @ViewBuilder private func buttons(icons: Bool) -> some View {
         if canChangePickup {
             Button(action: changePickup) {
-                buttonLabel("Change pickup", "clock", icons: icons)
+                buttonLabel("Change times", "clock", icons: icons)
             }
             .buttonStyle(.glassProminent)
             .tint(.salaAccent)
@@ -436,7 +445,7 @@ struct ChildCard: View {
             .foregroundStyle(Color.sickText)
             .disabled(busy)
         } else {
-            // Secondary, not red: Change pickup is the everyday action, and the dialog guards this one.
+            // Secondary, not red: Change times is the everyday action, and the dialog guards this one.
             Button {
                 confirmSick = true
             } label: {
@@ -765,7 +774,7 @@ struct AttachmentRow: View {
 enum PreviewData {
     static let json = """
     {"date":"2026-11-12",
-     "children":[{"id":123,"name":"Oskar","institution":"Børnehuset","group":"Stue","status":"present","statusLabel":"Present","arrivedAt":"07:40","leftAt":null,"pickup":{"time":"16:15","by":"Jonas (Far)"},"closesAt":"16:45","canReportSick":true},
+     "children":[{"id":123,"name":"Oskar","institution":"Børnehuset","group":"Stue","status":"present","statusLabel":"Present","arrivedAt":"07:40","leftAt":null,"pickup":{"time":"16:15","by":"Jonas (Far)"},"closesAt":"16:45","canReportSick":true,"dropoff":"07:45"},
                  {"id":124,"name":"Alma","institution":"Børnehuset","group":"Vuggestue","status":"sick","statusLabel":"Sick","arrivedAt":null,"leftAt":null,"pickup":{"time":null,"by":null},"closesAt":null,"canReportSick":false}],
      "attention":[{"id":"vacation-55","kind":"holiday_request","title":"Holiday request: 21–23 Dec","subtitle":"Answer by tomorrow, 13 Nov","urgent":true,"threadId":null},
                   {"id":"msg-1","kind":"message","title":"Spare clothes tomorrow","subtitle":"Message from the staff · 11:20","urgent":false,"threadId":"123"}],

@@ -56,6 +56,8 @@ struct Child: Codable, Sendable, Equatable, Identifiable {
     var canReportSick: Bool
     /// Id for `GET /attachments/{id}`; nil when the child has no picture.
     var picture: String?
+    /// Today's drop-off time.
+    var dropoff: String?
 }
 
 struct Pickup: Codable, Sendable, Equatable {
