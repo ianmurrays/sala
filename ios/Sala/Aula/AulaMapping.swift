@@ -472,6 +472,10 @@ extension Aula {
         if !people.contains(by) { throw MapError.badRequest("by must be one of people") }
         if let t, t.isOnVacation { throw MapError.conflict("\(child.name ?? "None") is registered absent today") }
         let ov = try await Self.optional("daily overview") { try await self.getDailyOverview(child.id) } ?? nil
+        // Drop-off can't change once the child is checked in (an unreadable overview doesn't block it).
+        if dropoff != nil, Self.nonEmpty(ov?.checkInTime) != nil {
+            throw MapError.conflict("\(child.name ?? "None") has already been dropped off")
+        }
         // No invented default: the portal sends entryTime null when drop-off time isn't set
         // (preparePresenceTemplateParams), so nil is passed through.
         let entry = dropoff ?? Self.hhmm(Self.nonEmpty(t?.entryTime) ?? ov?.entryTime)

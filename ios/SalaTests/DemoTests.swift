@@ -101,6 +101,8 @@ final class DemoTests: XCTestCase {
                 if step["verb"] as? String == "POST", step["path"] as? String == "/folders" { continue }
                 // ponytail: the demo's absence 7001 hasn't started, so a past start is refused there.
                 if step["note"] as? String == "shorten a started absence" { continue }
+                // ponytail: the demo's Oskar is checked in, so a drop-off change is refused there.
+                if step["note"] as? String == "drop-off changed before arrival" { continue }
                 let body = (step["body"].flatMap { $0 is NSNull ? nil : $0 })
                     .map { DemoTransport.shiftDates(String(decoding: try! JSONSerialization.data(withJSONObject: $0, options: [.fragmentsAllowed]), as: UTF8.self), by: shift) }
                 _ = try await send(step["verb"] as! String, step["path"] as! String, body.map { Data($0.utf8) })

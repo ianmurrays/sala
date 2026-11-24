@@ -110,20 +110,22 @@ struct PickupSheet: View {
                 }
             }
 
-            Section {
-                Button {
-                    showDropoffWheel = true
-                } label: {
-                    LabeledContent("Drop-off") {
-                        Text(dropoff ?? "Not set").monospacedDigit()
+            if canChangeDropoff {
+                Section {
+                    Button {
+                        showDropoffWheel = true
+                    } label: {
+                        LabeledContent("Drop-off") {
+                            Text(dropoff ?? "Not set").monospacedDigit()
+                        }
+                        .foregroundStyle(Color.primary)
+                        .contentShape(.rect)
                     }
-                    .foregroundStyle(Color.primary)
-                    .contentShape(.rect)
-                }
-                .tint(Color.primary)
-            } footer: {
-                if let dropoffError {
-                    Text(dropoffError).foregroundStyle(Color.sickText)
+                    .tint(Color.primary)
+                } footer: {
+                    if let dropoffError {
+                        Text(dropoffError).foregroundStyle(Color.sickText)
+                    }
                 }
             }
 
@@ -182,8 +184,11 @@ struct PickupSheet: View {
         .accessibilityAddTraits(selected ? .isSelected : [])
     }
 
+    /// Drop-off can't change once the child is checked in (the server answers 409).
+    private var canChangeDropoff: Bool { child.status == "not_arrived" }
+
     private var dropoffError: String? {
-        guard let dropoff, let time, dropoff >= time else { return nil }
+        guard canChangeDropoff, let dropoff, let time, dropoff >= time else { return nil }
         return "Drop-off must be before pickup"
     }
 
@@ -231,7 +236,7 @@ struct PickupSheet: View {
         defer { saving = false }
         do {
             // Only a changed drop-off is sent; otherwise the server keeps today's.
-            let newDropoff = dropoff != options?.dropoff ? dropoff : nil
+            let newDropoff = canChangeDropoff && dropoff != options?.dropoff ? dropoff : nil
             try await store.savePickup(child: child.id, PickupUpdate(time: time, by: by, note: note, dropoff: newDropoff))
             dismiss()
         } catch is CancellationError {

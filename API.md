@@ -64,7 +64,7 @@ Nullable: `arrivedAt`, `leftAt`, `pickup.time`, `pickup.by`, `closesAt`, `dropof
 ```
 Nullable here: `opensAt`, `closesAt`, `current.time`, `current.by`, `dropoff`. `dropoff` is today's drop-off time.
 
-`PUT /children/{id}/pickup` body `{"time":"16:15","by":"Jonas (Far)","note":"","dropoff":"08:00"}` → the updated child object (same shape as in `/today`). Changes today only. `time` must be a valid `HH:mm` and `by` one of `people`, else `400`. `dropoff` is optional: omitted keeps today's drop-off time; sent, it must be a valid `HH:mm` before `time`, else `400`. When the child is registered absent today (vacation) → `409 {"error":"conflict","message":"Oskar is registered absent today"}` and nothing is written.
+`PUT /children/{id}/pickup` body `{"time":"16:15","by":"Jonas (Far)","note":"","dropoff":"08:00"}` → the updated child object (same shape as in `/today`). Changes today only. `time` must be a valid `HH:mm` and `by` one of `people`, else `400`. `dropoff` is optional: omitted keeps today's drop-off time; sent, it must be a valid `HH:mm` before `time`, else `400`, and once the child is checked in today → `409 {"error":"conflict","message":"Oskar has already been dropped off"}` and nothing is written. When the child is registered absent today (vacation) → `409 {"error":"conflict","message":"Oskar is registered absent today"}` and nothing is written.
 
 `POST /children/{id}/sick` → updated child (status `sick`). `DELETE /children/{id}/sick` → takes the report back, returns the updated child: status goes back to present if the child was checked in today and not checked out, otherwise to not arrived.
 
